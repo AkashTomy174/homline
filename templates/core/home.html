@@ -2,74 +2,116 @@
 {% load static %}
 
 {% block content %}
-<!-- 03 Hero Section -->
+<!-- 01 Hero Section with Creative Doorstep Console -->
 <section class="hero-section">
   <div class="container">
     <div class="row align-items-center g-5">
+      <!-- Left Column: Compelling Headline & CTAs -->
       <div class="col-lg-7">
-        <div class="badge bg-gold text-dark px-3 py-2 rounded-pill font-monospace fw-bold mb-3 text-uppercase shadow-sm">
-          <i class="bi bi-patch-check-fill me-1"></i> Reliable Digital Assistance
+        <div class="badge bg-gold text-dark px-3 py-2 rounded-pill font-monospace fw-bold mb-3 shadow-sm">
+          <span class="pulse-dot"></span> ONLINE SERVICE AT DOORSTEP • AMDG Group
         </div>
-        <h1 class="hero-headline mb-4">
-          DIGITAL SERVICES.<br><span class="text-teal">SIMPLIFIED FOR YOU.</span>
+        <h1 class="hero-headline mb-3">
+          Doorstep Digital Services.<br>
+          <span class="text-gradient-teal">Connecting Convenience.</span>
         </h1>
         <p class="hero-subtitle mb-4">
-          Access essential online services with reliable assistance, convenient digital support and guidance — from the comfort of your home.
+          Skip crowded cyber cafes, frustrating portal delays, and document photo rejections. Our certified assistance desk helps you verify, format, and submit official applications without leaving your home.
         </p>
         <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
-          <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20would%20like%20assistance%20with..." target="_blank" class="btn btn-whatsapp btn-lg mobile-full-width shadow-sm">
-            <i class="bi bi-whatsapp me-2"></i> WHATSAPP NOW
+          <a href="{% url 'services_list' %}" class="btn btn-teal btn-lg shadow-sm px-4">
+            <i class="bi bi-grid-fill me-2"></i> Explore Services (8)
           </a>
-          <a href="tel:6282268453" class="btn btn-navy btn-lg mobile-full-width shadow-sm">
-            <i class="bi bi-telephone-outbound-fill me-2 text-gold"></i> CALL HOMLINE 6282268453
+          <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20assistance%20with%20a%20digital%20service." target="_blank" class="btn btn-whatsapp btn-lg shadow-sm px-4">
+            <i class="bi bi-whatsapp me-2"></i> WhatsApp Support
           </a>
-          <a href="{% url 'services_list' %}" class="btn btn-outline-navy btn-lg mobile-full-width">
-            Explore Services <i class="bi bi-arrow-right ms-1"></i>
+          <a href="{% url 'track_request' %}" class="btn btn-outline-navy btn-lg px-4">
+            <i class="bi bi-search me-2"></i> Track Request
           </a>
         </div>
-        <div class="d-flex align-items-center gap-4 text-muted small font-monospace">
-          <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-shield-check text-teal fs-5"></i>
-            <span>Verified Process</span>
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-house-door-fill text-teal fs-5"></i>
-            <span>From Your Home</span>
-          </div>
+        <div class="d-flex align-items-center gap-4 text-muted small font-monospace flex-wrap">
           <div class="d-flex align-items-center gap-2">
             <i class="bi bi-clock-history text-teal fs-5"></i>
-            <span>Prompt Updates</span>
+            <span>Fast Turnaround</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-shield-check text-teal fs-5"></i>
+            <span>Verified Guidance</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-cash-stack text-teal fs-5"></i>
+            <span>100% Transparent Fee</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-lock-fill text-teal fs-5"></i>
+            <span>Strict Confidentiality</span>
           </div>
         </div>
       </div>
 
+      <!-- Right Column: Creative Interactive Doorstep Seva Console -->
       <div class="col-lg-5">
-        <div class="hero-illustration-box">
-          <div class="hero-floating-badge">
-            <i class="bi bi-heart-fill text-danger me-1"></i> 24×7 Online Request
+        <div class="hero-console-card">
+          <!-- Floating Micro-Badge Top Right -->
+          <div class="floating-pill-badge floating-pill-top-right">
+            <span class="pulse-dot"></span>
+            <span class="text-navy">Desk Online • 24×7 Online</span>
           </div>
-          <div class="py-4">
-            <div class="brand-icon-box mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2.8rem;">
+
+          <!-- Console Header -->
+          <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom">
+            <div class="brand-icon-box" style="width: 48px; height: 48px; font-size: 1.4rem;">
               <i class="bi bi-laptop-fill"></i>
             </div>
-            <h4 class="fw-bold text-navy mb-2">Home-to-Digital Connection</h4>
-            <p class="text-muted small mb-4">
-              "You don't have to figure out every digital service alone. HOMline helps you navigate it."
-            </p>
-            <div class="p-3 bg-white rounded-3 border border-teal text-start shadow-sm">
-              <div class="d-flex align-items-center gap-3 mb-2">
-                <div class="rounded-circle bg-teal text-white p-2 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
-                  <i class="bi bi-check-lg"></i>
-                </div>
-                <div>
-                  <strong class="text-navy d-block small">Request Submitted Digitally</strong>
-                  <span class="text-muted font-monospace" style="font-size: 0.78rem;">Reference ID generated instantly</span>
-                </div>
-              </div>
-              <div class="progress" style="height: 6px;">
-                <div class="progress-bar bg-teal" role="progressbar" style="width: 75%"></div>
-              </div>
+            <div>
+              <h6 class="fw-bold text-navy mb-0">Doorstep Digital Desk</h6>
+              <small class="text-muted">Direct guidance & submission support</small>
             </div>
+          </div>
+
+          <!-- Quick Search Jump Input -->
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-navy mb-1">What do you need assistance with?</label>
+            <div class="input-group shadow-sm">
+              <span class="input-group-text bg-soft-mist border-end-0 text-teal"><i class="bi bi-search"></i></span>
+              <input type="text" id="heroQuickSearchInput" class="form-control border-start-0 ps-0" placeholder="e.g. PAN, Passport, Exam, MSME...">
+              <button type="button" id="heroQuickSearchBtn" class="btn btn-navy px-3" onclick="const q=document.getElementById('heroQuickSearchInput').value.trim(); window.location.href='{% url 'services_list' %}' + (q ? '?q=' + encodeURIComponent(q) : '');">
+                Go &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- Interactive Quick Jump Topic Chips -->
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <a href="{% url 'services_list' %}?q=PAN" class="badge bg-light text-navy border p-2 text-decoration-none hover-lift">
+              <i class="bi bi-credit-card-2-front text-teal me-1"></i> PAN Card
+            </a>
+            <a href="{% url 'services_list' %}?q=Passport" class="badge bg-light text-navy border p-2 text-decoration-none hover-lift">
+              <i class="bi bi-passport text-teal me-1"></i> Passport Seva
+            </a>
+            <a href="{% url 'services_list' %}?q=Exam" class="badge bg-light text-navy border p-2 text-decoration-none hover-lift">
+              <i class="bi bi-mortarboard text-teal me-1"></i> CUET / Exams
+            </a>
+            <a href="{% url 'services_list' %}?q=MSME" class="badge bg-light text-navy border p-2 text-decoration-none hover-lift">
+              <i class="bi bi-building text-teal me-1"></i> MSME License
+            </a>
+          </div>
+
+          <!-- Quality Check Live Status -->
+          <div class="p-3 bg-soft-mist rounded-3 border border-teal-subtle text-start">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <strong class="text-navy small"><i class="bi bi-patch-check-fill text-teal me-1"></i> Rejection Protection</strong>
+              <span class="badge bg-teal text-white font-monospace small">Verified</span>
+            </div>
+            <p class="small text-muted mb-0" style="font-size: 0.8rem;">
+              Every document is pre-screened to exact portal KB & resolution specs before final submission.
+            </p>
+          </div>
+
+          <!-- Floating Micro-Badge Bottom Left -->
+          <div class="floating-pill-badge floating-pill-bottom-left">
+            <i class="bi bi-check-circle-fill text-success"></i>
+            <span class="text-navy">Zero-Error Form Guarantee</span>
           </div>
         </div>
       </div>
@@ -77,8 +119,32 @@
   </div>
 </section>
 
-<!-- 04 Quick Action Cards Section -->
-<section class="py-4 mt-n4">
+<!-- 02 Stats Ribbon Bar -->
+<section class="container position-relative z-2">
+  <div class="stats-ribbon mb-4">
+    <div class="row g-3 align-items-center">
+      <div class="col-6 col-md-3 stat-item">
+        <div class="stat-number text-navy"><i class="bi bi-clock-history text-teal me-1"></i> 24h</div>
+        <div class="stat-label">Fast Processing Turnaround</div>
+      </div>
+      <div class="col-6 col-md-3 stat-item">
+        <div class="stat-number text-navy"><i class="bi bi-shield-check text-gold me-1"></i> 100%</div>
+        <div class="stat-label">Verified Assistance</div>
+      </div>
+      <div class="col-6 col-md-3 stat-item">
+        <div class="stat-number text-navy"><i class="bi bi-cash-stack text-teal me-1"></i> ₹0</div>
+        <div class="stat-label">Hidden Surcharge Fee</div>
+      </div>
+      <div class="col-6 col-md-3 stat-item">
+        <div class="stat-number text-navy"><i class="bi bi-people-fill text-gold me-1"></i> 1,000+</div>
+        <div class="stat-label">Satisfied Citizens</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 Quick Action Gateway Hub -->
+<section class="py-2 mb-4">
   <div class="container">
     <div class="row g-3">
       <div class="col-lg-3 col-6">
@@ -88,7 +154,7 @@
           </div>
           <div>
             <h6 class="fw-bold mb-0">WhatsApp Us</h6>
-            <small class="text-muted">Chat Now &rarr;</small>
+            <small class="text-muted">Chat with Officer &rarr;</small>
           </div>
         </a>
       </div>
@@ -99,29 +165,29 @@
           </div>
           <div>
             <h6 class="fw-bold mb-0">Call Us</h6>
-            <small class="text-muted">Call Now &rarr;</small>
+            <small class="text-muted">6282268453 &rarr;</small>
           </div>
         </a>
       </div>
       <div class="col-lg-3 col-6">
-        <a href="#" data-bs-toggle="modal" data-bs-target="#requestModal" class="quick-action-card">
+        <a href="{% url 'request_service' %}" class="quick-action-card">
           <div class="quick-action-icon bg-teal text-white">
             <i class="bi bi-pencil-square"></i>
           </div>
           <div>
-            <h6 class="fw-bold mb-0">Request a Service</h6>
-            <small class="text-muted">Request &rarr;</small>
+            <h6 class="fw-bold mb-0">Request Service</h6>
+            <small class="text-muted">Fill Online &rarr;</small>
           </div>
         </a>
       </div>
       <div class="col-lg-3 col-6">
-        <a href="#trackSection" class="quick-action-card">
+        <a href="{% url 'track_request' %}" class="quick-action-card">
           <div class="quick-action-icon bg-gold text-dark">
             <i class="bi bi-search"></i>
           </div>
           <div>
-            <h6 class="fw-bold mb-0">Track Your Request</h6>
-            <small class="text-muted">Track &rarr;</small>
+            <h6 class="fw-bold mb-0">Track Request</h6>
+            <small class="text-muted">Track Live Status &rarr;</small>
           </div>
         </a>
       </div>
@@ -189,194 +255,87 @@
   </div>
 </section>
 
-<!-- 06 Services Section -->
-<section class="py-5" id="services">
+<!-- 06 Main Portal Gateways (4 Core Pillars) -->
+<section class="py-5 bg-white border-top border-bottom">
   <div class="container">
     <div class="text-center max-width-700 mx-auto mb-5">
-      <span class="badge bg-teal text-white px-3 py-2 rounded-pill font-monospace text-uppercase">Directory</span>
-      <h2 class="fw-extrabold display-6 text-navy mt-2 mb-3">Explore Our Digital Services</h2>
+      <span class="badge bg-teal text-white px-3 py-2 rounded-pill font-monospace text-uppercase">Portal Gateways</span>
+      <h2 class="fw-extrabold display-6 text-navy mt-2 mb-3">Explore HOMline Services</h2>
       <p class="text-muted">
-        From applications and registrations to various online assistance services, HOMline helps customers navigate supported digital services with ease.
+        Everything you need for government, student, business, and digital applications in one place.
       </p>
     </div>
 
-    <!-- Mandatory Disclaimer Alert -->
-    <div class="disclaimer-box mb-4">
-      <div class="d-flex align-items-start gap-3">
-        <i class="bi bi-info-circle-fill fs-4 text-warning flex-shrink-0"></i>
-        <div>
-          <strong class="d-block text-dark">Required Service Disclaimer:</strong>
-          HOMline provides assistance for supported online services. Availability, processing time, eligibility, approval and final decisions are determined by the respective authority, institution or third-party service provider.
-        </div>
-      </div>
-    </div>
-
-    <!-- Services Cards Grid -->
     <div class="row g-4">
-      {% for service in featured_services %}
-      <div class="col-lg-4 col-md-6">
-        <div class="homline-card d-flex flex-column justify-content-between">
+      <!-- Gateway 1: Services Directory -->
+      <div class="col-lg-3 col-md-6">
+        <div class="category-highlight-card h-100">
           <div>
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.6rem;">
-                <i class="bi {{ service.icon_class }}"></i>
-              </div>
-              {% if service.badge %}
-                <span class="badge bg-gold text-dark fw-bold px-3 py-1 rounded-pill">{{ service.badge }}</span>
-              {% endif %}
+            <div class="category-icon-wrapper">
+              <i class="bi bi-grid-fill"></i>
             </div>
-            <span class="badge bg-light text-navy border border-teal small mb-2">{{ service.category.name }}</span>
-            <h5 class="fw-bold text-navy mb-2">{{ service.title }}</h5>
-            <p class="text-muted small mb-3">{{ service.short_summary }}</p>
-            
-            <div class="fee-badge-box">
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="small text-muted">HOMline Charge:</span>
-                <span class="fee-badge-homline">{{ service.homline_charge }}</span>
-              </div>
-              <div class="d-flex justify-content-between align-items-center mt-1">
-                <span class="small text-muted">3rd Party/Gov Fee:</span>
-                <span class="fee-badge-thirdparty">{{ service.third_party_fee }}</span>
-              </div>
-            </div>
+            <h5 class="fw-bold text-navy mb-2">Services Directory</h5>
+            <p class="text-muted small mb-3">
+              Browse our full catalog for PAN card, passport appointments, exams, MSME, and certificate assistance.
+            </p>
           </div>
-
-          <div class="d-flex gap-2 mt-3">
-            <a href="{% url 'service_detail' slug=service.slug %}" class="btn btn-outline-navy btn-sm flex-grow-1">Details</a>
-            <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-id="{{ service.id }}">
-              Request Service
-            </button>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-
-    <div class="text-center mt-5">
-      <a href="{% url 'services_list' %}" class="btn btn-navy btn-lg px-5">
-        View All Services Directory <i class="bi bi-arrow-right ms-2"></i>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- REALISTIC FEATURE: Service Cost Estimator Calculator Widget -->
-<section class="py-5 bg-white border-top border-bottom">
-  <div class="container">
-    <div class="row align-items-center g-5">
-      <div class="col-lg-5">
-        <span class="badge bg-gold text-dark px-3 py-2 rounded-pill font-monospace fw-bold text-uppercase mb-3">Cost Calculator</span>
-        <h2 class="fw-extrabold text-navy display-6 mb-3">Interactive Service Fee Estimator</h2>
-        <p class="text-muted mb-4">
-          Estimate your exact service total instantly. Select your service, processing priority, and document delivery preference for complete fee transparency.
-        </p>
-        <div class="p-3 bg-soft-mist rounded-4 border-start border-4 border-teal">
-          <strong class="text-navy d-block mb-1"><i class="bi bi-shield-check me-1 text-teal"></i> Fee Separation Guarantee</strong>
-          <span class="text-muted small">HOMline service charges cover form guidance, document resizing, and submission management. Official government charges are passed through without markup.</span>
+          <a href="{% url 'services_list' %}" class="btn btn-outline-navy btn-sm w-100 mt-2">
+            Browse Directory &rarr;
+          </a>
         </div>
       </div>
 
-      <div class="col-lg-7">
-        <div class="homline-card bg-soft-mist p-4 p-md-5 border-teal">
-          <div class="row g-3 mb-4">
-            <div class="col-12">
-              <label class="form-label fw-bold text-navy">1. Select Digital Service</label>
-              <select id="calcServiceSelect" class="form-select form-select-lg">
-                {% for s in all_services %}
-                  <option value="{{ s.id }}" data-homline-fee="200" data-third-fee="{{ s.third_party_fee }}">{{ s.title }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-bold text-navy">2. Processing Priority</label>
-              <select id="calcPriorityMode" class="form-select">
-                <option value="normal" selected>Standard Queue Handling (Regular)</option>
-                <option value="express">Express Fast-Track Handling (+₹100)</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-bold text-navy">3. Document Delivery</label>
-              <select id="calcDeliveryMode" class="form-select">
-                <option value="digital" selected>Digital Copy (WhatsApp / Email PDF)</option>
-                <option value="home_print">Physical Home Printout (+₹50)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Live Output Card -->
-          <div class="card border-0 bg-navy text-white rounded-4 p-4 shadow-sm">
-            <div class="row text-center text-md-start g-3">
-              <div class="col-md-4">
-                <span class="text-white-50 small d-block font-monospace">HOMline Assistance:</span>
-                <h4 class="fw-bold text-gold mb-0" id="calcOutputHomline">₹200</h4>
-              </div>
-              <div class="col-md-4">
-                <span class="text-white-50 small d-block font-monospace">Govt / Official Fee:</span>
-                <h6 class="fw-bold text-white mb-0 mt-1" id="calcOutputThird">As per portal</h6>
-              </div>
-              <div class="col-md-4 border-start-md border-secondary ps-md-4">
-                <span class="text-white-50 small d-block font-monospace">Estimated Total:</span>
-                <h5 class="fw-extrabold text-teal mb-0" id="calcOutputTotal">₹200 + Govt</h5>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 07 How HOMline Works Section -->
-<section class="py-5 bg-white">
-  <div class="container">
-    <div class="text-center max-width-700 mx-auto mb-5">
-      <span class="badge bg-navy text-white px-3 py-2 rounded-pill font-monospace text-uppercase">Simple 4-Step Process</span>
-      <h2 class="fw-extrabold display-6 text-navy mt-2 mb-3">How HOMline Works</h2>
-      <p class="text-muted">A convenient 4-step journey designed so you never have to leave your home.</p>
-    </div>
-
-    <div class="row g-4">
+      <!-- Gateway 2: How It Works -->
       <div class="col-lg-3 col-md-6">
-        <div class="homline-card text-center">
-          <div class="step-number mb-2">01</div>
-          <div class="brand-icon-box mx-auto mb-3" style="width: 56px; height: 56px; font-size: 1.5rem;">
-            <i class="bi bi-search"></i>
+        <div class="category-highlight-card h-100">
+          <div>
+            <div class="category-icon-wrapper">
+              <i class="bi bi-diagram-3-fill"></i>
+            </div>
+            <h5 class="fw-bold text-navy mb-2">How It Works</h5>
+            <p class="text-muted small mb-3">
+              Understand our simple 3-step doorstep assistance process from consultation to submission & receipt.
+            </p>
           </div>
-          <h5 class="fw-bold text-navy mb-2">Choose Your Service</h5>
-          <p class="text-muted small mb-0">Browse available services on HOMline and select the digital assistance you require.</p>
+          <a href="{% url 'how_it_works' %}" class="btn btn-outline-navy btn-sm w-100 mt-2">
+            View Process &rarr;
+          </a>
         </div>
       </div>
 
+      <!-- Gateway 3: Track Application -->
       <div class="col-lg-3 col-md-6">
-        <div class="homline-card text-center">
-          <div class="step-number mb-2">02</div>
-          <div class="brand-icon-box mx-auto mb-3 bg-teal text-white" style="width: 56px; height: 56px; font-size: 1.5rem;">
-            <i class="bi bi-whatsapp"></i>
+        <div class="category-highlight-card h-100">
+          <div>
+            <div class="category-icon-wrapper">
+              <i class="bi bi-search"></i>
+            </div>
+            <h5 class="fw-bold text-navy mb-2">Track Application</h5>
+            <p class="text-muted small mb-3">
+              Enter your unique Reference ID to check live verification status and print official receipt slips.
+            </p>
           </div>
-          <h5 class="fw-bold text-navy mb-2">Contact HOMline</h5>
-          <p class="text-muted small mb-0">Call us at 6282268453 or send a WhatsApp message with your requirements.</p>
+          <a href="{% url 'track_request' %}" class="btn btn-outline-navy btn-sm w-100 mt-2">
+            Track Status &rarr;
+          </a>
         </div>
       </div>
 
+      <!-- Gateway 4: Membership Plans -->
       <div class="col-lg-3 col-md-6">
-        <div class="homline-card text-center">
-          <div class="step-number mb-2">03</div>
-          <div class="brand-icon-box mx-auto mb-3 bg-navy text-white" style="width: 56px; height: 56px; font-size: 1.5rem;">
-            <i class="bi bi-file-earmark-arrow-up-fill"></i>
+        <div class="category-highlight-card h-100">
+          <div>
+            <div class="category-icon-wrapper">
+              <i class="bi bi-gem"></i>
+            </div>
+            <h5 class="fw-bold text-navy mb-2">Membership Plans</h5>
+            <p class="text-muted small mb-3">
+              Enjoy priority queue handling, discounted assistance fees, and direct representative access.
+            </p>
           </div>
-          <h5 class="fw-bold text-navy mb-2">Submit Details</h5>
-          <p class="text-muted small mb-0">Provide required application information and documents securely via WhatsApp or portal.</p>
-        </div>
-      </div>
-
-      <div class="col-lg-3 col-md-6">
-        <div class="homline-card text-center">
-          <div class="step-number mb-2">04</div>
-          <div class="brand-icon-box mx-auto mb-3 bg-gold text-dark" style="width: 56px; height: 56px; font-size: 1.5rem;">
-            <i class="bi bi-check-circle-fill"></i>
-          </div>
-          <h5 class="fw-bold text-navy mb-2">We Assist You</h5>
-          <p class="text-muted small mb-0">HOMline assists with the applicable process, tracks updates, and keeps you informed.</p>
+          <a href="{% url 'membership' %}" class="btn btn-outline-navy btn-sm w-100 mt-2">
+            View Plans &rarr;
+          </a>
         </div>
       </div>
     </div>
@@ -553,13 +512,13 @@
         <form id="trackFormAjax" class="mb-4">
           <label class="form-label fw-bold text-navy mb-2">Enter Request ID / Reference Number</label>
           <div class="input-group input-group-lg">
-            <input type="text" id="ajaxRequestIdInput" class="form-control font-monospace fw-bold text-uppercase" placeholder="e.g. HOM-2026-DEMO" required>
+            <input type="text" id="ajaxRequestIdInput" class="form-control font-monospace fw-bold text-uppercase" placeholder="Enter Reference ID (e.g. HOM-2026-XXXXXX)" required>
             <button type="submit" class="btn btn-navy px-4">
               <i class="bi bi-search me-1"></i> Track Status
             </button>
           </div>
           <span class="form-text text-muted small mt-2 d-block">
-            Sample Demo Request ID: <code class="text-teal fw-bold">HOM-2026-DEMO</code>
+            <i class="bi bi-info-circle me-1 text-teal"></i> Enter the unique Reference ID provided upon application submission.
           </span>
         </form>
 

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HOMline DIGI seva • Official Receipt Slip</title>
+  
+  <!-- Bootstrap 5.3 CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="images/logo.png">
+</head>
+<body style="background-color: #f8f9fa;">
+
+  <div class="container" id="receiptCardContainer">
+    <!-- Top Action Toolbar (Hidden during print) -->
+    <div class="text-center mt-4 mb-3 no-print">
+      <button onclick="window.print()" class="btn btn-navy btn-lg fw-bold me-2 shadow-sm">
+        <i class="bi bi-printer-fill me-2 text-gold"></i> Print / Save as PDF Receipt
+      </button>
+      <a href="track-request.html" id="receiptTrackerLink" class="btn btn-outline-secondary btn-lg">
+        &larr; Back to Tracker
+      </a>
+    </div>
+
+    <!-- Official Printable Slip -->
+    <div class="receipt-card">
+      <!-- Receipt Header -->
+      <div class="receipt-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <div class="brand-icon-box" style="width: 52px; height: 52px; font-size: 1.6rem;">
+            <i class="bi bi-house-gear-fill"></i>
+          </div>
+          <div>
+            <h3 class="fw-extrabold mb-0 text-navy font-brand">HOMline <span class="text-teal font-monospace">DIGI seva</span></h3>
+            <small class="text-muted fw-bold">An Initiative of AMDG Group • Helpline: 6282268453</small>
+          </div>
+        </div>
+        <div class="text-end">
+          <span class="stamp-badge">VERIFIED ACKNOWLEDGEMENT</span>
+        </div>
+      </div>
+
+      <!-- Reference & Barcode -->
+      <div class="row align-items-center mb-4">
+        <div class="col-sm-6">
+          <span class="text-muted small d-block font-monospace">Official Reference ID:</span>
+          <h2 class="fw-extrabold text-navy font-monospace mb-0" id="receiptRequestId">—</h2>
+        </div>
+        <div class="col-sm-6 text-sm-end mt-2 mt-sm-0">
+          <div class="barcode-box text-navy" id="receiptBarcode">* ACKNOWLEDGEMENT *</div>
+          <small class="text-muted d-block font-monospace mt-1" id="receiptDate">—</small>
+        </div>
+      </div>
+
+      <!-- Customer & Service Information Table -->
+      <div class="table-responsive mb-4">
+        <table class="table table-bordered align-middle">
+          <tbody>
+            <tr>
+              <th class="bg-light text-navy" style="width: 30%;">Customer Full Name</th>
+              <td class="fw-bold text-dark fs-6" id="receiptCustomerName">—</td>
+            </tr>
+            <tr>
+              <th class="bg-light text-navy">Registered Contact Number</th>
+              <td class="font-monospace fw-semibold" id="receiptMobile">—</td>
+            </tr>
+            <tr>
+              <th class="bg-light text-navy">Registered Email</th>
+              <td id="receiptEmail">—</td>
+            </tr>
+            <tr>
+              <th class="bg-light text-navy">Requested Digital Service</th>
+              <td class="fw-bold text-navy" id="receiptServiceTitle">PAN Card (New / Correction / Update)</td>
+            </tr>
+            <tr>
+              <th class="bg-light text-navy">Support Channel</th>
+              <td><span class="badge bg-light text-navy border font-monospace" id="receiptChannel">WhatsApp</span></td>
+            </tr>
+            <tr>
+              <th class="bg-light text-navy">Current Processing Status</th>
+              <td><span class="badge bg-success px-3 py-2 rounded-pill font-monospace" id="receiptStatusBadge">Processing</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Official Processing Remarks -->
+      <div class="p-3 bg-light rounded-3 border-start border-4 border-teal mb-4">
+        <strong class="text-navy d-block mb-1"><i class="bi bi-info-circle-fill text-teal me-1"></i> HOMline Official Processing Note:</strong>
+        <p class="text-muted small mb-0 font-monospace" id="receiptNotes">
+          Document verified successfully. Application submitted to official NSDL/UTI portal under acknowledgement receipt #9821734. Awaiting biometric e-sign confirmation.
+        </p>
+      </div>
+
+      <!-- Legal Disclaimer on Receipt -->
+      <div class="border rounded-3 p-3 bg-white mb-4 text-muted small" style="font-size: 0.8rem; line-height: 1.5;">
+        <strong>Important Service Disclaimer:</strong> HOMline DIGI seva provides digital guidance, document resizing, and application submission assistance. Verification, processing timelines, and final decision authority rest exclusively with the respective government department, university, or external authority.
+      </div>
+
+      <!-- Signatures Footer -->
+      <div class="d-flex justify-content-between align-items-end pt-3 border-top">
+        <div>
+          <small class="text-muted d-block font-monospace">Generated Digitally via homline.com</small>
+          <small class="text-muted font-monospace">Support: homlinedigital@gmail.com | 6282268453</small>
+        </div>
+        <div class="text-end">
+          <div class="fw-bold text-navy font-monospace small">HOMline Verification Desk</div>
+          <small class="text-muted font-monospace">AMDG Group Digital Portal</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

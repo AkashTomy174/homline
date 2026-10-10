@@ -32,11 +32,18 @@ if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 CSRF_TRUSTED_ORIGINS = [
+    'https://*.vercel.app',
+    'https://*.now.sh',
     'https://hom-line.onrender.com',
     'https://*.onrender.com',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
 ]
+VERCEL_URL = os.environ.get('VERCEL_URL')
+if VERCEL_URL:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{VERCEL_URL}')
 if RENDER_EXTERNAL_HOSTNAME:
     CSRF_TRUSTED_ORIGINS.append(f'https://{RENDER_EXTERNAL_HOSTNAME}')
 
@@ -107,6 +114,18 @@ if DATABASE_URL:
         )
     except Exception:
         pass
+elif os.environ.get('VERCEL'):
+    # In Vercel serverless environment, BASE_DIR is read-only. Use /tmp/db.sqlite3 for writable storage
+    import shutil
+    tmp_db = Path('/tmp/db.sqlite3')
+    base_db = BASE_DIR / 'db.sqlite3'
+    if not tmp_db.exists() and base_db.exists():
+        try:
+            shutil.copy2(base_db, tmp_db)
+        except Exception:
+            pass
+    if tmp_db.exists():
+        DATABASES['default']['NAME'] = tmp_db
 
 
 # Password validation
@@ -145,7 +164,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles_build' / 'static'
 
 STORAGES = {
     "default": {

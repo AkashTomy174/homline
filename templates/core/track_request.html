@@ -22,13 +22,13 @@
         <form action="{% url 'track_request' %}" method="GET" class="mb-2">
           <label class="form-label fw-bold text-navy fs-5">Enter Request ID / Reference Number</label>
           <div class="input-group input-group-lg">
-            <input type="text" name="request_id" value="{{ searched_id }}" class="form-control font-monospace fw-bold text-uppercase" placeholder="e.g. HOM-2026-DEMO" required>
+            <input type="text" name="request_id" value="{{ searched_id }}" class="form-control font-monospace fw-bold text-uppercase" placeholder="Enter Reference ID (e.g. HOM-2026-XXXXXX)" required>
             <button type="submit" class="btn btn-navy px-4">
               <i class="bi bi-search me-1"></i> Track Status
             </button>
           </div>
           <span class="form-text text-muted small mt-2 d-block">
-            Sample Demo Reference: <code class="text-teal fw-bold">HOM-2026-DEMO</code>
+            <i class="bi bi-info-circle me-1 text-teal"></i> Enter the unique Reference ID provided upon application submission.
           </span>
         </form>
       </div>

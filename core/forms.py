@@ -17,7 +17,7 @@ class ServiceRequestForm(forms.ModelForm):
             }),
             'mobile': forms.TextInput(attrs={
                 'class': 'form-control form-control-lg',
-                'placeholder': 'e.g. 9876543210',
+                'placeholder': 'Enter your mobile number',
                 'required': True
             }),
             'email': forms.EmailInput(attrs={
