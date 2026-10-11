@@ -13,6 +13,8 @@ services:
       - key: DEBUG
         value: "False"
       - key: ALLOWED_HOSTS
-        value: "*"
+        value: "hom-line.onrender.com"
       - key: CSRF_TRUSTED_ORIGINS
         value: "https://hom-line.onrender.com,https://*.onrender.com"
+      - key: DATABASE_URL
+        sync: false

@@ -14,6 +14,7 @@ urlpatterns = [
     path('contact/', views.contact_view, name='contact'),
     path('track/', views.track_request_view, name='track_request'),
     path('track/<str:request_id>/', views.track_request_view, name='track_request_with_id'),
+    path('staff/requests/<str:request_id>/document/', views.private_request_document_view, name='private_request_document'),
     path('request/', views.request_service_view, name='request_service'),
     path('receipt/<str:request_id>/', views.receipt_view, name='receipt'),
     path('policy/<str:policy_name>/', views.policy_view, name='policy'),

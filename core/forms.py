@@ -1,4 +1,5 @@
 from django import forms
+import re
 from .models import ServiceRequest, MembershipEnquiry, Service, MembershipPlan
 
 class ServiceRequestForm(forms.ModelForm):
@@ -47,6 +48,24 @@ class ServiceRequestForm(forms.ModelForm):
             }),
         }
 
+    def clean_mobile(self):
+        mobile = self.cleaned_data['mobile'].strip()
+        digits = re.sub(r'\D', '', mobile)
+        if not 7 <= len(digits) <= 15:
+            raise forms.ValidationError('Enter a valid phone number with 7 to 15 digits.')
+        return mobile
+
+    def clean_document_upload(self):
+        upload = self.cleaned_data.get('document_upload')
+        if upload:
+            allowed_extensions = {'.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'}
+            extension = '.' + upload.name.rsplit('.', 1)[-1].lower() if '.' in upload.name else ''
+            if extension not in allowed_extensions:
+                raise forms.ValidationError('Upload a PDF, DOC, DOCX, JPG or PNG file.')
+            if upload.size > 10 * 1024 * 1024:
+                raise forms.ValidationError('The uploaded file must be 10 MB or smaller.')
+        return upload
+
 
 class TrackRequestForm(forms.Form):
     request_id = forms.CharField(
@@ -76,3 +95,10 @@ class QuickContactForm(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your Name', 'required': True}))
     mobile = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Mobile Number', 'required': True}))
     message = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'How can HOMline help you today?', 'required': True}))
+
+    def clean_mobile(self):
+        mobile = self.cleaned_data['mobile'].strip()
+        digits = re.sub(r'\D', '', mobile)
+        if not 7 <= len(digits) <= 15:
+            raise forms.ValidationError('Enter a valid phone number with 7 to 15 digits.')
+        return mobile

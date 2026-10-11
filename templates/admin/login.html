@@ -1,0 +1,61 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block bodyclass %}{{ block.super }} login admin-login-page{% endblock %}
+{% block content_title %}<span class="visually-hidden">{% translate "Log in" %}</span>{% endblock %}
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<main class="admin-login-wrap" aria-labelledby="admin-login-title">
+  <section class="admin-login-card">
+    <div class="admin-login-brand" aria-hidden="true"><i class="bi bi-shield-lock-fill"></i></div>
+    <p class="admin-login-eyebrow">HOMline DIGI seva</p>
+    <h1 id="admin-login-title">Operations sign in</h1>
+    <p class="admin-login-intro">Sign in with your staff account to manage service requests and site content.</p>
+
+    {% if form.errors and not form.non_field_errors %}
+      <div class="admin-login-error" role="alert">Please check your username and password and try again.</div>
+    {% endif %}
+    {% if form.non_field_errors %}
+      <div class="admin-login-error" role="alert">{{ form.non_field_errors }}</div>
+    {% endif %}
+    {% if user.is_authenticated %}
+      <div class="admin-login-error" role="status">Your account does not have access to the administration area.</div>
+    {% endif %}
+
+    <form action="{{ app_path }}" method="post" id="login-form">
+      {% csrf_token %}
+      <div class="admin-login-field">
+        <label for="id_username">{% translate "Username" %}</label>
+        {{ form.username }}
+        {{ form.username.errors }}
+      </div>
+      <div class="admin-login-field">
+        <label for="id_password">{% translate "Password" %}</label>
+        <div class="admin-password-field">
+          {{ form.password }}
+          <button type="button" class="admin-password-toggle" aria-label="Show password" aria-pressed="false"><i class="bi bi-eye"></i></button>
+        </div>
+        {{ form.password.errors }}
+      </div>
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="admin-login-submit">Sign in <i class="bi bi-arrow-right"></i></button>
+    </form>
+    <p class="admin-login-help"><i class="bi bi-lock-fill"></i> This area is for authorized HOMline staff.</p>
+  </section>
+</main>
+<script>
+(() => {
+  const toggle = document.querySelector('.admin-password-toggle');
+  const password = document.getElementById('id_password');
+  if (!toggle || !password) return;
+  toggle.addEventListener('click', () => {
+    const reveal = password.type === 'password';
+    password.type = reveal ? 'text' : 'password';
+    toggle.setAttribute('aria-pressed', String(reveal));
+    toggle.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
+    toggle.innerHTML = `<i class="bi bi-eye${reveal ? '-slash' : ''}"></i>`;
+  });
+})();
+</script>
+{% endblock %}

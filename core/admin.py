@@ -3,11 +3,12 @@ import urllib.parse
 from django.contrib import admin
 from django.http import HttpResponse
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from django.urls import reverse
+from django import forms
+from django.db import transaction
 from .models import (
     Category, Service, Update, MembershipPlan, 
-    MembershipEnquiry, ServiceRequest, ServiceRequestLog, FAQ, CustomerReview
+    MembershipEnquiry, ContactEnquiry, ServiceRequest, ServiceRequestLog, FAQ, CustomerReview
 )
 
 
@@ -21,16 +22,15 @@ _orig_admin_index = admin.site.index
 
 def custom_admin_index(request, extra_context=None):
     extra_context = extra_context or {}
-    try:
-        extra_context['total_requests'] = ServiceRequest.objects.count()
-        extra_context['pending_requests'] = ServiceRequest.objects.filter(status='Pending').count()
-        extra_context['processing_requests'] = ServiceRequest.objects.filter(status__in=['Processing', 'Under Review']).count()
-        extra_context['completed_requests'] = ServiceRequest.objects.filter(status='Completed').count()
-        extra_context['total_services'] = Service.objects.count()
-        extra_context['total_enquiries'] = MembershipEnquiry.objects.count()
-        extra_context['recent_requests'] = ServiceRequest.objects.select_related('service').order_by('-created_at')[:8]
-    except Exception:
-        pass
+    extra_context['total_requests'] = ServiceRequest.objects.count()
+    extra_context['pending_requests'] = ServiceRequest.objects.filter(status='Pending').count()
+    extra_context['processing_requests'] = ServiceRequest.objects.filter(status='Processing').count()
+    extra_context['review_requests'] = ServiceRequest.objects.filter(status='Under Review').count()
+    extra_context['completed_requests'] = ServiceRequest.objects.filter(status='Completed').count()
+    extra_context['total_services'] = Service.objects.count()
+    extra_context['total_enquiries'] = MembershipEnquiry.objects.count()
+    extra_context['total_contact_enquiries'] = ContactEnquiry.objects.count()
+    extra_context['recent_requests'] = ServiceRequest.objects.select_related('service').order_by('-created_at')[:8]
     return _orig_admin_index(request, extra_context=extra_context)
 
 admin.site.index = custom_admin_index
@@ -59,7 +59,7 @@ export_requests_csv.short_description = "📊 Export Selected Requests to CSV"
 
 class ServiceRequestLogInline(admin.TabularInline):
     model = ServiceRequestLog
-    extra = 1
+    extra = 0
     fields = ('status', 'title', 'description', 'created_at')
     readonly_fields = ('created_at',)
 
@@ -138,8 +138,8 @@ class MembershipEnquiryAdmin(admin.ModelAdmin):
     search_fields = ('name', 'mobile', 'email')
 
     def contact_info(self, obj):
-        email_str = f'<br><span style="color: #64748b; font-size: 11px;">{obj.email}</span>' if obj.email else ''
-        return format_html('<strong>{}</strong>{}', obj.mobile, mark_safe(email_str))
+        email_line = format_html('<br><span style="color: #64748b; font-size: 11px;">{}</span>', obj.email) if obj.email else ''
+        return format_html('<strong>{}</strong>{}', obj.mobile, email_line)
     contact_info.short_description = "Contact"
 
 
@@ -169,8 +169,36 @@ class MembershipEnquiryAdmin(admin.ModelAdmin):
     quick_whatsapp.short_description = "WhatsApp"
 
 
+class ServiceRequestAdminForm(forms.ModelForm):
+    class Meta:
+        model = ServiceRequest
+        fields = '__all__'
+        widgets = {'document_upload': forms.FileInput(attrs={'accept': '.pdf,.doc,.docx,.jpg,.jpeg,.png'})}
+
+
+@admin.register(ContactEnquiry)
+class ContactEnquiryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'mobile', 'quick_actions', 'created_at')
+    search_fields = ('name', 'mobile', 'message')
+    list_filter = ('created_at',)
+    readonly_fields = ('created_at',)
+    fields = ('name', 'mobile', 'message', 'created_at')
+
+    def quick_actions(self, obj):
+        digits = ''.join(character for character in obj.mobile if character.isdigit())
+        if len(digits) == 10:
+            digits = '91' + digits
+        message = urllib.parse.quote(f'Hi {obj.name}, HOMline is following up on your contact enquiry.')
+        return format_html(
+            '<a href="tel:{}">Call</a> &nbsp; <a href="https://wa.me/{}?text={}" target="_blank" rel="noopener">WhatsApp</a>',
+            obj.mobile, digits, message
+        )
+    quick_actions.short_description = 'Follow up'
+
+
 @admin.register(ServiceRequest)
 class ServiceRequestAdmin(admin.ModelAdmin):
+    form = ServiceRequestAdminForm
     list_display = (
         'request_id_badge', 
         'customer_card', 
@@ -188,6 +216,7 @@ class ServiceRequestAdmin(admin.ModelAdmin):
         export_requests_csv,
         'mark_as_under_review',
         'mark_as_processing',
+        'mark_as_information_required',
         'mark_as_completed',
         'mark_as_cancelled',
     ]
@@ -200,14 +229,33 @@ class ServiceRequestAdmin(admin.ModelAdmin):
             'fields': ('full_name', 'mobile', 'email', 'contact_preference')
         }),
         ('Service Details', {
-            'fields': ('service', 'service_name_manual', 'requirement_details', 'document_upload')
+            'fields': ('service', 'service_name_manual', 'requirement_details', 'document_upload', 'document_download')
         }),
         ('System Timestamps', {
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',)
         }),
     )
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('request_id', 'created_at', 'updated_at', 'document_download')
+
+    def document_download(self, obj):
+        if not obj or not obj.document_upload:
+            return 'No document uploaded'
+        return format_html('<a href="{}">Download uploaded document</a>', reverse('private_request_document', kwargs={'request_id': obj.request_id}))
+    document_download.short_description = 'Private document download'
+
+    def save_model(self, request, obj, form, change):
+        old_status = None
+        if change:
+            old_status = ServiceRequest.objects.filter(pk=obj.pk).values_list('status', flat=True).first()
+        super().save_model(request, obj, form, change)
+        if not change or old_status != obj.status:
+            ServiceRequestLog.objects.create(
+                request=obj,
+                status=obj.status,
+                title='Request registered' if not change else f'Status changed to {obj.status}',
+                description='Request updated by HOMline support.'
+            )
 
     def request_id_badge(self, obj):
         return format_html(
@@ -218,10 +266,10 @@ class ServiceRequestAdmin(admin.ModelAdmin):
     request_id_badge.admin_order_field = "request_id"
 
     def customer_card(self, obj):
-        email_line = f'<div style="font-size: 12px; color: #64748b; margin-top: 2px;">{obj.email}</div>' if obj.email else ''
+        email_line = format_html('<div style="font-size: 12px; color: #64748b; margin-top: 2px;">{}</div>', obj.email) if obj.email else ''
         return format_html(
             '<div><strong style="color: #1e293b; font-size: 14px;">{}</strong><div style="font-size: 12px; color: #475569; margin-top: 2px;">📞 {}</div>{}</div>',
-            obj.full_name, obj.mobile, mark_safe(email_line)
+            obj.full_name, obj.mobile, email_line
         )
     customer_card.short_description = "Customer"
     customer_card.admin_order_field = "full_name"
@@ -229,11 +277,11 @@ class ServiceRequestAdmin(admin.ModelAdmin):
     def service_display(self, obj):
         cat_badge = ''
         if obj.service and obj.service.category:
-            cat_badge = f'<span style="font-size: 11px; background: #e0f2fe; color: #0284c7; padding: 2px 8px; border-radius: 6px; display: inline-block; margin-top: 4px; font-weight: 600;">{obj.service.category.name}</span>'
+            cat_badge = format_html('<span style="font-size: 11px; background: #e0f2fe; color: #0284c7; padding: 2px 8px; border-radius: 6px; display: inline-block; margin-top: 4px; font-weight: 600;">{}</span>', obj.service.category.name)
         return format_html(
             '<div><strong style="color: #1e293b; font-size: 13px;">{}</strong><br>{}</div>',
             obj.get_service_title(),
-            mark_safe(cat_badge)
+            cat_badge
         )
     service_display.short_description = "Service"
 
@@ -281,24 +329,42 @@ class ServiceRequestAdmin(admin.ModelAdmin):
 
     # Status Bulk Actions
     def mark_as_under_review(self, request, queryset):
-        count = queryset.update(status='Under Review')
-        self.message_user(request, f"{count} request(s) marked as Under Review.")
+        self._set_status(request, queryset, 'Under Review')
     mark_as_under_review.short_description = "Status ➔ Mark as Under Review"
 
     def mark_as_processing(self, request, queryset):
-        count = queryset.update(status='Processing')
-        self.message_user(request, f"{count} request(s) marked as Processing.")
+        self._set_status(request, queryset, 'Processing')
     mark_as_processing.short_description = "Status ➔ Mark as Processing"
 
     def mark_as_completed(self, request, queryset):
-        count = queryset.update(status='Completed')
-        self.message_user(request, f"{count} request(s) marked as Completed.")
+        self._set_status(request, queryset, 'Completed')
     mark_as_completed.short_description = "Status ➔ Mark as Completed"
 
     def mark_as_cancelled(self, request, queryset):
-        count = queryset.update(status='Cancelled')
-        self.message_user(request, f"{count} request(s) marked as Cancelled.")
+        self._set_status(request, queryset, 'Cancelled')
     mark_as_cancelled.short_description = "Status ➔ Mark as Cancelled"
+
+
+    def mark_as_information_required(self, request, queryset):
+        self._set_status(request, queryset, 'Information Required')
+    mark_as_information_required.short_description = "Mark as Information Required"
+
+    def _set_status(self, request, queryset, status):
+        updated = 0
+        with transaction.atomic():
+            for obj in queryset.select_for_update().iterator():
+                if obj.status == status:
+                    continue
+                obj.status = status
+                obj.save(update_fields=['status', 'updated_at'])
+                ServiceRequestLog.objects.create(
+                    request=obj,
+                    status=status,
+                    title=f'Status changed to {status}',
+                    description='Status updated by HOMline support.'
+                )
+                updated += 1
+        self.message_user(request, f"{updated} request(s) updated to {status}.")
 
 
 @admin.register(FAQ)

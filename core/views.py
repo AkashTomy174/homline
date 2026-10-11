@@ -1,10 +1,13 @@
+from pathlib import Path
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from django.http import JsonResponse, HttpResponse
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.exceptions import PermissionDenied
+from django.http import JsonResponse, HttpResponse, FileResponse
 from django.db.models import Q
 from .models import (
     Category, Service, Update, MembershipPlan, 
-    ServiceRequest, ServiceRequestLog, FAQ, CustomerReview, MembershipEnquiry
+    ServiceRequest, ServiceRequestLog, FAQ, CustomerReview, MembershipEnquiry, ContactEnquiry
 )
 from .forms import ServiceRequestForm, TrackRequestForm, MembershipEnquiryForm, QuickContactForm
 
@@ -177,7 +180,8 @@ def contact_view(request):
     if request.method == 'POST':
         form = QuickContactForm(request.POST)
         if form.is_valid():
-            messages.success(request, "Thank you! Your message has been sent to HOMline DIGI seva. We will respond via Call / WhatsApp shortly.")
+            ContactEnquiry.objects.create(**form.cleaned_data)
+            messages.success(request, "Thank you. Your message has been received, and the HOMline team can now follow up by Call / WhatsApp.")
             return redirect('contact')
 
     return render(request, 'core/contact.html', {'form': form, 'active_tab': 'contact'})
@@ -199,21 +203,17 @@ def track_request_view(request, request_id=None):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.GET.get('json') == '1':
         if tracked_request:
             logs_data = [{
-                'title': log.title,
                 'status': log.status,
-                'description': log.description,
                 'date': log.created_at.strftime('%d %b %Y, %I:%M %p')
             } for log in timeline_logs]
 
             return JsonResponse({
                 'found': True,
                 'request_id': tracked_request.request_id,
-                'name': tracked_request.full_name,
                 'service': tracked_request.get_service_title(),
                 'status': tracked_request.status,
                 'created_at': tracked_request.created_at.strftime('%d %b %Y, %I:%M %p'),
                 'updated_at': tracked_request.updated_at.strftime('%d %b %Y, %I:%M %p'),
-                'notes': tracked_request.admin_notes or 'Your request has been received and is being processed by HOMline support.',
                 'timeline': logs_data
             })
         return JsonResponse({'found': False, 'error': error_message or 'Invalid Request ID'})
@@ -261,6 +261,21 @@ def request_service_view(request):
 def receipt_view(request, request_id):
     req_obj = get_object_or_404(ServiceRequest, request_id__iexact=request_id)
     return render(request, 'core/receipt.html', {'req_obj': req_obj})
+
+
+@staff_member_required(login_url='admin:login')
+def private_request_document_view(request, request_id):
+    req_obj = get_object_or_404(ServiceRequest, request_id__iexact=request_id)
+    if not request.user.has_perm('core.view_servicerequest'):
+        raise PermissionDenied
+    if not req_obj.document_upload:
+        from django.http import Http404
+        raise Http404('No document was uploaded for this request.')
+    return FileResponse(
+        req_obj.document_upload.open('rb'),
+        as_attachment=True,
+        filename=Path(req_obj.document_upload.name).name,
+    )
 
 
 def policy_view(request, policy_name):

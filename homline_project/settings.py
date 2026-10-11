@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 
 import os
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,31 +22,43 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-xw13(a7*f$e#*uh%su(hla0hi54(+etdcd4)mc1s*fiouy$mh@')
+DEBUG = os.environ.get('DEBUG', 'False' if os.environ.get('VERCEL') else 'True').lower() in ('true', '1', 'yes')
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    if not DEBUG:
+        raise ImproperlyConfigured('SECRET_KEY must be set when DEBUG is False.')
+    SECRET_KEY = 'django-insecure-local-development-only-key'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 'yes')
-
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [host.strip() for host in os.environ.get(
+    'ALLOWED_HOSTS', 'localhost,127.0.0.1,.localhost'
+).split(',') if host.strip()]
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://*.vercel.app',
-    'https://*.now.sh',
-    'https://hom-line.onrender.com',
-    'https://*.onrender.com',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-]
 VERCEL_URL = os.environ.get('VERCEL_URL')
+if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+if VERCEL_URL and VERCEL_URL not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(VERCEL_URL)
+
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.environ.get(
+    'CSRF_TRUSTED_ORIGINS',
+    'http://localhost:8000,http://127.0.0.1:8000,http://localhost:3000,http://127.0.0.1:3000'
+).split(',') if origin.strip()]
 if VERCEL_URL:
     CSRF_TRUSTED_ORIGINS.append(f'https://{VERCEL_URL}')
 if RENDER_EXTERNAL_HOSTNAME:
     CSRF_TRUSTED_ORIGINS.append(f'https://{RENDER_EXTERNAL_HOSTNAME}')
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'same-origin'
+X_FRAME_OPTIONS = 'DENY'
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
 
 
 
@@ -107,25 +120,18 @@ DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL:
     try:
         import dj_database_url
+    except ImportError as exc:
+        raise ImproperlyConfigured('Install dj-database-url to use DATABASE_URL.') from exc
+    try:
         DATABASES['default'] = dj_database_url.config(
             default=DATABASE_URL,
             conn_max_age=600,
             conn_health_checks=True,
         )
-    except Exception:
-        pass
-elif os.environ.get('VERCEL'):
-    # In Vercel serverless environment, BASE_DIR is read-only. Use /tmp/db.sqlite3 for writable storage
-    import shutil
-    tmp_db = Path('/tmp/db.sqlite3')
-    base_db = BASE_DIR / 'db.sqlite3'
-    if not tmp_db.exists() and base_db.exists():
-        try:
-            shutil.copy2(base_db, tmp_db)
-        except Exception:
-            pass
-    if tmp_db.exists():
-        DATABASES['default']['NAME'] = tmp_db
+    except Exception as exc:
+        raise ImproperlyConfigured('DATABASE_URL is not a valid database connection string.') from exc
+elif not DEBUG:
+    raise ImproperlyConfigured('Set DATABASE_URL to a persistent database for production deployments.')
 
 
 # Password validation

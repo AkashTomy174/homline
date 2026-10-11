@@ -26,9 +26,17 @@
       </div>
     </a>
 
+    <a href="{% url 'admin:core_servicerequest_changelist' %}?status__exact=Under%20Review" class="kpi-card kpi-enquiry">
+      <div class="kpi-content">
+        <span class="kpi-title">Under Review</span>
+        <span class="kpi-value">{{ review_requests|default:"0" }}</span>
+      </div>
+      <div class="kpi-icon"><i class="bi bi-search"></i></div>
+    </a>
+
     <a href="{% url 'admin:core_servicerequest_changelist' %}?status__exact=Processing" class="kpi-card kpi-processing">
       <div class="kpi-content">
-        <span class="kpi-title">In Progress</span>
+        <span class="kpi-title">Processing</span>
         <span class="kpi-value">{{ processing_requests|default:"0" }}</span>
       </div>
       <div class="kpi-icon">
@@ -58,12 +66,20 @@
 
     <a href="{% url 'admin:core_service_changelist' %}" class="kpi-card kpi-service">
       <div class="kpi-content">
-        <span class="kpi-title">Active Services</span>
+        <span class="kpi-title">Services in Catalog</span>
         <span class="kpi-value">{{ total_services|default:"0" }}</span>
       </div>
       <div class="kpi-icon">
         <i class="bi bi-grid-fill"></i>
       </div>
+    </a>
+
+    <a href="{% url 'admin:core_contactenquiry_changelist' %}" class="kpi-card kpi-enquiry">
+      <div class="kpi-content">
+        <span class="kpi-title">Contact Messages</span>
+        <span class="kpi-value">{{ total_contact_enquiries|default:"0" }}</span>
+      </div>
+      <div class="kpi-icon"><i class="bi bi-chat-square-text-fill"></i></div>
     </a>
   </div>
 

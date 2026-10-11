@@ -118,28 +118,6 @@
     {% block content %}{% endblock %}
   </main>
 
-  <!-- 14 Final CTA Banner (Visible across subpages) -->
-  <section class="py-5 bg-navy text-white text-center mt-5">
-    <div class="container">
-      <div class="max-width-700 mx-auto">
-        <span class="badge bg-gold text-dark font-monospace px-3 py-2 rounded-pill text-uppercase mb-3">Instant Assistance</span>
-        <h2 class="fw-extrabold display-6 mb-3 text-white">Don't Know Where to Start?</h2>
-        <p class="lead text-white-50 mb-4">Call or WhatsApp HOMline. You don't have to figure out every digital service alone. HOMline helps you navigate it.</p>
-        <div class="d-flex flex-wrap justify-content-center gap-3">
-          <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20help%20starting%20my%20digital%20service%20request." target="_blank" class="btn btn-whatsapp btn-lg px-4">
-            <i class="bi bi-whatsapp me-2"></i> WHATSAPP HOMLINE NOW
-          </a>
-          <a href="tel:6282268453" class="btn btn-teal btn-lg px-4">
-            <i class="bi bi-telephone-fill me-2"></i> CALL 6282268453
-          </a>
-          <button type="button" class="btn btn-outline-light btn-lg px-4" data-bs-toggle="modal" data-bs-target="#requestModal">
-            <i class="bi bi-pencil-square me-2"></i> Request Online
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- 15 Footer Structure -->
   <footer class="main-footer">
     <div class="container">
@@ -198,6 +176,7 @@
             <li><a href="{% url 'policy' policy_name='cancellation' %}">Cancellation Policy</a></li>
             <li><a href="{% url 'policy' policy_name='data-protection' %}">Data Protection & Confidentiality</a></li>
             <li><a href="{% url 'policy' policy_name='disclaimer' %}">Service Disclaimer</a></li>
+            <li><a href="{% url 'admin:login' %}">Staff admin sign in</a></li>
           </ul>
         </div>
       </div>

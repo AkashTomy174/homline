@@ -1,112 +1,173 @@
 {% extends 'base.html' %}
-{% load static %}
 
-{% block title %}Searchable Digital Services Directory • HOMline DIGI seva{% endblock %}
+{% block title %}Explore Digital Services | HOMline DIGI seva{% endblock %}
 
 {% block content %}
-<section class="py-5 bg-navy text-white">
-  <div class="container text-center py-2">
-    <span class="badge bg-gold text-dark px-3 py-2 rounded-pill font-monospace fw-bold text-uppercase mb-3">Service Directory</span>
-    <h1 class="display-5 fw-extrabold text-white mb-3">Explore Supported Digital Services</h1>
-    <p class="lead text-white-50 max-width-700 mx-auto mb-4">
-      Search by category or keyword to find guidance for government identity, education, business registrations, digital signatures & online application processes.
-    </p>
-
-    <!-- Search Bar -->
-    <div class="max-width-700 mx-auto">
-      <form action="{% url 'services_list' %}" method="GET" class="d-flex gap-2">
-        {% if selected_category_slug and selected_category_slug != 'all' %}
-          <input type="hidden" name="category" value="{{ selected_category_slug }}">
-        {% endif %}
-        <div class="input-group input-group-lg shadow-sm">
-          <input type="text" name="q" value="{{ search_query }}" class="form-control" placeholder="Search service (e.g. PAN, Passport, CUET exam, MSME)...">
-          <button type="submit" class="btn btn-teal px-4">
-            <i class="bi bi-search me-1"></i> Search
-          </button>
+<section class="services-hero py-5 text-white">
+  <div class="container py-3">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <span class="badge bg-gold text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-3">Service Directory</span>
+        <h1 class="display-5 fw-extrabold text-white mb-3">Find the help you need.</h1>
+        <p class="lead text-white-50 mb-0">Search services, compare key details and request assistance when you’re ready.</p>
+      </div>
+      <div class="col-lg-5">
+        <form action="{% url 'services_list' %}" method="get" class="services-search" role="search">
+          {% if selected_category_slug and selected_category_slug != 'all' %}
+            <input type="hidden" name="category" value="{{ selected_category_slug }}">
+          {% endif %}
+          <label class="visually-hidden" for="serviceSearch">Search services</label>
+          <i class="bi bi-search" aria-hidden="true"></i>
+          <input id="serviceSearch" type="search" name="q" value="{{ search_query }}" placeholder="Try PAN, passport or exam…" autocomplete="off">
+          {% if search_query %}<a class="services-search-clear" href="{% url 'services_list' %}{% if selected_category_slug != 'all' %}?category={{ selected_category_slug }}{% endif %}" aria-label="Clear search"><i class="bi bi-x-circle-fill"></i></a>{% endif %}
+          <button class="btn btn-teal" type="submit">Search</button>
+          <span class="services-shortcut" aria-hidden="true">/</span>
+        </form>
+        <div class="services-suggestions" aria-label="Popular searches">
+          <span>Popular:</span>
+          <button type="button" class="service-search-chip" data-query="PAN">PAN</button>
+          <button type="button" class="service-search-chip" data-query="Passport">Passport</button>
+          <button type="button" class="service-search-chip" data-query="Exam">Exams</button>
+          <button type="button" class="service-search-chip" data-query="MSME">MSME</button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="py-5 bg-soft-mist">
+<section class="services-directory py-5">
   <div class="container">
-    <!-- Category Filter Pills -->
-    <div class="d-flex flex-wrap justify-content-center gap-2 mb-5">
-      <a href="{% url 'services_list' %}" class="btn {% if selected_category_slug == 'all' %}btn-navy{% else %}btn-outline-navy bg-white{% endif %} rounded-pill px-4">
-        All Categories
-      </a>
-      {% for cat in categories %}
-        <a href="{% url 'services_list' %}?category={{ cat.slug }}" class="btn {% if selected_category_slug == cat.slug %}btn-navy{% else %}btn-outline-navy bg-white{% endif %} rounded-pill px-4">
-          <i class="bi {{ cat.icon_class }} me-1"></i> {{ cat.name }}
+    <div class="services-toolbar">
+      <div class="services-categories" aria-label="Filter services by category">
+        <a href="{% url 'services_list' %}{% if search_query %}?q={{ search_query|urlencode }}{% endif %}" class="service-category-filter {% if selected_category_slug == 'all' %}active{% endif %}">
+          <i class="bi bi-grid-3x3-gap-fill"></i> All services
         </a>
+        {% for cat in categories %}
+        <a href="{% url 'services_list' %}?category={{ cat.slug }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}" class="service-category-filter {% if selected_category_slug == cat.slug %}active{% endif %}">
+          <i class="bi {{ cat.icon_class }}"></i> {{ cat.name }}
+        </a>
+        {% endfor %}
+      </div>
+      <div class="services-controls">
+        <span class="services-result-count" id="servicesResultCount" aria-live="polite">{{ services|length }} services</span>
+        <label for="serviceSort" class="visually-hidden">Sort services</label>
+        <select id="serviceSort" class="form-select form-select-sm">
+          <option value="default">Sort: Recommended</option>
+          <option value="name">Name: A to Z</option>
+          <option value="name-desc">Name: Z to A</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="services-disclaimer">
+      <i class="bi bi-info-circle-fill" aria-hidden="true"></i>
+      <p><strong>Good to know:</strong> HOMline provides application guidance and submission support. Eligibility, processing times and final decisions are set by the relevant authority.</p>
+    </div>
+
+    <div class="row g-4" id="servicesGrid">
+      {% for service in services %}
+      <div class="col-lg-4 col-md-6 service-result" data-title="{{ service.title|lower }}" data-search="{{ service.title|lower }} {{ service.short_summary|lower }} {{ service.category.name|lower }}">
+        <article class="service-directory-card h-100">
+          <div class="service-card-top">
+            <div class="service-directory-icon"><i class="bi {{ service.icon_class }}"></i></div>
+            {% if service.badge %}<span class="badge bg-gold text-dark rounded-pill">{{ service.badge }}</span>{% endif %}
+          </div>
+          <span class="service-category-label">{{ service.category.name }}</span>
+          <h2 class="h5 fw-bold text-navy mt-2 mb-2">{{ service.title }}</h2>
+          <p class="text-muted small service-summary">{{ service.short_summary }}</p>
+
+          <div class="service-card-meta">
+            <div><span>HOMline assistance</span><strong>{{ service.homline_charge }}</strong></div>
+            <div><span>Official / portal fee</span><strong>{{ service.third_party_fee }}</strong></div>
+            <div><span>Estimated processing</span><strong><i class="bi bi-clock me-1"></i>{{ service.processing_time }}</strong></div>
+          </div>
+
+          {% if service.required_documents %}
+          <details class="service-documents">
+            <summary><i class="bi bi-clipboard-check me-1"></i> What to prepare <i class="bi bi-chevron-down details-chevron"></i></summary>
+            <div class="service-documents-content">{{ service.required_documents|linebreaksbr }}</div>
+          </details>
+          {% endif %}
+
+          <div class="service-card-actions">
+            <a href="{% url 'service_detail' slug=service.slug %}" class="btn btn-outline-navy">Details</a>
+            <button type="button" class="btn btn-teal" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-id="{{ service.id }}" data-service-title="{{ service.title }}">
+              <i class="bi bi-send me-1"></i> Request help
+            </button>
+          </div>
+        </article>
+      </div>
       {% endfor %}
     </div>
 
-    <!-- Required Service Disclaimer -->
-    <div class="disclaimer-box mb-5">
-      <div class="d-flex align-items-start gap-3">
-        <i class="bi bi-info-circle-fill fs-4 text-warning flex-shrink-0"></i>
-        <div>
-          <strong class="d-block text-dark">Required Service Disclaimer:</strong>
-          HOMline provides assistance for supported online services. Availability, processing time, eligibility, approval and final decisions are determined by the respective authority, institution or third-party service provider.
-        </div>
-      </div>
+    <div class="services-empty-state mt-4" id="liveSearchEmpty" {% if services %}hidden{% endif %}>
+      <i class="bi bi-search-heart"></i>
+      <h2 class="h4 fw-bold text-navy">No matches in this view</h2>
+      <p class="text-muted">Try a different keyword or clear your search.</p>
+      <button type="button" class="btn btn-teal" id="clearServiceSearch">Clear search</button>
     </div>
-
-    <!-- Services Grid -->
-    {% if services %}
-      <div class="row g-4">
-        {% for service in services %}
-        <div class="col-lg-4 col-md-6">
-          <div class="homline-card d-flex flex-column justify-content-between bg-white">
-            <div>
-              <div class="d-flex justify-content-between align-items-start mb-3">
-                <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
-                  <i class="bi {{ service.icon_class }}"></i>
-                </div>
-                {% if service.badge %}
-                  <span class="badge bg-gold text-dark fw-bold px-3 py-1 rounded-pill">{{ service.badge }}</span>
-                {% endif %}
-              </div>
-              <span class="badge bg-light text-navy border border-teal small mb-2">{{ service.category.name }}</span>
-              <h5 class="fw-bold text-navy mb-2">{{ service.title }}</h5>
-              <p class="text-muted small mb-3">{{ service.short_summary }}</p>
-
-              <div class="fee-badge-box">
-                <div class="d-flex justify-content-between align-items-center">
-                  <span class="small text-muted">HOMline Charge:</span>
-                  <span class="fee-badge-homline">{{ service.homline_charge }}</span>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mt-1">
-                  <span class="small text-muted">3rd Party/Gov Fee:</span>
-                  <span class="fee-badge-thirdparty">{{ service.third_party_fee }}</span>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mt-1">
-                  <span class="small text-muted">Est. Processing:</span>
-                  <span class="font-monospace text-teal small fw-bold">{{ service.processing_time }}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="d-flex gap-2 mt-3">
-              <a href="{% url 'service_detail' slug=service.slug %}" class="btn btn-outline-navy btn-sm flex-grow-1">View Details</a>
-              <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-id="{{ service.id }}">
-                Request Service
-              </button>
-            </div>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-    {% else %}
-      <div class="text-center py-5">
-        <i class="bi bi-search-heart text-muted display-1"></i>
-        <h4 class="text-navy fw-bold mt-3">No Services Found</h4>
-        <p class="text-muted">Try searching with a different term or clear filters to view all services.</p>
-        <a href="{% url 'services_list' %}" class="btn btn-teal mt-2">Reset Filter & Search</a>
-      </div>
-    {% endif %}
   </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(() => {
+  const input = document.getElementById('serviceSearch');
+  const grid = document.getElementById('servicesGrid');
+  if (!input || !grid) return;
+
+  const cards = Array.from(grid.querySelectorAll('.service-result'));
+  const count = document.getElementById('servicesResultCount');
+  const empty = document.getElementById('liveSearchEmpty');
+  const sort = document.getElementById('serviceSort');
+
+  const filterCards = () => {
+    const query = input.value.trim().toLocaleLowerCase();
+    let visible = 0;
+    cards.forEach(card => {
+      const matches = !query || card.dataset.search.includes(query);
+      card.hidden = !matches;
+      if (matches) visible += 1;
+    });
+    count.textContent = `${visible} ${visible === 1 ? 'service' : 'services'}`;
+    empty.hidden = visible !== 0;
+  };
+
+  input.addEventListener('input', filterCards);
+  document.querySelectorAll('.service-search-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      input.value = chip.dataset.query;
+      filterCards();
+      input.focus();
+    });
+  });
+  document.getElementById('clearServiceSearch').addEventListener('click', () => {
+    input.value = '';
+    filterCards();
+    input.focus();
+  });
+  sort.addEventListener('change', () => {
+    const direction = sort.value;
+    const sorted = [...cards].sort((a, b) => {
+      const comparison = a.dataset.title.localeCompare(b.dataset.title);
+      return direction === 'name-desc' ? -comparison : direction === 'name' ? comparison : cards.indexOf(a) - cards.indexOf(b);
+    });
+    sorted.forEach(card => grid.appendChild(card));
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
+      event.preventDefault();
+      input.focus();
+    }
+    if (event.key === 'Escape' && document.activeElement === input) {
+      input.value = '';
+      filterCards();
+      input.blur();
+    }
+  });
+  filterCards();
+})();
+</script>
 {% endblock %}

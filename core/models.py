@@ -1,9 +1,10 @@
 import uuid
+from django.utils import timezone
 from django.db import models
 from django.utils.text import slugify
 
 def generate_request_id():
-    return f"HOM-2026-{uuid.uuid4().hex[:6].upper()}"
+    return f"HOM-{timezone.localdate().year}-{uuid.uuid4().hex[:16].upper()}"
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -116,6 +117,21 @@ class MembershipEnquiry(models.Model):
         return f"Enquiry from {self.name} - {self.mobile}"
 
 
+class ContactEnquiry(models.Model):
+    name = models.CharField(max_length=120)
+    mobile = models.CharField(max_length=20)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Contact enquiry'
+        verbose_name_plural = 'Contact enquiries'
+
+    def __str__(self):
+        return f"Contact enquiry from {self.name} ({self.created_at:%Y-%m-%d})"
+
+
 class ServiceRequest(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
@@ -132,7 +148,7 @@ class ServiceRequest(models.Model):
         ('Email', 'Email'),
     ]
 
-    request_id = models.CharField(max_length=20, unique=True, default=generate_request_id)
+    request_id = models.CharField(max_length=30, unique=True, default=generate_request_id)
     full_name = models.CharField(max_length=120)
     mobile = models.CharField(max_length=20)
     email = models.EmailField(blank=True, null=True)

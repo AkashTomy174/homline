@@ -16,9 +16,9 @@ echo "[BUILD] Collecting static files..."
 python3 manage.py collectstatic --noinput --clear
 
 echo "[BUILD] Applying database migrations..."
-python3 manage.py migrate --noinput || true
+python3 manage.py migrate --noinput
 
 echo "[BUILD] Seeding initial data..."
-python3 manage.py seed_data || true
+python3 manage.py seed_data
 
 echo "[BUILD] Completed successfully!"

@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from core.models import (
     Category, Service, Update, MembershipPlan, 
-    FAQ, CustomerReview, ServiceRequest
+    FAQ, CustomerReview
 )
 
 class Command(BaseCommand):
@@ -329,7 +329,7 @@ class Command(BaseCommand):
                 'rating': 5,
                 'service_used': 'Passport Application Assistance',
                 'review_text': 'HOMline made my passport renewal so simple! They verified my documents over WhatsApp and booked the PSK slot in just one day. Exceptional guidance.',
-                'is_verified': True
+                'is_verified': False
             },
             {
                 'customer_name': 'Dr. Mariamma Joseph',
@@ -337,7 +337,7 @@ class Command(BaseCommand):
                 'rating': 5,
                 'service_used': 'PAN Card Correction',
                 'review_text': 'I was struggling with photo and DOB corrections on the NSDL portal. HOMline corrected the application and kept me informed at every step.',
-                'is_verified': True
+                'is_verified': False
             },
             {
                 'customer_name': 'Rahul Nair',
@@ -345,7 +345,7 @@ class Command(BaseCommand):
                 'rating': 5,
                 'service_used': 'CUET Exam Registration',
                 'review_text': 'Very trustworthy and quick. They resized my documents to exact portal dimensions and submitted my exam form without any hassle. Highly recommended!',
-                'is_verified': True
+                'is_verified': False
             },
             {
                 'customer_name': 'Saji Varghese',
@@ -353,29 +353,15 @@ class Command(BaseCommand):
                 'rating': 5,
                 'service_used': 'Udyam MSME License',
                 'review_text': 'Got my shop registered under MSME within 48 hours. Transparent charges and polite customer support via WhatsApp.',
-                'is_verified': True
+                'is_verified': False
             },
         ]
 
         for r_data in reviews_data:
-            CustomerReview.objects.get_or_create(customer_name=r_data['customer_name'], defaults=r_data)
+            review, _ = CustomerReview.objects.get_or_create(customer_name=r_data['customer_name'], defaults=r_data)
+            if review.is_verified:
+                review.is_verified = False
+                review.save(update_fields=['is_verified'])
 
-        self.stdout.write(self.style.SUCCESS('Created 4 Customer Reviews.'))
-
-        # 7. Sample Service Request for instant testing
-        sample_req, created = ServiceRequest.objects.get_or_create(
-            request_id='HOM-2026-DEMO',
-            defaults={
-                'full_name': 'Sample Customer',
-                'mobile': '6282268453',
-                'email': 'customer@example.com',
-                'service_name_manual': 'PAN Card Application',
-                'requirement_details': 'New PAN card application with Aadhaar verification.',
-                'contact_preference': 'WhatsApp',
-                'status': 'Processing',
-                'admin_notes': 'Document verified. Application submitted to official portal under acknowledgement receipt #9821734.'
-            }
-        )
-
-        self.stdout.write(self.style.SUCCESS(f'Created sample tracking request with ID: HOM-2026-DEMO'))
+        self.stdout.write(self.style.SUCCESS('Seeded unverified review examples for internal preview.'))
         self.stdout.write(self.style.SUCCESS('Database seeding completed successfully!'))

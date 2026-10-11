@@ -9,7 +9,7 @@
     <span class="badge bg-gold text-dark px-3 py-2 rounded-pill font-monospace fw-bold text-uppercase mb-3">Service Tracker</span>
     <h1 class="display-5 fw-extrabold text-white mb-3">Track Your Request Status</h1>
     <p class="lead text-white-50 max-width-700 mx-auto mb-0">
-      Check real-time application status, review admin status notes, and download your official receipt.
+      Check the latest request status and download your receipt using your private reference number.
     </p>
   </div>
 </section>
@@ -90,32 +90,13 @@
 
           <div class="row g-3 mb-4">
             <div class="col-md-6">
-              <span class="text-muted small d-block">Customer Name:</span>
-              <strong class="text-navy fs-6">{{ tracked_request.full_name }}</strong>
-            </div>
-            <div class="col-md-6">
-              <span class="text-muted small d-block">Contact Mobile:</span>
-              <strong class="text-navy font-monospace fs-6">{{ tracked_request.mobile }}</strong>
-            </div>
-            <div class="col-md-6">
               <span class="text-muted small d-block">Requested Service:</span>
               <strong class="text-navy fs-6">{{ tracked_request.get_service_title }}</strong>
             </div>
             <div class="col-md-6">
-              <span class="text-muted small d-block">Contact Preference:</span>
-              <span class="badge bg-light text-teal border font-monospace">{{ tracked_request.contact_preference }}</span>
+              <span class="text-muted small d-block">Last Updated:</span>
+              <strong class="text-navy fs-6">{{ tracked_request.updated_at|date:"d M Y, h:i A" }}</strong>
             </div>
-          </div>
-
-          <div class="p-3 bg-soft-mist rounded-3 border-start border-4 border-teal mb-4">
-            <span class="text-muted small d-block fw-bold mb-1"><i class="bi bi-chat-left-text me-1 text-teal"></i> Admin Status Note:</span>
-            <p class="mb-0 text-dark font-monospace" style="font-size: 0.95rem;">
-              {% if tracked_request.admin_notes %}
-                {{ tracked_request.admin_notes }}
-              {% else %}
-                Your request has been registered and assigned to HOMline support officer for process handling.
-              {% endif %}
-            </p>
           </div>
 
           <!-- Real-Time Activity Log Timeline -->
@@ -127,12 +108,8 @@
                 <div class="mb-3 position-relative">
                   <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-teal text-white font-monospace" style="font-size: 0.72rem;">{{ log.status }}</span>
-                    <strong class="text-navy small">{{ log.title }}</strong>
                     <span class="text-muted font-monospace ms-auto" style="font-size: 0.75rem;">{{ log.created_at|date:"d M Y, h:i A" }}</span>
                   </div>
-                  {% if log.description %}
-                    <p class="text-muted small mb-0 mt-1">{{ log.description }}</p>
-                  {% endif %}
                 </div>
               {% endfor %}
             </div>

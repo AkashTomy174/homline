@@ -24,30 +24,37 @@
             <div class="col-md-6">
               <label class="form-label fw-bold text-navy">Full Name <span class="text-danger">*</span></label>
               {{ form.full_name }}
+              {{ form.full_name.errors }}
             </div>
             <div class="col-md-6">
               <label class="form-label fw-bold text-navy">Mobile Number <span class="text-danger">*</span></label>
               {{ form.mobile }}
+              {{ form.mobile.errors }}
             </div>
             <div class="col-md-6">
               <label class="form-label fw-bold text-navy">Email Address (Optional)</label>
               {{ form.email }}
+              {{ form.email.errors }}
             </div>
             <div class="col-md-6">
               <label class="form-label fw-bold text-navy">Selected Service</label>
               {{ form.service }}
+              {{ form.service.errors }}
             </div>
             <div class="col-12">
               <label class="form-label fw-bold text-navy">Requirement Details <span class="text-danger">*</span></label>
               {{ form.requirement_details }}
+              {{ form.requirement_details.errors }}
             </div>
             <div class="col-md-6">
               <label class="form-label fw-bold text-navy">Preferred Contact Channel</label>
               {{ form.contact_preference }}
+              {{ form.contact_preference.errors }}
             </div>
             <div class="col-md-6">
               <label class="form-label fw-bold text-navy">Upload Document (Optional)</label>
               {{ form.document_upload }}
+              {{ form.document_upload.errors }}
             </div>
           </div>
 
