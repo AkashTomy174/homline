@@ -181,7 +181,24 @@ class HOMlineProjectTests(TestCase):
         self.client.force_login(staff)
         response = self.client.get(reverse('admin:index'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Contact Messages')
+        self.assertContains(response, 'Contact messages')
+        self.assertContains(response, 'Service dashboard')
+        self.assertContains(response, 'HOM-2026-TEST')
+
+    def test_admin_dashboard_searches_recent_requests(self):
+        staff = get_user_model().objects.create_superuser(username='search-operator', email='search@example.com', password='Safe-test-password-274!')
+        self.client.force_login(staff)
+        response = self.client.get(reverse('admin:index'), {'request_search': 'HOM-2026-TEST'})
+        self.assertContains(response, 'HOM-2026-TEST')
+        response = self.client.get(reverse('admin:index'), {'request_search': 'no-match'})
+        self.assertContains(response, 'No requests match')
+
+    def test_category_admin_shows_service_count(self):
+        staff = get_user_model().objects.create_superuser(username='category-operator', email='category@example.com', password='Safe-test-password-274!')
+        self.client.force_login(staff)
+        response = self.client.get(reverse('admin:core_category_changelist'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '1 service')
 
     def test_admin_bulk_status_action_adds_public_timeline_event(self):
         staff = get_user_model().objects.create_superuser(username='status-operator', email='status@example.com', password='Safe-test-password-274!')

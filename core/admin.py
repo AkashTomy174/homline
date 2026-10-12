@@ -6,6 +6,7 @@ from django.utils.html import format_html
 from django.urls import reverse
 from django import forms
 from django.db import transaction
+from django.db.models import Count, Q
 from .models import (
     Category, Service, Update, MembershipPlan, 
     MembershipEnquiry, ContactEnquiry, ServiceRequest, ServiceRequestLog, FAQ, CustomerReview
@@ -28,9 +29,21 @@ def custom_admin_index(request, extra_context=None):
     extra_context['review_requests'] = ServiceRequest.objects.filter(status='Under Review').count()
     extra_context['completed_requests'] = ServiceRequest.objects.filter(status='Completed').count()
     extra_context['total_services'] = Service.objects.count()
+    extra_context['total_categories'] = Category.objects.count()
     extra_context['total_enquiries'] = MembershipEnquiry.objects.count()
     extra_context['total_contact_enquiries'] = ContactEnquiry.objects.count()
-    extra_context['recent_requests'] = ServiceRequest.objects.select_related('service').order_by('-created_at')[:8]
+    recent_query = request.GET.get('request_search', '').strip()
+    recent_requests = ServiceRequest.objects.select_related('service').order_by('-created_at')
+    if recent_query:
+        recent_requests = recent_requests.filter(
+            Q(request_id__icontains=recent_query) |
+            Q(full_name__icontains=recent_query) |
+            Q(mobile__icontains=recent_query) |
+            Q(service__title__icontains=recent_query) |
+            Q(service_name_manual__icontains=recent_query)
+        )
+    extra_context['recent_query'] = recent_query
+    extra_context['recent_requests'] = recent_requests[:8]
     return _orig_admin_index(request, extra_context=extra_context)
 
 admin.site.index = custom_admin_index
@@ -66,14 +79,35 @@ class ServiceRequestLogInline(admin.TabularInline):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'order', 'icon_preview')
+    list_display = ('category_name', 'service_count_badge', 'order')
+    list_display_links = ('category_name',)
     prepopulated_fields = {'slug': ('name',)}
-    search_fields = ('name',)
+    search_fields = ('name', 'description', 'slug')
     list_editable = ('order',)
+    list_per_page = 25
+    ordering = ('order', 'name')
+    fieldsets = (
+        ('Category details', {'fields': ('name', 'slug', 'description')}),
+        ('Appearance and order', {
+            'fields': ('icon_class', 'order'),
+            'description': 'Use a Bootstrap icon class, for example bi-shield-check or bi-mortarboard-fill.'
+        }),
+    )
 
-    def icon_preview(self, obj):
-        return format_html('<i class="bi {}" style="font-size: 16px; color: #0d9488; margin-right: 6px;"></i> <code>{}</code>', obj.icon_class, obj.icon_class)
-    icon_preview.short_description = "Icon"
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(_service_count=Count('services'))
+
+    @admin.display(description='Category', ordering='name')
+    def category_name(self, obj):
+        return format_html(
+            '<span class="admin-category-icon"><i class="bi {}" aria-hidden="true"></i></span><span class="admin-category-name">{}</span><span class="admin-category-slug">{}</span>',
+            obj.icon_class, obj.name, obj.slug
+        )
+
+    @admin.display(description='Services', ordering='_service_count')
+    def service_count_badge(self, obj):
+        return format_html('<span class="admin-count-badge">{} service{}</span>', obj._service_count, '' if obj._service_count == 1 else 's')
+
 
 
 @admin.register(Service)

@@ -2,197 +2,87 @@
 {% load i18n static %}
 
 {% block content %}
-<div id="content-main">
-
-  <!-- Interactive KPI Stats Dashboard -->
-  <div class="kpi-grid">
-    <a href="{% url 'admin:core_servicerequest_changelist' %}" class="kpi-card kpi-total">
-      <div class="kpi-content">
-        <span class="kpi-title">Total Requests</span>
-        <span class="kpi-value">{{ total_requests|default:"0" }}</span>
-      </div>
-      <div class="kpi-icon">
-        <i class="bi bi-inbox-fill"></i>
-      </div>
-    </a>
-
-    <a href="{% url 'admin:core_servicerequest_changelist' %}?status__exact=Pending" class="kpi-card kpi-pending">
-      <div class="kpi-content">
-        <span class="kpi-title"><span class="pulse-badge"></span>Pending Action</span>
-        <span class="kpi-value">{{ pending_requests|default:"0" }}</span>
-      </div>
-      <div class="kpi-icon">
-        <i class="bi bi-hourglass-split"></i>
-      </div>
-    </a>
-
-    <a href="{% url 'admin:core_servicerequest_changelist' %}?status__exact=Under%20Review" class="kpi-card kpi-enquiry">
-      <div class="kpi-content">
-        <span class="kpi-title">Under Review</span>
-        <span class="kpi-value">{{ review_requests|default:"0" }}</span>
-      </div>
-      <div class="kpi-icon"><i class="bi bi-search"></i></div>
-    </a>
-
-    <a href="{% url 'admin:core_servicerequest_changelist' %}?status__exact=Processing" class="kpi-card kpi-processing">
-      <div class="kpi-content">
-        <span class="kpi-title">Processing</span>
-        <span class="kpi-value">{{ processing_requests|default:"0" }}</span>
-      </div>
-      <div class="kpi-icon">
-        <i class="bi bi-gear-wide-connected"></i>
-      </div>
-    </a>
-
-    <a href="{% url 'admin:core_servicerequest_changelist' %}?status__exact=Completed" class="kpi-card kpi-completed">
-      <div class="kpi-content">
-        <span class="kpi-title">Completed</span>
-        <span class="kpi-value">{{ completed_requests|default:"0" }}</span>
-      </div>
-      <div class="kpi-icon">
-        <i class="bi bi-check-circle-fill"></i>
-      </div>
-    </a>
-
-    <a href="{% url 'admin:core_membershipenquiry_changelist' %}" class="kpi-card kpi-enquiry">
-      <div class="kpi-content">
-        <span class="kpi-title">Plan Enquiries</span>
-        <span class="kpi-value">{{ total_enquiries|default:"0" }}</span>
-      </div>
-      <div class="kpi-icon">
-        <i class="bi bi-person-lines-fill"></i>
-      </div>
-    </a>
-
-    <a href="{% url 'admin:core_service_changelist' %}" class="kpi-card kpi-service">
-      <div class="kpi-content">
-        <span class="kpi-title">Services in Catalog</span>
-        <span class="kpi-value">{{ total_services|default:"0" }}</span>
-      </div>
-      <div class="kpi-icon">
-        <i class="bi bi-grid-fill"></i>
-      </div>
-    </a>
-
-    <a href="{% url 'admin:core_contactenquiry_changelist' %}" class="kpi-card kpi-enquiry">
-      <div class="kpi-content">
-        <span class="kpi-title">Contact Messages</span>
-        <span class="kpi-value">{{ total_contact_enquiries|default:"0" }}</span>
-      </div>
-      <div class="kpi-icon"><i class="bi bi-chat-square-text-fill"></i></div>
-    </a>
+<div id="content-main" class="homline-admin-dashboard">
+  <div class="dashboard-welcome">
+    <div><span class="dashboard-eyebrow">HOMLINE OPERATIONS</span><h2>Service dashboard</h2><p>Review incoming work, manage your service catalog and follow up with customers.</p></div>
+    <a class="dashboard-primary-action" href="{% url 'admin:core_servicerequest_add' %}"><i class="bi bi-plus-lg" aria-hidden="true"></i> New request</a>
   </div>
 
-  <!-- Quick Action Shortcuts Bar -->
-  <div class="quick-actions-bar">
+  <section class="kpi-grid" aria-label="Service overview">
+    <a href="{% url 'admin:core_servicerequest_changelist' %}" class="kpi-card kpi-total"><div class="kpi-content"><span class="kpi-title">All requests</span><span class="kpi-value">{{ total_requests|default:"0" }}</span><span class="kpi-hint">Open the request inbox</span></div><span class="kpi-icon"><i class="bi bi-inbox-fill" aria-hidden="true"></i></span></a>
+    <a href="{% url 'admin:core_servicerequest_changelist' %}?status__exact=Pending" class="kpi-card kpi-pending"><div class="kpi-content"><span class="kpi-title">Pending action</span><span class="kpi-value">{{ pending_requests|default:"0" }}</span><span class="kpi-hint">Requests awaiting review</span></div><span class="kpi-icon"><i class="bi bi-hourglass-split" aria-hidden="true"></i></span></a>
+    <a href="{% url 'admin:core_servicerequest_changelist' %}?status__exact=Under%20Review" class="kpi-card kpi-enquiry"><div class="kpi-content"><span class="kpi-title">Under review</span><span class="kpi-value">{{ review_requests|default:"0" }}</span><span class="kpi-hint">Being checked by staff</span></div><span class="kpi-icon"><i class="bi bi-search" aria-hidden="true"></i></span></a>
+    <a href="{% url 'admin:core_servicerequest_changelist' %}?status__exact=Processing" class="kpi-card kpi-processing"><div class="kpi-content"><span class="kpi-title">Processing</span><span class="kpi-value">{{ processing_requests|default:"0" }}</span><span class="kpi-hint">Currently in progress</span></div><span class="kpi-icon"><i class="bi bi-arrow-repeat" aria-hidden="true"></i></span></a>
+    <a href="{% url 'admin:core_servicerequest_changelist' %}?status__exact=Completed" class="kpi-card kpi-completed"><div class="kpi-content"><span class="kpi-title">Completed</span><span class="kpi-value">{{ completed_requests|default:"0" }}</span><span class="kpi-hint">Finished service requests</span></div><span class="kpi-icon"><i class="bi bi-check-circle-fill" aria-hidden="true"></i></span></a>
+    <a href="{% url 'admin:core_membershipenquiry_changelist' %}" class="kpi-card kpi-enquiry"><div class="kpi-content"><span class="kpi-title">Plan enquiries</span><span class="kpi-value">{{ total_enquiries|default:"0" }}</span><span class="kpi-hint">Membership follow-ups</span></div><span class="kpi-icon"><i class="bi bi-person-lines-fill" aria-hidden="true"></i></span></a>
+    <a href="{% url 'admin:core_contactenquiry_changelist' %}" class="kpi-card kpi-enquiry"><div class="kpi-content"><span class="kpi-title">Contact messages</span><span class="kpi-value">{{ total_contact_enquiries|default:"0" }}</span><span class="kpi-hint">Customer messages</span></div><span class="kpi-icon"><i class="bi bi-chat-square-text-fill" aria-hidden="true"></i></span></a>
+    <a href="{% url 'admin:core_category_changelist' %}" class="kpi-card kpi-service"><div class="kpi-content"><span class="kpi-title">Categories</span><span class="kpi-value">{{ total_categories|default:"0" }}</span><span class="kpi-hint">Organize service types</span></div><span class="kpi-icon"><i class="bi bi-collection-fill" aria-hidden="true"></i></span></a>
+  </section>
+
+  <section class="quick-actions-bar" aria-label="Quick actions">
+    <div class="quick-actions-heading"><span class="quick-actions-spark"><i class="bi bi-lightning-charge-fill" aria-hidden="true"></i></span><div><strong>Quick actions</strong><small>Common tasks, one click away</small></div></div>
     <div class="quick-actions-left">
-      <span class="quick-actions-title"><i class="bi bi-lightning-charge-fill" style="color: #f59e0b;"></i> Quick Actions:</span>
-      <a href="{% url 'admin:core_servicerequest_add' %}" class="action-pill primary">
-        <i class="bi bi-plus-circle"></i> Log Customer Request
-      </a>
-      <a href="{% url 'admin:core_service_add' %}" class="action-pill">
-        <i class="bi bi-plus-square"></i> Add Service Item
-      </a>
-      <a href="{% url 'admin:core_update_add' %}" class="action-pill">
-        <i class="bi bi-megaphone"></i> Post Notice / Update
-      </a>
-      <a href="{% url 'admin:core_faq_add' %}" class="action-pill">
-        <i class="bi bi-question-circle"></i> Add FAQ
-      </a>
+      <a href="{% url 'admin:core_servicerequest_add' %}" class="action-pill primary"><i class="bi bi-plus-circle" aria-hidden="true"></i> New request</a>
+      <a href="{% url 'admin:core_service_add' %}" class="action-pill"><i class="bi bi-grid" aria-hidden="true"></i> Add service</a>
+      <a href="{% url 'admin:core_category_add' %}" class="action-pill"><i class="bi bi-collection" aria-hidden="true"></i> Add category</a>
+      <a href="{% url 'admin:core_update_add' %}" class="action-pill"><i class="bi bi-megaphone" aria-hidden="true"></i> Post update</a>
+      <a href="{% url 'admin:core_faq_add' %}" class="action-pill"><i class="bi bi-question-circle" aria-hidden="true"></i> Add FAQ</a>
     </div>
+  </section>
 
-    <div>
-      <a href="https://wa.me/916282268453" target="_blank" class="action-pill" style="background: #25d366; color: white; border: none;">
-        <i class="bi bi-whatsapp"></i> WhatsApp Helpdesk
-      </a>
-    </div>
-  </div>
-
-  <!-- Live Recent Requests Table -->
-  {% if recent_requests %}
-  <div class="admin-section-card">
-    <div class="admin-section-header">
-      <div class="admin-section-title">
-        <i class="bi bi-clock-history text-teal"></i>
-        <span>Recent Customer Requests Feed</span>
+  <section class="admin-section-card" aria-labelledby="recentRequestsTitle">
+    <header class="admin-section-header">
+      <div class="admin-section-title"><span class="admin-section-title-icon"><i class="bi bi-clock-history" aria-hidden="true"></i></span><div><h2 id="recentRequestsTitle">Recent requests</h2><p>Latest activity, with quick customer follow-up</p></div></div>
+      <div class="admin-feed-controls">
+        <form class="admin-feed-search" method="get" role="search">
+          <label class="visually-hidden" for="requestSearch">Search recent requests</label>
+          <i class="bi bi-search" aria-hidden="true"></i>
+          <input id="requestSearch" name="request_search" value="{{ recent_query }}" placeholder="ID, name, phone or service">
+          {% if recent_query %}<a class="admin-search-clear" href="{% url 'admin:index' %}" aria-label="Clear search"><i class="bi bi-x-circle" aria-hidden="true"></i></a>{% endif %}
+          <button type="submit">Search</button>
+        </form>
+        <a href="{% url 'admin:core_servicerequest_changelist' %}" class="action-pill primary admin-view-all">All requests <span>{{ total_requests }}</span><i class="bi bi-arrow-right" aria-hidden="true"></i></a>
       </div>
-      <a href="{% url 'admin:core_servicerequest_changelist' %}" class="action-pill primary" style="font-size: 0.8rem; padding: 5px 12px;">
-        View All Requests ({{ total_requests }}) &rarr;
-      </a>
-    </div>
+    </header>
 
-    <div style="overflow-x: auto;">
-      <table style="width: 100%; border-collapse: separate; border-spacing: 0;">
-        <thead>
-          <tr style="background: #f8fafc; text-align: left; font-size: 0.78rem; color: #64748b; text-transform: uppercase;">
-            <th style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0;">Request ID</th>
-            <th style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0;">Customer</th>
-            <th style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0;">Service</th>
-            <th style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0;">Status</th>
-            <th style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0;">Date</th>
-            <th style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0; text-align: center;">Actions</th>
-          </tr>
-        </thead>
+    {% if recent_requests %}
+    <div class="admin-feed-table-wrap" tabindex="0" aria-label="Recent requests table; scroll horizontally to see all columns">
+      <table class="admin-feed-table">
+        <thead><tr><th>Request ID</th><th>Customer</th><th>Service</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
         <tbody>
           {% for req in recent_requests %}
-          <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.15s ease;">
-            <td style="padding: 14px 16px; font-weight: 700;">
-              <a href="{% url 'admin:core_servicerequest_change' req.id %}" style="color: #1d4ed8; background: #eff6ff; padding: 4px 8px; border-radius: 6px; border: 1px solid #bfdbfe; text-decoration: none; font-size: 13px;">
-                {{ req.request_id }}
-              </a>
+          <tr>
+            <td class="admin-feed-request-id"><a href="{% url 'admin:core_servicerequest_change' req.id %}">{{ req.request_id }}</a></td>
+            <td><strong class="admin-feed-customer">{{ req.full_name }}</strong><br><span class="admin-feed-mobile"><i class="bi bi-telephone" aria-hidden="true"></i> {{ req.mobile }}</span></td>
+            <td class="admin-feed-service">{{ req.get_service_title }}</td>
+            <td>
+              {% if req.status == 'Completed' %}<span class="badge-interactive status-completed">Completed</span>
+              {% elif req.status == 'Processing' %}<span class="badge-interactive status-processing">Processing</span>
+              {% elif req.status == 'Under Review' %}<span class="badge-interactive status-review">Under review</span>
+              {% elif req.status == 'Information Required' %}<span class="badge-interactive status-information">Information required</span>
+              {% elif req.status == 'Cancelled' %}<span class="badge-interactive status-cancelled">Cancelled</span>
+              {% else %}<span class="badge-interactive status-pending"><span class="pulse-badge"></span>Pending</span>{% endif %}
             </td>
-            <td style="padding: 14px 16px;">
-              <strong style="color: #1e293b; font-size: 14px;">{{ req.full_name }}</strong><br>
-              <span style="font-size: 0.82rem; color: #64748b;">📞 {{ req.mobile }}</span>
-            </td>
-            <td style="padding: 14px 16px; font-size: 0.9rem; color: #334155; font-weight: 500;">
-              {{ req.get_service_title }}
-            </td>
-            <td style="padding: 14px 16px;">
-              {% if req.status == 'Completed' %}
-                <span class="badge-interactive" style="background: #dcfce7; color: #15803d; border-color: #bbf7d0;">✅ Completed</span>
-              {% elif req.status == 'Processing' %}
-                <span class="badge-interactive" style="background: #e0f2fe; color: #0284c7; border-color: #bae6fd;">⚙️ Processing</span>
-              {% elif req.status == 'Under Review' %}
-                <span class="badge-interactive" style="background: #f3e8ff; color: #7e22ce; border-color: #e9d5ff;">🔍 Under Review</span>
-              {% elif req.status == 'Cancelled' %}
-                <span class="badge-interactive" style="background: #fee2e2; color: #b91c1c; border-color: #fecaca;">❌ Cancelled</span>
-              {% else %}
-                <span class="badge-interactive" style="background: #fef3c7; color: #b45309; border-color: #fde68a;"><span class="pulse-badge"></span> Pending</span>
-              {% endif %}
-            </td>
-            <td style="padding: 14px 16px; font-size: 0.85rem; color: #64748b; font-weight: 500;">
-              {{ req.created_at|date:"d M Y, h:i A" }}
-            </td>
-            <td style="padding: 14px 16px; text-align: center;">
-              <div style="display: inline-flex; gap: 8px; align-items: center;">
-                <a href="https://wa.me/91{{ req.mobile }}?text=Hi%20{{ req.full_name }},%20HOMline%20support%20here%20regarding%20Request%20ID%20{{ req.request_id }}" target="_blank" title="WhatsApp Customer" style="display: inline-flex; align-items: center; justify-content: center; background: #22c55e; color: white; width: 30px; height: 30px; border-radius: 8px; text-decoration: none; font-size: 14px; box-shadow: 0 2px 6px rgba(34,197,94,0.3);">
-                  <i class="bi bi-whatsapp"></i>
-                </a>
-                <a href="{% url 'receipt' request_id=req.request_id %}" target="_blank" title="View Receipt PDF" style="display: inline-flex; align-items: center; justify-content: center; background: #2563eb; color: white; width: 30px; height: 30px; border-radius: 8px; text-decoration: none; font-size: 14px; box-shadow: 0 2px 6px rgba(37,99,235,0.3);">
-                  <i class="bi bi-file-earmark-text"></i>
-                </a>
-                <a href="{% url 'track_request_with_id' request_id=req.request_id %}" target="_blank" title="Open Tracking Page" style="display: inline-flex; align-items: center; justify-content: center; background: #0d9488; color: white; width: 30px; height: 30px; border-radius: 8px; text-decoration: none; font-size: 14px; box-shadow: 0 2px 6px rgba(13,148,136,0.3);">
-                  <i class="bi bi-box-arrow-up-right"></i>
-                </a>
-                <a href="{% url 'admin:core_servicerequest_change' req.id %}" title="Edit Request" style="display: inline-flex; align-items: center; justify-content: center; background: #f1f5f9; color: #2563eb; width: 30px; height: 30px; border-radius: 8px; text-decoration: none; font-size: 14px; border: 1px solid #cbd5e1;">
-                  <i class="bi bi-pencil"></i>
-                </a>
-              </div>
-            </td>
+            <td class="admin-feed-date">{{ req.created_at|date:"d M Y, h:i A" }}</td>
+            <td class="admin-feed-actions"><div>
+              <a href="https://wa.me/91{{ req.mobile }}?text=Hi%20{{ req.full_name|urlencode }},%20HOMline%20support%20here%20regarding%20Request%20ID%20{{ req.request_id|urlencode }}" target="_blank" rel="noopener noreferrer" title="WhatsApp customer" aria-label="WhatsApp {{ req.full_name }}"><i class="bi bi-whatsapp" aria-hidden="true"></i></a>
+              <a href="{% url 'receipt' request_id=req.request_id %}" target="_blank" rel="noopener noreferrer" title="View receipt" aria-label="View receipt for {{ req.request_id }}"><i class="bi bi-file-earmark-text" aria-hidden="true"></i></a>
+              <a href="{% url 'track_request_with_id' request_id=req.request_id %}" target="_blank" rel="noopener noreferrer" title="Open tracking page" aria-label="Track request {{ req.request_id }}"><i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a>
+              <a href="{% url 'admin:core_servicerequest_change' req.id %}" title="Edit request" aria-label="Edit request {{ req.request_id }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+            </div></td>
           </tr>
           {% endfor %}
         </tbody>
-
       </table>
     </div>
-  </div>
-  {% endif %}
+    {% else %}
+    <div class="admin-feed-empty"><span><i class="bi bi-inbox" aria-hidden="true"></i></span>{% if recent_query %}<strong>No requests match “{{ recent_query }}”.</strong><p>Try a different name, phone number or request ID.</p>{% else %}<strong>No customer requests yet</strong><p>New service requests will appear here when they arrive.</p>{% endif %}</div>
+    {% endif %}
+  </section>
 
-  <!-- Standard Django Applications Catalog -->
-  <div style="margin-top: 10px;">
+  <section class="admin-app-catalog" aria-label="Administration modules">
+    <div class="admin-app-catalog-heading"><span class="dashboard-eyebrow">MANAGE YOUR SITE</span><h2>Administration</h2><p>Update what customers see and keep operations organized.</p></div>
     {{ block.super }}
-  </div>
-
+  </section>
 </div>
 {% endblock %}
