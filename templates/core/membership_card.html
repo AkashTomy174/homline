@@ -1,0 +1,211 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HOMline Official Membership Card • {{ membership.membership_code }}</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --navy: #0f172a;
+      --teal: #0d9488;
+      --gold: #f59e0b;
+      --card-bg: #1e293b;
+    }
+    body {
+      background: #0b1120;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      color: #f8fafc;
+    }
+    .membership-card-wrap {
+      max-width: 580px;
+      width: 100%;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #093437 100%);
+      border-radius: 24px;
+      border: 2px solid rgba(245, 158, 11, 0.4);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+      padding: 32px;
+    }
+    .card-watermark {
+      position: absolute;
+      right: -30px;
+      bottom: -30px;
+      font-size: 16rem;
+      color: rgba(255,255,255,0.02);
+      pointer-events: none;
+      line-height: 1;
+    }
+    .card-chip {
+      width: 48px;
+      height: 36px;
+      background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+      border-radius: 6px;
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.6);
+      position: relative;
+    }
+    .card-chip::after {
+      content: "";
+      position: absolute;
+      top: 10px;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      border-top: 1px solid rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(0,0,0,0.3);
+    }
+    .membership-code-box {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 1.4rem;
+      letter-spacing: 3px;
+      color: #fbbf24;
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .stamp-seal {
+      border: 2px dashed #0d9488;
+      border-radius: 50%;
+      width: 74px;
+      height: 74px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: #2dd4bf;
+      text-transform: uppercase;
+      font-weight: 800;
+      transform: rotate(-12deg);
+      letter-spacing: 0.5px;
+      background: rgba(13, 148, 136, 0.08);
+    }
+    .qr-badge {
+      background: white;
+      padding: 6px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: inline-block;
+    }
+    @media print {
+      body {
+        background: white !important;
+        padding: 0 !important;
+        color: #0f172a !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .membership-card-wrap {
+        border: 2px solid #0f172a !important;
+        box-shadow: none !important;
+        margin: 20px auto !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Controls Bar -->
+  <div class="d-flex flex-wrap gap-2 justify-content-center mb-4 no-print">
+    <button onclick="window.print()" class="btn btn-warning px-4 py-2 fw-bold shadow">
+      <i class="bi bi-printer-fill me-2"></i> Print / Download Card (PDF)
+    </button>
+    <a href="{% url 'membership' %}" class="btn btn-outline-light px-4 py-2">
+      <i class="bi bi-arrow-left me-1"></i> Back to Membership
+    </a>
+  </div>
+
+  <!-- Official Membership Card -->
+  <div class="membership-card-wrap">
+    <i class="bi bi-shield-check card-watermark"></i>
+
+    <!-- Top Row -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+      <div class="d-flex align-items-center gap-3">
+        <div style="width: 46px; height: 46px; background: #0d9488; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">
+          <i class="bi bi-house-gear-fill"></i>
+        </div>
+        <div>
+          <h4 class="fw-extrabold mb-0 text-white" style="letter-spacing: 0.5px;">HOMline <span style="color: #2dd4bf;">DIGI seva</span></h4>
+          <small class="text-warning font-monospace" style="font-size: 0.75rem;">A Division Of AMDG MEDIA • Powered By AMDG Group</small>
+        </div>
+      </div>
+      <span class="badge bg-gold text-dark px-3 py-2 rounded-pill font-monospace fw-bold" style="background-color: #f59e0b !important;">
+        {{ membership.preferred_plan.name|default:"OFFICIAL MEMBER" }}
+      </span>
+    </div>
+
+    <!-- Micro Chip & Code -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div class="card-chip"></div>
+      <div class="membership-code-box">
+        {{ membership.membership_code|default:"HOM-MBR-2026-PENDING" }}
+      </div>
+    </div>
+
+    <!-- Member Details Grid -->
+    <div class="row g-3 mb-4">
+      <div class="col-7">
+        <small class="text-white-50 text-uppercase d-block" style="font-size: 0.7rem; letter-spacing: 1px;">Cardholder Name</small>
+        <strong class="text-white fs-5 d-block text-truncate">{{ membership.name }}</strong>
+        <small class="text-teal" style="font-size: 0.85rem;"><i class="bi bi-geo-alt-fill me-1"></i>{{ membership.place|default:"Kerala, India" }}</small>
+      </div>
+      <div class="col-5 text-end">
+        <small class="text-white-50 text-uppercase d-block" style="font-size: 0.7rem; letter-spacing: 1px;">Membership Plan</small>
+        <span class="text-white fw-bold d-block">{{ membership.preferred_plan.name|default:"HOMline Member" }}</span>
+        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill font-monospace" style="font-size: 0.7rem;">
+          {{ membership.status|default:"Active" }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Dates & Verification Row -->
+    <div class="d-flex justify-content-between align-items-end pt-3 border-top border-secondary border-opacity-50">
+      <div>
+        <div class="d-flex gap-4 mb-2">
+          <div>
+            <small class="text-white-50 d-block" style="font-size: 0.68rem; text-transform: uppercase;">Open Date</small>
+            <strong class="text-white font-monospace" style="font-size: 0.85rem;">{{ membership.open_date|date:"d M Y"|default:"Active" }}</strong>
+          </div>
+          <div>
+            <small class="text-white-50 d-block" style="font-size: 0.68rem; text-transform: uppercase;">Valid Till</small>
+            <strong class="text-warning font-monospace" style="font-size: 0.85rem;">{{ membership.valid_till|date:"d M Y"|default:"1 Year from Issue" }}</strong>
+          </div>
+        </div>
+        <small class="text-white-50 d-block" style="font-size: 0.72rem;">Helpline: <strong>6282268453</strong> • www.amdgmedia.co.in</small>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <div class="stamp-seal">
+          <i class="bi bi-patch-check-fill" style="font-size: 1rem;"></i>
+          <span>HOMline<br>VERIFIED</span>
+        </div>
+        {% if qr_code_url %}
+        <div class="qr-badge">
+          <img src="{{ qr_code_url }}" alt="Membership QR" width="60" height="60">
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <p class="text-center text-white-50 small mt-3 no-print font-monospace">
+    <i class="bi bi-shield-lock-fill text-warning me-1"></i> Official Digital Card issued by HOMline DIGI seva • AMDG Group
+  </p>
+
+</body>
+</html>

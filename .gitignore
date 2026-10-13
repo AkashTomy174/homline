@@ -1,0 +1,19 @@
+venv/
+*.pyc
+__pycache__/
+.env
+.DS_Store
+staticfiles/
+staticfiles_build/
+db.sqlite3
+media/
+
+# local-only
+.claude/
+.agents/
+skills-lock.json
+prompt.md
+live-home.png
+.playwright-mcp/
+*.pdf
+*.jpeg

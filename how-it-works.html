@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How HOMline Works • 4-Step Animated Customer Flow</title>
+  <meta name="description" content="Simple, guided, and convenient 4-step digital flow. No travel, no crowded cyber cafe queues, zero frustration.">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+  <!-- Custom Master CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="images/logo.png">
+</head>
+<body>
+
+<header class="sticky-header">
+    <nav class="navbar navbar-expand-lg custom-navbar">
+      <div class="container custom-nav-container">
+        <!-- Brand Logo -->
+        <a class="navbar-brand-logo" href="index.html" aria-label="HOMline DIGI seva Home">
+          <img src="images/logo.png" alt="HOMline DIGI seva - Online Service at Doorstep" class="navbar-brand-img">
+        </a>
+
+        <!-- Mobile Toggler -->
+        <button class="navbar-toggler border-0 shadow-none p-1" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Menu Items -->
+        <div class="collapse navbar-collapse justify-content-between" id="mainNavbar">
+          <ul class="nav-center-menu">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">
+                <i class="bi bi-house-door-fill text-teal opacity-75"></i> Home
+              </a>
+            </li>
+
+            <!-- Services Dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="services.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-grid-fill text-gold opacity-75"></i> Services
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="services.html">
+                    <i class="bi bi-card-checklist text-teal"></i> All Services Directory
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="services.html?category=tickets">
+                    <i class="bi bi-ticket-perforated-fill text-warning"></i> Ticket Bookings & Travel
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="services.html?category=printing-designing">
+                    <i class="bi bi-palette-fill text-info"></i> Posters, DTP & Media
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="index.html#pwd-assistance">
+                    <i class="bi bi-universal-access text-indigo"></i> PwD-Friendly Assistance
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link active" href="how-it-works.html">
+                <i class="bi bi-arrow-repeat text-cyan opacity-75"></i> How It Works
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="membership.html">
+                <i class="bi bi-person-badge-fill text-gold opacity-75"></i> Membership
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="track-request.html">
+                <i class="bi bi-geo-alt-fill text-danger opacity-75"></i> Track Status
+              </a>
+            </li>
+
+            <!-- About Dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="about.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-info-circle-fill text-info opacity-75"></i> About
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="about.html">
+                    <i class="bi bi-building text-teal"></i> About HOMline
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="index.html#vision-mission">
+                    <i class="bi bi-compass-fill text-gold"></i> Vision & Mission
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="about.html#futurePlansSection">
+                    <i class="bi bi-map-fill text-success"></i> Future Plans (Kerala & India)
+                  </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <a class="dropdown-item" href="faqs.html">
+                    <i class="bi bi-question-circle-fill text-warning"></i> FAQs & Guidance
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="updates.html">
+                    <i class="bi bi-megaphone-fill text-danger"></i> Latest Updates
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">
+                <i class="bi bi-headset text-teal opacity-75"></i> Contact
+              </a>
+            </li>
+          </ul>
+
+          <!-- Action Buttons & Interactive Theme Switcher -->
+          <div class="header-actions">
+            <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Theme" title="Switch Theme (Light / Dark)">
+              <i class="bi bi-moon-stars-fill"></i>
+            </button>
+            <a href="/login/" class="header-btn btn-header-signin" title="Client Sign In">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+            </a>
+            <a href="/signup/" class="header-btn btn-header-signup" title="Create Free Account">
+              <i class="bi bi-person-plus-fill me-1"></i> Sign Up
+            </a>
+            <a href="/admin/" class="header-btn btn-header-staff" title="Operations Staff Portal">
+              <i class="bi bi-shield-lock-fill text-gold me-1"></i> Staff
+            </a>
+            <a href="tel:6282268453" class="header-btn btn-header-call" title="Call HOMline Support">
+              <i class="bi bi-telephone-fill text-gold me-1"></i> <span class="d-none d-xl-inline">Call Now</span><span class="d-inline d-xl-none">Call</span>
+            </a>
+            <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20want%20to%20enquire%20about%20a%20digital%20service." target="_blank" class="header-btn btn-header-whatsapp" title="WhatsApp Customer Support">
+              <i class="bi bi-whatsapp me-1"></i> <span class="d-none d-xxl-inline">WhatsApp</span><span class="d-inline d-xxl-none">WhatsApp</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <section class="py-5 bg-navy text-white text-center">
+      <div class="container py-3">
+        <span class="badge bg-gold text-dark px-3 py-2 rounded-pill font-monospace fw-bold text-uppercase mb-3">Customer Journey</span>
+        <h1 class="display-5 fw-extrabold text-white mb-3">
+          How <span class="text-gradient-teal">HOMline Works</span>
+        </h1>
+        <p class="lead text-white-50 max-width-700 mx-auto mb-0">
+          Simple, guided, and convenient 4-step digital flow. No travel, no crowded cyber cafe queues, zero frustration.
+        </p>
+      </div>
+    </section>
+
+    <section class="py-5 bg-white">
+      <div class="container">
+        <!-- Creative Animated 4-Step Flow -->
+        <div class="how-steps-timeline mb-5">
+          <!-- Step 01 -->
+          <div class="how-step-card service-card-animated">
+            <div class="how-step-number-badge">01</div>
+            <div class="brand-icon-box bg-navy text-white mb-3" style="width: 52px; height: 52px; font-size: 1.4rem;">
+              <i class="bi bi-ui-checks-grid text-cyan"></i>
+            </div>
+            <h4 class="fw-bold text-navy mb-2">1. Choose Your Service</h4>
+            <p class="text-muted small flex-grow-1">
+              Browse our catalog of 14+ services including PAN Card, Passport appointments, Voter ID, Exam forms, Ticket Bookings, Poster Designs, Website Creation, DTP, or Laminations.
+            </p>
+            <div class="pt-2 border-top">
+              <span class="badge bg-light text-navy border font-monospace small"><i class="bi bi-eye me-1"></i> Transparent Fees</span>
+            </div>
+          </div>
+
+          <div class="how-flow-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+
+          <!-- Step 02 -->
+          <div class="how-step-card service-card-animated">
+            <div class="how-step-number-badge" style="background: linear-gradient(135deg, #10b981, #059669);">02</div>
+            <div class="brand-icon-box bg-success text-white mb-3" style="width: 52px; height: 52px; font-size: 1.4rem;">
+              <i class="bi bi-whatsapp"></i>
+            </div>
+            <h4 class="fw-bold text-navy mb-2">2. Connect with Caseworker</h4>
+            <p class="text-muted small flex-grow-1">
+              Call HOMline helpline at <strong>6282268453</strong> or send a message on WhatsApp. Senior citizens and PwD applicants can request dedicated voice guidance or doorstep desk support.
+            </p>
+            <div class="pt-2 border-top">
+              <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace small"><i class="bi bi-lightning-charge me-1"></i> Rapid Response</span>
+            </div>
+          </div>
+
+          <div class="how-flow-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+
+          <!-- Step 03 -->
+          <div class="how-step-card service-card-animated">
+            <div class="how-step-number-badge" style="background: linear-gradient(135deg, #06b6d4, #0284c7);">03</div>
+            <div class="brand-icon-box bg-teal text-white mb-3" style="width: 52px; height: 52px; font-size: 1.4rem;">
+              <i class="bi bi-shield-check"></i>
+            </div>
+            <h4 class="fw-bold text-navy mb-2">3. Submit & Verification</h4>
+            <p class="text-muted small flex-grow-1">
+              Send your basic details or document photos securely. Our team verifies eligibility, formats photos/signatures to exact portal KB specifications, and prevents application rejection.
+            </p>
+            <div class="pt-2 border-top">
+              <span class="badge bg-info-subtle text-info-emphasis border font-monospace small"><i class="bi bi-lock-fill me-1"></i> Strict Privacy</span>
+            </div>
+          </div>
+
+          <div class="how-flow-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+
+          <!-- Step 04 -->
+          <div class="how-step-card service-card-animated">
+            <div class="how-step-number-badge" style="background: linear-gradient(135deg, #f59e0b, #d97706);">04</div>
+            <div class="brand-icon-box bg-gold text-dark mb-3" style="width: 52px; height: 52px; font-size: 1.4rem;">
+              <i class="bi bi-qr-code-scan"></i>
+            </div>
+            <h4 class="fw-bold text-navy mb-2">4. Track & Delivery</h4>
+            <p class="text-muted small flex-grow-1">
+              Get your instant Reference ID with QR Code. Track progress in real-time, download your official acknowledgement receipt, and receive confirmation updates directly to your WhatsApp.
+            </p>
+            <div class="pt-2 border-top">
+              <span class="badge bg-warning-subtle text-dark border font-monospace small"><i class="bi bi-file-earmark-pdf me-1"></i> PDF Receipt</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PwD Priority Callout in Process -->
+        <div class="homline-card bg-soft-mist p-4 p-md-5 mb-5 border-start border-4 border-indigo">
+          <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-indigo text-white px-3 py-1 rounded-pill font-monospace fw-bold" style="background-color: #4f46e5;">PwD Priority Assistance</span>
+                <span class="small text-muted font-monospace">Inclusive Protocol</span>
+              </div>
+              <h3 class="fw-bold text-navy mb-2">Are you a Person with Disabilities (PwD) or Senior Citizen?</h3>
+              <p class="text-muted mb-0">
+                You do not need to struggle with complex mobile forms or visit physical centers. Our team offers dedicated doorstep desk assistance, home visit support, and accessible WhatsApp chat/audio guidance to ensure equitable digital access for all.
+              </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+              <a href="index.html#pwd-assistance" class="btn btn-navy px-4 rounded-pill shadow-sm">
+                <i class="bi bi-universal-access me-2"></i> Open PwD Request Form
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Direct Action Card -->
+        <div class="homline-card bg-navy text-white p-4 p-md-5 text-center">
+          <h3 class="fw-bold text-white mb-2">Ready to Get Your Service Done from Home?</h3>
+          <p class="text-white-50 max-width-700 mx-auto mb-4">
+            Our caseworkers are active and ready to assist you. Choose your preferred service from our directory or chat with us right now.
+          </p>
+          <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="services.html" class="btn btn-teal px-4 rounded-pill">
+              <i class="bi bi-grid-fill me-2"></i> Browse 14+ Services
+            </a>
+            <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20want%20to%20start%20my%20service." target="_blank" class="btn btn-whatsapp px-4 rounded-pill">
+              <i class="bi bi-whatsapp me-2"></i> WhatsApp Support
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (Reduced Size with Staff Login Box & AMDG Media Branding) -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="row g-4">
+        <!-- Column 1: HOMline Description & Brand -->
+        <div class="col-lg-4 col-md-6">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <div class="footer-logo-badge">
+              <img src="images/logo.png" alt="HOMline DIGI seva - Online Service at Doorstep">
+            </div>
+          </div>
+          <p class="text-white-50 small mb-3">
+            Digital Services. Simplified for You. Access essential online services with reliable assistance, convenient digital support and guidance — from the comfort of your home.
+          </p>
+          <div class="badge bg-teal text-white px-3 py-2 rounded-pill font-monospace small mb-3">
+            <i class="bi bi-shield-check me-1"></i> Connecting Convenience
+          </div>
+          <div class="d-flex flex-column gap-2 small text-white-50">
+            <div><i class="bi bi-box-arrow-up-right text-gold me-1"></i> <a href="https://www.amdgmedia.co.in/homline" target="_blank" rel="noopener noreferrer" class="text-gold fw-bold text-decoration-none">[AMDG MEDIA - HOMLINE]</a></div>
+            <div><i class="bi bi-envelope-fill text-teal me-1"></i> <a href="mailto:homelinedigital@gmail.com" class="text-white-50 text-decoration-none">homelinedigital@gmail.com</a></div>
+            <div><i class="bi bi-telephone-fill text-gold me-1"></i> <a href="tel:6282268453" class="text-white-50 text-decoration-none">+91 62822 68453</a></div>
+          </div>
+        </div>
+
+        <!-- Column 2: Quick Links -->
+        <div class="col-lg-2 col-md-6 col-6">
+          <h5 class="footer-title">Quick Links</h5>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About HOMline</a></li>
+            <li><a href="services.html">Services Directory</a></li>
+            <li><a href="how-it-works.html">How It Works</a></li>
+            <li><a href="membership.html">Membership Plans</a></li>
+            <li><a href="updates.html">Latest Updates</a></li>
+            <li><a href="faqs.html">FAQs</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Portals & Helplines -->
+        <div class="col-lg-3 col-md-6 col-6">
+          <h5 class="footer-title">Quick Portals</h5>
+          <ul class="footer-links">
+            <li><a href="services.html"><i class="bi bi-grid text-teal me-1"></i> Explore Services</a></li>
+            <li><a href="membership.html"><i class="bi bi-person-badge text-gold me-1"></i> Apply Membership</a></li>
+            <li><a href="track-request.html"><i class="bi bi-search text-cyan me-1"></i> Track Status</a></li>
+            <li><a href="index.html#pwd-section"><i class="bi bi-universal-access text-info me-1"></i> PwD-Friendly Desk</a></li>
+            <li><a href="contact.html"><i class="bi bi-chat-heart text-danger me-1"></i> Complaint / Suggestion</a></li>
+            <li><a href="https://www.amdgmedia.co.in/homline" target="_blank" rel="noopener noreferrer"><i class="bi bi-link-45deg text-gold me-1"></i> AMDG MEDIA - HOMLINE</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Operations & Staff Login Box -->
+        <div class="col-lg-3 col-md-6">
+          <h5 class="footer-title">HOMline Portal</h5>
+          <p class="text-white-50 small mb-2">All Internet Services at your fingertip. Designed to Easy Access and Reduce Travel.</p>
+          <div class="mb-3 small">
+            <a href="mailto:homelinedigital@gmail.com" class="text-teal text-decoration-none d-flex align-items-center gap-1">
+              <i class="bi bi-envelope"></i> homelinedigital@gmail.com
+            </a>
+          </div>
+          
+          <!-- Prominent STAFF LOGIN Box -->
+          <div class="mb-3">
+            <a href="/admin/" class="staff-login-box w-100 justify-content-center">
+              <i class="bi bi-shield-lock-fill text-gold fs-5"></i>
+              <div class="text-start">
+                <span class="d-block" style="font-size: 0.75rem; letter-spacing: 1px; color: #f59e0b; text-transform: uppercase;">Operations Desk</span>
+                <span class="fw-extrabold text-white">STAFF LOGIN &rarr;</span>
+              </div>
+            </a>
+          </div>
+
+          <ul class="footer-links small">
+            <li><a href="policy.html?name=terms">Terms & Privacy Policy</a></li>
+            <li><a href="policy.html?name=disclaimer">Service Disclaimer</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Reduced Footer Bottom with AMDG Media branding -->
+      <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 border-top border-secondary border-opacity-25 pt-3 mt-3">
+        <div class="d-flex flex-wrap align-items-center gap-2 text-center text-md-start">
+          <span class="fw-bold text-white">HOMline DIGI seva</span>
+          <span class="text-white-50 d-none d-sm-inline">•</span>
+          <a href="https://www.amdgmedia.co.in/homline" target="_blank" rel="noopener noreferrer" class="text-gold fw-semibold text-decoration-none">A Division Of AMDG MEDIA</a>
+          <span class="text-white-50 d-none d-sm-inline">•</span>
+          <span class="text-white-50">Powered By AMDG GROUP</span>
+        </div>
+        <div class="text-white-50 small d-flex flex-wrap align-items-center gap-2">
+          <span><a href="mailto:homelinedigital@gmail.com" class="text-white-50 text-decoration-none"><i class="bi bi-envelope me-1"></i>homelinedigital@gmail.com</a></span>
+          <span class="d-none d-sm-inline">|</span>
+          <span>© 2026 HOMline. Digital Services at Doorstep.</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>

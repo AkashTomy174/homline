@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ service.title }} — HOMline DIGI seva Assistance{% endblock %}
+
+{% block content %}
+<section class="service-detail-hero">
+  <div class="container py-4 py-lg-5">
+    <nav class="service-breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'home' %}">Home</a><i class="bi bi-chevron-right" aria-hidden="true"></i>
+      <a href="{% url 'services_list' %}">Services</a><i class="bi bi-chevron-right" aria-hidden="true"></i>
+      <span aria-current="page">{{ service.title }}</span>
+    </nav>
+    <div class="row align-items-end g-4 mt-2">
+      <div class="col-lg-8">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+          <span class="service-detail-category"><i class="bi bi-grid-1x2-fill me-1" aria-hidden="true"></i>{{ service.category.name }}</span>
+          {% if service.badge %}<span class="service-detail-badge">{{ service.badge }}</span>{% endif %}
+        </div>
+        <div class="d-flex align-items-start gap-3">
+          <div class="service-detail-icon" aria-hidden="true"><i class="bi {{ service.icon_class }}"></i></div>
+          <div>
+            <h1 class="service-detail-title">{{ service.title }}</h1>
+            <p class="service-detail-summary mb-0">{{ service.short_summary }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <a href="{% url 'request_service' %}?service_id={{ service.id }}" class="btn btn-gold btn-lg fw-bold shadow-sm service-detail-cta">
+          <i class="bi bi-pencil-square me-2" aria-hidden="true"></i>Request this service
+        </a>
+        <div class="service-cta-note"><i class="bi bi-clock me-1" aria-hidden="true"></i>We’ll guide you through the next steps</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="service-detail-body py-5">
+  <div class="container">
+    <div class="row g-4 g-xl-5 align-items-start">
+      <div class="col-lg-7">
+        <article class="service-content-card mb-4">
+          <div class="service-section-heading">
+            <span class="service-section-icon"><i class="bi bi-info-circle-fill" aria-hidden="true"></i></span>
+            <div><span class="service-section-kicker">THE SERVICE</span><h2>Overview</h2></div>
+          </div>
+          <div class="service-description">{{ service.description|linebreaks }}</div>
+        </article>
+
+        <article class="service-content-card mb-4">
+          <div class="service-section-heading">
+            <span class="service-section-icon"><i class="bi bi-folder2-open" aria-hidden="true"></i></span>
+            <div><span class="service-section-kicker">BEFORE YOU START</span><h2>Documents to prepare</h2></div>
+          </div>
+          <p class="service-section-intro">Have these ready before you contact us. Clear scans or photos help us guide you faster.</p>
+          <div class="service-document-list">{{ service.required_documents|linebreaks }}</div>
+        </article>
+
+        <div class="service-disclaimer mb-4">
+          <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+          <div><strong>Service note</strong><p>HOMline provides assistance for supported online services. Availability, processing time, eligibility, approval and final decisions are determined by the relevant authority, institution or third-party provider.</p></div>
+        </div>
+
+        {% if related_services %}
+        <section class="related-services" aria-labelledby="relatedServicesTitle">
+          <div class="d-flex justify-content-between align-items-end gap-3 mb-3">
+            <div><span class="service-section-kicker">KEEP EXPLORING</span><h2 id="relatedServicesTitle">Related services</h2></div>
+            <a class="related-all-link" href="{% url 'services_list' %}">All services <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+          </div>
+          <div class="row g-3">
+            {% for rel in related_services %}
+            <div class="col-md-4">
+              <a class="related-service-card" href="{% url 'service_detail' slug=rel.slug %}">
+                <span class="related-service-icon"><i class="bi {{ rel.icon_class }}" aria-hidden="true"></i></span>
+                <strong>{{ rel.title }}</strong>
+                <span>{{ rel.short_summary|truncatechars:76 }}</span>
+                <i class="bi bi-arrow-up-right related-card-arrow" aria-hidden="true"></i>
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+        </section>
+        {% endif %}
+      </div>
+
+      <aside class="col-lg-5" aria-label="Service cost and contact details">
+        <div class="service-detail-sidebar">
+          <section class="service-cost-card mb-4" aria-labelledby="costHeading">
+            <div class="service-cost-heading"><span class="service-cost-icon"><i class="bi bi-receipt-cutoff" aria-hidden="true"></i></span><div><span class="service-section-kicker">COST & TIMING</span><h2 id="costHeading">At a glance</h2></div></div>
+            <div class="service-price-row">
+              <div><span class="service-price-label">HOMline assistance charge</span><span class="service-price-value">{{ service.homline_charge }}</span></div>
+              <i class="bi bi-person-workspace" aria-hidden="true"></i>
+            </div>
+            <div class="service-fee-row">
+              <span><i class="bi bi-building me-2" aria-hidden="true"></i>Government / portal fee</span>
+              <strong>{{ service.third_party_fee }}</strong>
+            </div>
+            <p class="service-fee-note">Third-party fees are paid directly or according to the portal’s rules.</p>
+            <div class="service-time-row"><i class="bi bi-hourglass-split" aria-hidden="true"></i><span><small>Estimated processing time</small><strong>{{ service.processing_time }}</strong></span></div>
+            <div class="service-cost-actions">
+              <a href="{% url 'request_service' %}?service_id={{ service.id }}" class="btn btn-teal btn-lg w-100"><i class="bi bi-send me-2" aria-hidden="true"></i>Request assistance</a>
+              <a href="https://wa.me/916282268453?text=Hi%20HOMline%2C%20I%20want%20to%20ask%20about%20{{ service.title|urlencode }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-success w-100"><i class="bi bi-whatsapp me-2" aria-hidden="true"></i>Ask on WhatsApp</a>
+              <a href="tel:6282268453" class="service-phone-link"><i class="bi bi-telephone me-1" aria-hidden="true"></i>Call 6282268453</a>
+            </div>
+          </section>
+
+          <section class="service-steps-card" aria-labelledby="stepsHeading">
+            <h2 id="stepsHeading"><i class="bi bi-signpost-split me-2" aria-hidden="true"></i>What happens next</h2>
+            <ol>
+              <li><span>1</span><div><strong>Contact our team</strong><small>Tell us what you need help with.</small></div></li>
+              <li><span>2</span><div><strong>Share the details</strong><small>We’ll confirm the required documents.</small></div></li>
+              <li><span>3</span><div><strong>Get guided support</strong><small>Follow progress and receive updates.</small></div></li>
+            </ol>
+          </section>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}

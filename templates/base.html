@@ -1,0 +1,404 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}HOMline DIGI seva • Digital Services. Simplified for You.{% endblock %}</title>
+  <meta name="description" content="{% block meta_desc %}Access essential online services with reliable assistance, convenient digital support and guidance — from the comfort of your home. Phone / WhatsApp: 6282268453.{% endblock %}">
+  
+  <!-- SEO Tags -->
+  <meta name="author" content="AMDG Group">
+  <meta name="keywords" content="HOMline, DIGI seva, digital services, online application assistance, PAN card online, passport application assistance, voter ID online, exam form filling, Udyam MSME, digital certificates">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
+  
+  <!-- Custom Brand CSS & Favicon -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/polish.css' %}">
+  <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+
+
+  <!-- 02 Header Navbar -->
+  <header class="sticky-header">
+    <nav class="navbar navbar-expand-lg custom-navbar">
+      <div class="container custom-nav-container">
+        <!-- Brand Logo -->
+        <a class="navbar-brand-logo" href="{% url 'home' %}" aria-label="HOMline DIGI seva Home">
+          <img src="{% static 'images/logo.png' %}" alt="HOMline DIGI seva - Online Service at Doorstep" class="navbar-brand-img">
+        </a>
+
+        <!-- Mobile Toggler -->
+        <button class="navbar-toggler border-0 shadow-none p-1" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Menu Items -->
+        <div class="collapse navbar-collapse justify-content-between" id="mainNavbar">
+          <ul class="nav-center-menu">
+            <li class="nav-item">
+              <a class="nav-link {% if active_tab == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if active_tab == 'services' %}active{% endif %}" href="{% url 'services_list' %}">Services Directory</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if active_tab == 'how_it_works' %}active{% endif %}" href="{% url 'how_it_works' %}">How It Works</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if active_tab == 'membership' %}active{% endif %}" href="{% url 'membership' %}">Membership</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if active_tab == 'track' %}active{% endif %}" href="{% url 'track_request' %}">Track Status</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if active_tab == 'about' %}active{% endif %}" href="{% url 'about' %}">About HOMline</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if active_tab == 'faqs' %}active{% endif %}" href="{% url 'faqs' %}">FAQs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if active_tab == 'contact' %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
+            </li>
+          </ul>
+
+          <!-- Action Buttons -->
+          <div class="header-actions">
+            {% if request.user.is_authenticated %}
+              <div class="dropdown d-inline-block">
+                <button class="header-btn btn-header-user dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-person-circle text-gold me-1"></i> {{ request.user.first_name|default:request.user.username|truncatechars:10 }}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1">
+                  <li class="px-3 py-2 border-bottom">
+                    <small class="text-muted d-block font-monospace">Signed in as</small>
+                    <strong class="text-navy">{{ request.user.username }}</strong>
+                  </li>
+                  <li><a class="dropdown-item fw-bold text-teal" href="{% url 'dashboard' %}"><i class="bi bi-speedometer2 text-teal me-2"></i> My Dashboard</a></li>
+                  <li><a class="dropdown-item" href="{% url 'dashboard' %}#my-requests"><i class="bi bi-card-checklist text-primary me-2"></i> My Service Requests</a></li>
+                  <li><a class="dropdown-item" href="{% url 'dashboard' %}#my-membership"><i class="bi bi-person-badge text-gold me-2"></i> My Membership</a></li>
+                  <li><a class="dropdown-item" href="{% url 'dashboard' %}#account-settings"><i class="bi bi-gear-fill text-secondary me-2"></i> Account Settings</a></li>
+                  {% if request.user.is_staff %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i class="bi bi-shield-lock-fill text-gold me-2"></i> Staff Portal</a></li>
+                  {% endif %}
+                  <li><hr class="dropdown-divider"></li>
+                  <li><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="dropdown-item text-danger fw-bold"><i class="bi bi-box-arrow-right me-2"></i> Sign Out</button></form></li>
+                </ul>
+              </div>
+            {% else %}
+              <a href="{% url 'login' %}" class="header-btn btn-header-signup" title="Sign in or create a free account">
+                <i class="bi bi-person-circle me-1"></i> Sign In / Sign Up
+              </a>
+            {% endif %}
+
+            <a href="tel:6282268453" class="header-btn btn-header-call" title="Call HOMline Support">
+              <i class="bi bi-telephone-fill text-gold me-1"></i> <span class="d-none d-xl-inline">Call Now</span><span class="d-inline d-xl-none">Call</span>
+            </a>
+            <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20want%20to%20enquire%20about%20a%20digital%20service." target="_blank" class="header-btn btn-header-whatsapp" title="WhatsApp Customer Support">
+              <i class="bi bi-whatsapp me-1"></i> <span class="d-none d-xxl-inline">WhatsApp</span><span class="d-inline d-xxl-none">WhatsApp</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Django Messages Alert Banner -->
+  {% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Main Dynamic Page Content -->
+  <main id="main-content" tabindex="-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- 15 Footer Structure -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="row g-4">
+        <!-- Column 1: HOMline Description & Brand -->
+        <div class="col-lg-4 col-md-6">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <div class="footer-logo-badge">
+              <img src="{% static 'images/logo.png' %}" alt="HOMline DIGI seva - Online Service at Doorstep">
+            </div>
+          </div>
+          <p class="text-white-50 small mb-3">
+            Digital Services. Simplified for You. Access essential online services with reliable assistance, convenient digital support and guidance — from the comfort of your home.
+          </p>
+          <div class="badge bg-teal text-white px-3 py-2 rounded-pill font-monospace small mb-3">
+            <i class="bi bi-shield-check me-1"></i> Connecting Convenience
+          </div>
+          <div class="d-flex flex-column gap-2 small text-white-50">
+            <div><i class="bi bi-box-arrow-up-right text-gold me-1"></i> <a href="https://www.amdgmedia.co.in/homline" target="_blank" rel="noopener noreferrer" class="text-gold fw-bold text-decoration-none">AMDG Media – HOMline</a></div>
+            <div><i class="bi bi-envelope-fill text-teal me-1"></i> <a href="mailto:homelinedigital@gmail.com" class="text-white-50 text-decoration-none">homelinedigital@gmail.com</a></div>
+            <div><i class="bi bi-telephone-fill text-gold me-1"></i> <a href="tel:6282268453" class="text-white-50 text-decoration-none">+91 62822 68453</a></div>
+          </div>
+        </div>
+
+        <!-- Column 2: Quick Links -->
+        <div class="col-lg-2 col-md-6 col-6">
+          <h5 class="footer-title">Quick Links</h5>
+          <ul class="footer-links">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'about' %}">About HOMline</a></li>
+            <li><a href="{% url 'services_list' %}">Services Directory</a></li>
+            <li><a href="{% url 'how_it_works' %}">How It Works</a></li>
+            <li><a href="{% url 'membership' %}">Membership Plans</a></li>
+            <li><a href="{% url 'updates_list' %}">Latest Updates</a></li>
+            <li><a href="{% url 'faqs' %}">FAQs</a></li>
+            <li><a href="{% url 'contact' %}">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Quick Links & Support -->
+        <div class="col-lg-3 col-md-6 col-6">
+          <h5 class="footer-title">Quick Portals</h5>
+          <ul class="footer-links">
+            <li><a href="{% url 'services_list' %}"><i class="bi bi-grid text-teal me-1"></i> Explore Services</a></li>
+            <li><a href="{% url 'membership' %}"><i class="bi bi-person-badge text-gold me-1"></i> Apply Membership</a></li>
+            <li><a href="{% url 'track_request' %}"><i class="bi bi-search text-cyan me-1"></i> Track Status</a></li>
+            <li><a href="#pwdModal" data-bs-toggle="modal"><i class="bi bi-universal-access text-info me-1"></i> PwD-Friendly Desk</a></li>
+            <li><a href="{% url 'complaint_suggestion' %}"><i class="bi bi-chat-heart text-danger me-1"></i> Complaint / Suggestion</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Operations & Staff Login Box -->
+        <div class="col-lg-3 col-md-6">
+          <h5 class="footer-title">HOMline Portal</h5>
+          <p class="text-white-50 small mb-2">All Internet Services at your fingertip. Designed to Easy Access and Reduce Travel.</p>
+<p class="small text-white-50 mb-3">HOMline is an independent assistance service. We are not a government office.</p>
+
+          <ul class="footer-links small">
+            <li><a href="{% url 'policy' policy_name='terms' %}">Terms & Privacy Policy</a></li>
+            <li><a href="{% url 'policy' policy_name='disclaimer' %}">Service Disclaimer</a></li>
+            <li><a href="{% url 'admin:login' %}">Staff login</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Reduced Footer Bottom with AMDG Media branding -->
+      <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 border-top border-secondary border-opacity-25 pt-3 mt-3">
+        <div class="d-flex flex-wrap align-items-center gap-2 text-center text-md-start">
+          <span class="fw-bold text-white">HOMline DIGI seva</span>
+          <span class="text-white-50 d-none d-sm-inline">•</span>
+          <a href="https://www.amdgmedia.co.in/homline" target="_blank" rel="noopener noreferrer" class="text-gold fw-semibold text-decoration-none">A Division Of AMDG MEDIA</a>
+          <span class="text-white-50 d-none d-sm-inline">•</span>
+          <span class="text-white-50">Powered By AMDG GROUP</span>
+        </div>
+        <div class="text-white-50 small d-flex flex-wrap align-items-center gap-2">
+          <span>© 2026 HOMline. Digital Services at Doorstep.</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 14 Mobile-First Fixed Bottom Navigation -->
+  <div class="fixed-mobile-bottom-nav d-md-none">
+    <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20assistance." target="_blank" class="mobile-nav-btn btn-whatsapp">
+      <i class="bi bi-whatsapp"></i> WhatsApp
+    </a>
+    <a href="tel:6282268453" class="mobile-nav-btn btn-navy">
+      <i class="bi bi-telephone-fill"></i> Call
+    </a>
+    <a href="{% url 'request_service' %}" class="mobile-nav-btn btn-teal">
+      <i class="bi bi-pencil-square"></i> Request
+    </a>
+  </div>
+
+  <!-- Service Request Modal Form -->
+  <div class="modal fade" id="requestModal" tabindex="-1" aria-labelledby="requestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content rounded-4 border-0 shadow-lg">
+        <div class="modal-header bg-navy text-white p-4">
+          <div class="d-flex align-items-center gap-2">
+            <div class="brand-icon-box" style="width: 36px; height: 36px; font-size: 1.1rem;">
+              <i class="bi bi-send-fill"></i>
+            </div>
+            <div>
+              <h5 class="modal-title font-brand text-white mb-0" id="requestModalLabel">Request a Digital Service</h5>
+              <small class="text-white-50">Provide your details for instant guidance & assistance</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{% url 'home' %}" method="POST" enctype="multipart/form-data" class="p-4">
+          {% csrf_token %}
+          <input type="hidden" name="submit_request" value="1">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy" for="rq1">Full Name <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">(required)</span></label>
+              <input id="rq1" type="text" name="full_name" class="form-control form-control-lg" placeholder="Enter your full name" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy" for="rq2">Mobile Number <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">(required)</span></label>
+              <input id="rq2" type="tel" name="mobile" class="form-control form-control-lg" placeholder="Enter your mobile number" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy" for="rq3">Email Address (Optional)</label>
+              <input id="rq3" type="email" name="email" class="form-control form-control-lg" placeholder="name@example.com">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy" for="serviceSelect">Preferred Service</label>
+              <select name="service" id="serviceSelect" class="form-select form-select-lg">
+                <option value="">Select from supported services...</option>
+                {% for s in featured_services %}
+                  <option value="{{ s.id }}">{{ s.title }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold text-navy" for="rq5">Requirement Details <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">(required)</span></label>
+              <textarea id="rq5" name="requirement_details" class="form-control" rows="3" placeholder="Describe what digital service or guidance you need (e.g. fresh PAN card, passport appointment, exam form filling, ticket booking)..." required></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy" for="rq6">Preferred Contact Channel</label>
+              <select id="rq6" name="contact_preference" class="form-select">
+                <option value="WhatsApp" selected>WhatsApp Message</option>
+                <option value="Call">Direct Phone Call</option>
+                <option value="Email">Email Communication</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy" for="rq7">Upload Document (Optional)</label>
+              <input id="rq7" type="file" name="document_upload" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" aria-describedby="uploadHint"><div class="form-text" id="uploadHint">PDF, DOC, DOCX, JPG or PNG · up to 10 MB</div>
+            </div>
+          </div>
+          <div class="alert alert-light border border-teal rounded-3 mt-3 p-3 small text-muted">
+            <i class="bi bi-shield-lock-fill text-teal me-1"></i> Your details are handled with strict confidentiality per HOMline privacy practices.
+          </div>
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-teal px-4">Submit Service Request <i class="bi bi-arrow-right ms-1"></i></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Special PwD-Friendly Assistance Modal -->
+  <div class="modal fade" id="pwdModal" tabindex="-1" aria-labelledby="pwdModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content rounded-4 border-0 shadow-lg" style="border: 2px solid #6366f1 !important;">
+        <div class="modal-header bg-navy text-white p-4">
+          <div class="d-flex align-items-center gap-3">
+            <div class="brand-icon-box bg-indigo text-white" style="width: 44px; height: 44px; font-size: 1.4rem; background: #6366f1;">
+              <i class="bi bi-universal-access"></i>
+            </div>
+            <div>
+              <h5 class="modal-title font-brand text-white mb-0" id="pwdModalLabel">PwD-Friendly Assistance Desk</h5>
+              <small class="text-warning">“Accessible digital empowerment for all abilities — no travel required.”</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <form action="{% url 'pwd_request' %}" method="POST" class="p-4">
+          {% csrf_token %}
+          <div class="pwd-quote-box mb-4">
+            <i class="bi bi-quote fs-4 text-warning align-middle me-1"></i>
+            Dedicated assistance for Persons with Disabilities (PwD) and Senior Citizens. We provide comfortable doorstep guidance, voice calls, or direct WhatsApp support so you never have to travel.
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy" for="pw1">Full Name <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">(required)</span></label>
+              <input id="pw1" type="text" name="name" class="form-control form-control-lg" placeholder="Applicant name" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy" for="pw2">WhatsApp / Phone Number <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">(required)</span></label>
+              <input id="pw2" type="tel" name="mobile" class="form-control form-control-lg" placeholder="Mobile number" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy" for="pw3">Location / Place <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">(required)</span></label>
+              <input id="pw3" type="text" name="place" class="form-control" placeholder="Village / Town / District" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy" for="pw4">Preferred Assistance Mode</label>
+              <select id="pw4" name="assistance_type" class="form-select">
+                <option value="Doorstep Visit Assistance">Doorstep Visit Assistance</option>
+                <option value="WhatsApp / Chat Support">WhatsApp / Chat Support</option>
+                <option value="Direct Phone Call Support">Direct Phone Call Support</option>
+                <option value="Mobility / Senior Support">Mobility / Senior Support</option>
+                <option value="Voice / Visual Support">Voice / Visual Support</option>
+                <option value="General Assistance">General Assistance</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold text-navy" for="pw5">Service Needed <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">(required)</span></label>
+              <input id="pw5" type="text" name="service_needed" class="form-control" placeholder="e.g. Disability Certificate, Pension, Ticket Booking, PAN card, Ration card" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold text-navy" for="pw6">Specific Needs / Notes</label>
+              <textarea id="pw6" name="details" class="form-control" rows="2" placeholder="Tell us how we can help you comfortably (e.g. communicate in Malayalam, audio call, assistance for caregiver)..."></textarea>
+            </div>
+          </div>
+
+          <!-- Direct Instant Call & WhatsApp Buttons -->
+          <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mt-4 pt-3 border-top">
+            <div class="d-flex gap-2">
+              <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20am%20inquiring%20about%20PwD-Friendly%20Assistance." target="_blank" class="btn btn-whatsapp">
+                <i class="bi bi-whatsapp me-1"></i> WhatsApp Desk
+              </a>
+              <a href="tel:6282268453" class="btn btn-outline-navy">
+                <i class="bi bi-telephone-fill me-1"></i> Call 6282268453
+              </a>
+            </div>
+            <button type="submit" class="btn btn-teal px-4 fw-bold">
+              Submit PwD Request <i class="bi bi-send-check-fill ms-1"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <!-- Main JS -->
+  <script src="{% static 'js/main.js' %}"></script>
+
+
+
+  <script>
+    // Prevent duplicate POSTs on slow (cold-start) responses: lock the submit button and show progress.
+    document.addEventListener('submit', function (e) {
+      var f = e.target;
+      if (f.method.toLowerCase() !== 'post' || f.dataset.submitting) { if (f.dataset.submitting) e.preventDefault(); return; }
+      f.dataset.submitting = '1';
+      // Deferred: disabled buttons are excluded from the form data, which is built right after this event.
+      setTimeout(function () {
+        f.querySelectorAll('button[type=submit],input[type=submit]').forEach(function (b) {
+          b.disabled = true;
+          if (b.tagName === 'BUTTON') b.innerHTML = 'Sending your request… please keep this page open';
+        });
+      }, 0);
+    });
+    window.addEventListener('pageshow', function (e) { if (e.persisted) location.reload(); });
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

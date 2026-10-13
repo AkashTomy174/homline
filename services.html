@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services Directory • HOMline DIGI seva</title>
+  <meta name="description" content="Explore 14+ supported online services: government IDs, academic forms, travel tickets, posters, websites, DTP, laminations, and framing.">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+  <!-- Custom Master CSS & Favicon -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="images/logo.png">
+</head>
+<body>
+
+<header class="sticky-header">
+    <nav class="navbar navbar-expand-lg custom-navbar">
+      <div class="container custom-nav-container">
+        <!-- Brand Logo -->
+        <a class="navbar-brand-logo" href="index.html" aria-label="HOMline DIGI seva Home">
+          <img src="images/logo.png" alt="HOMline DIGI seva - Online Service at Doorstep" class="navbar-brand-img">
+        </a>
+
+        <!-- Mobile Toggler -->
+        <button class="navbar-toggler border-0 shadow-none p-1" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Menu Items -->
+        <div class="collapse navbar-collapse justify-content-between" id="mainNavbar">
+          <ul class="nav-center-menu">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">
+                <i class="bi bi-house-door-fill text-teal opacity-75"></i> Home
+              </a>
+            </li>
+
+            <!-- Services Dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle active" href="services.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-grid-fill text-gold opacity-75"></i> Services
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item active" href="services.html">
+                    <i class="bi bi-card-checklist text-teal"></i> All Services Directory
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="services.html?category=tickets">
+                    <i class="bi bi-ticket-perforated-fill text-warning"></i> Ticket Bookings & Travel
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="services.html?category=printing-designing">
+                    <i class="bi bi-palette-fill text-info"></i> Posters, DTP & Media
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="index.html#pwd-assistance">
+                    <i class="bi bi-universal-access text-indigo"></i> PwD-Friendly Assistance
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="how-it-works.html">
+                <i class="bi bi-arrow-repeat text-cyan opacity-75"></i> How It Works
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="membership.html">
+                <i class="bi bi-person-badge-fill text-gold opacity-75"></i> Membership
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="track-request.html">
+                <i class="bi bi-geo-alt-fill text-danger opacity-75"></i> Track Status
+              </a>
+            </li>
+
+            <!-- About Dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="about.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-info-circle-fill text-info opacity-75"></i> About
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="about.html">
+                    <i class="bi bi-building text-teal"></i> About HOMline
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="index.html#vision-mission">
+                    <i class="bi bi-compass-fill text-gold"></i> Vision & Mission
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="about.html#futurePlansSection">
+                    <i class="bi bi-map-fill text-success"></i> Future Plans (Kerala & India)
+                  </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <a class="dropdown-item" href="faqs.html">
+                    <i class="bi bi-question-circle-fill text-warning"></i> FAQs & Guidance
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="updates.html">
+                    <i class="bi bi-megaphone-fill text-danger"></i> Latest Updates
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">
+                <i class="bi bi-headset text-teal opacity-75"></i> Contact
+              </a>
+            </li>
+          </ul>
+
+          <!-- Action Buttons & Interactive Theme Switcher -->
+          <div class="header-actions">
+            <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Theme" title="Switch Theme (Light / Dark)">
+              <i class="bi bi-moon-stars-fill"></i>
+            </button>
+            <a href="/login/" class="header-btn btn-header-signin" title="Client Sign In">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+            </a>
+            <a href="/signup/" class="header-btn btn-header-signup" title="Create Free Account">
+              <i class="bi bi-person-plus-fill me-1"></i> Sign Up
+            </a>
+            <a href="/admin/" class="header-btn btn-header-staff" title="Operations Staff Portal">
+              <i class="bi bi-shield-lock-fill text-gold me-1"></i> Staff
+            </a>
+            <a href="tel:6282268453" class="header-btn btn-header-call" title="Call HOMline Support">
+              <i class="bi bi-telephone-fill text-gold me-1"></i> <span class="d-none d-xl-inline">Call Now</span><span class="d-inline d-xl-none">Call</span>
+            </a>
+            <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20want%20to%20enquire%20about%20a%20digital%20service." target="_blank" class="header-btn btn-header-whatsapp" title="WhatsApp Customer Support">
+              <i class="bi bi-whatsapp me-1"></i> <span class="d-none d-xxl-inline">WhatsApp</span><span class="d-inline d-xxl-none">WhatsApp</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Header Section with Live Search -->
+    <section class="py-5 bg-navy text-white text-center">
+      <div class="container py-2">
+        <span class="badge bg-gold text-dark px-3 py-2 rounded-pill font-monospace fw-bold text-uppercase mb-3">Complete Directory</span>
+        <h1 class="display-5 fw-extrabold text-white mb-3">All Digital Services at Your Fingertip</h1>
+        <p class="lead text-white-50 max-width-700 mx-auto mb-4">
+          Government applications, student registrations, travel bookings, and creative media services handled with transparent fees and verified guidance.
+        </p>
+
+        <!-- Live Instant Search Bar -->
+        <div class="max-width-700 mx-auto">
+          <div class="input-group input-group-lg shadow-lg rounded-pill overflow-hidden bg-white">
+            <span class="input-group-text bg-white border-0 ps-4 text-muted">
+              <i class="bi bi-search fs-5 text-teal"></i>
+            </span>
+            <input type="text" id="serviceSearchInput" class="form-control border-0 py-3 text-dark" placeholder="Search by service name, keywords (e.g. PAN, ticket, poster, DTP, passport)..." aria-label="Search Services">
+            <button class="btn btn-teal px-4 fw-bold" type="button" id="serviceSearchBtn">
+              Find Service
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Directory Content -->
+    <section class="py-5 bg-soft-mist">
+      <div class="container">
+        <!-- Admin Notice Banner (Can I Edit or Change It? Yes! In Admin Panel) -->
+        <div class="alert alert-info border-info-subtle rounded-4 p-3 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-2 shadow-sm">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-gear-fill text-navy fs-5"></i>
+            <div>
+              <strong class="text-navy">Customizable Service Directory:</strong>
+              <span class="text-muted small ms-1">Need to add, edit or change rates? Authorized staff can modify all service details directly in the Admin Panel.</span>
+            </div>
+          </div>
+          <a href="/admin/core/service/" class="btn btn-navy btn-sm font-monospace fw-bold">
+            <i class="bi bi-shield-lock-fill text-gold me-1"></i> Admin Services &rarr;
+          </a>
+        </div>
+
+        <!-- Interactive Category Filter Pills -->
+        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4" id="categoryFilterBar">
+          <button type="button" class="filter-pill-btn service-cat-pill active" data-category="all">
+            <span>All Categories</span>
+            <span class="pill-counter" id="cntAll">14</span>
+          </button>
+          <button type="button" class="filter-pill-btn service-cat-pill" data-category="government-identity">
+            <i class="bi bi-card-heading text-teal"></i>
+            <span>Government & Identity</span>
+            <span class="pill-counter" id="cntGovt">3</span>
+          </button>
+          <button type="button" class="filter-pill-btn service-cat-pill" data-category="education">
+            <i class="bi bi-mortarboard-fill text-teal"></i>
+            <span>Education & Exams</span>
+            <span class="pill-counter" id="cntEdu">2</span>
+          </button>
+          <button type="button" class="filter-pill-btn service-cat-pill" data-category="business-professional">
+            <i class="bi bi-briefcase-fill text-teal"></i>
+            <span>Business & MSME</span>
+            <span class="pill-counter" id="cntBiz">1</span>
+          </button>
+          <button type="button" class="filter-pill-btn service-cat-pill" data-category="digital-online">
+            <i class="bi bi-globe2 text-teal"></i>
+            <span>Digital & Revenue</span>
+            <span class="pill-counter" id="cntDig">1</span>
+          </button>
+          <button type="button" class="filter-pill-btn service-cat-pill" data-category="document-application">
+            <i class="bi bi-file-earmark-text-fill text-teal"></i>
+            <span>Document Formatting</span>
+            <span class="pill-counter" id="cntDoc">1</span>
+          </button>
+          <button type="button" class="filter-pill-btn service-cat-pill" data-category="creative-printing-travel">
+            <i class="bi bi-palette-fill text-teal"></i>
+            <span>Creative, Printing & Travel</span>
+            <span class="pill-counter" id="cntCreative">6</span>
+          </button>
+        </div>
+
+        <!-- Required Service Disclaimer -->
+        <div class="disclaimer-box mb-4">
+          <div class="d-flex align-items-start gap-3">
+            <i class="bi bi-info-circle-fill fs-4 text-warning flex-shrink-0"></i>
+            <div>
+              <strong class="d-block text-dark">Required Service Disclaimer:</strong>
+              HOMline provides assistance for supported online services. Availability, processing time, eligibility, approval and final decisions are determined by the respective authority, institution or third-party service provider.
+            </div>
+          </div>
+        </div>
+
+        <!-- Full Services Grid Container (14 Services with animated glowing borders) -->
+        <div class="row g-4" id="servicesDirectoryGrid">
+          <!-- 1. PAN Card -->
+          <div class="col-lg-4 col-md-6 service-card-item" data-category="government-identity" data-title="pan card new correction update">
+            <div class="homline-card service-card-animated d-flex flex-column justify-content-between bg-white h-100 p-4">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi bi-credit-card-2-front-fill"></i>
+                  </div>
+                  <span class="badge bg-gold text-dark fw-bold px-3 py-1 rounded-pill">Popular</span>
+                </div>
+                <span class="badge bg-light text-navy border border-teal small mb-2">Government & Identity</span>
+                <h5 class="fw-bold text-navy mb-2">PAN Card (New / Correction / Update)</h5>
+                <p class="text-muted small mb-3">Hassle-free application for fresh PAN allocation, data corrections, name change or duplicate reprint.</p>
+                <div class="fee-badge-box">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">HOMline Charge:</span>
+                    <span class="fee-badge-homline">₹150 - ₹250</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small text-muted">3rd Party/Gov Fee:</span>
+                    <span class="fee-badge-thirdparty">₹107 (Govt Fee)</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20PAN%20Card%20services." target="_blank" class="btn btn-outline-navy btn-sm flex-grow-1"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp</a>
+                <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-slug="pan-card-services">Request</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Passport -->
+          <div class="col-lg-4 col-md-6 service-card-item" data-category="government-identity" data-title="passport online application appointment">
+            <div class="homline-card service-card-animated d-flex flex-column justify-content-between bg-white h-100 p-4">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi bi-passport-fill"></i>
+                  </div>
+                  <span class="badge bg-teal text-white fw-bold px-3 py-1 rounded-pill">Essential</span>
+                </div>
+                <span class="badge bg-light text-navy border border-teal small mb-2">Government & Identity</span>
+                <h5 class="fw-bold text-navy mb-2">Passport Online Application & Appointment</h5>
+                <p class="text-muted small mb-3">Complete assistance for fresh passport, re-issue, address update and PSK appointment booking.</p>
+                <div class="fee-badge-box">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">HOMline Charge:</span>
+                    <span class="fee-badge-homline">₹300 - ₹500</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small text-muted">3rd Party/Gov Fee:</span>
+                    <span class="fee-badge-thirdparty">₹1,500 Normal / ₹2,000 Tatkal</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20Passport%20appointment%20assistance." target="_blank" class="btn btn-outline-navy btn-sm flex-grow-1"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp</a>
+                <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-slug="passport-application-assistance">Request</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Voter ID -->
+          <div class="col-lg-4 col-md-6 service-card-item" data-category="government-identity" data-title="voter id card services">
+            <div class="homline-card service-card-animated d-flex flex-column justify-content-between bg-white h-100 p-4">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi bi-person-badge-fill"></i>
+                  </div>
+                  <span class="badge bg-light text-navy border small">Digital</span>
+                </div>
+                <span class="badge bg-light text-navy border border-teal small mb-2">Government & Identity</span>
+                <h5 class="fw-bold text-navy mb-2">Voter ID Card Services</h5>
+                <p class="text-muted small mb-3">Form 6 new registration, constituency transfer, address change & digital e-EPIC download.</p>
+                <div class="fee-badge-box">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">HOMline Charge:</span>
+                    <span class="fee-badge-homline">₹100 - ₹200</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small text-muted">3rd Party/Gov Fee:</span>
+                    <span class="fee-badge-thirdparty">Free / Minimal Official</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20Voter%20ID%20services." target="_blank" class="btn btn-outline-navy btn-sm flex-grow-1"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp</a>
+                <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-slug="voter-id-services">Request</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Academic Exam -->
+          <div class="col-lg-4 col-md-6 service-card-item" data-category="education" data-title="academic exam admission registrations">
+            <div class="homline-card service-card-animated d-flex flex-column justify-content-between bg-white h-100 p-4">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                  </div>
+                  <span class="badge bg-gold text-dark fw-bold px-3 py-1 rounded-pill">High Demand</span>
+                </div>
+                <span class="badge bg-light text-navy border border-teal small mb-2">Education & Exams</span>
+                <h5 class="fw-bold text-navy mb-2">Academic Exam & Admission Registrations</h5>
+                <p class="text-muted small mb-3">Guided registration and online form submission for entrance exams (CUET, KEAM, PSC, NEET).</p>
+                <div class="fee-badge-box">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">HOMline Charge:</span>
+                    <span class="fee-badge-homline">₹150 - ₹300</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small text-muted">3rd Party/Gov Fee:</span>
+                    <span class="fee-badge-thirdparty">As per Exam Board</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20Exam%20Registration%20support." target="_blank" class="btn btn-outline-navy btn-sm flex-grow-1"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp</a>
+                <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-slug="academic-exam-registrations">Request</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Scholarship -->
+          <div class="col-lg-4 col-md-6 service-card-item" data-category="education" data-title="student scholarship portal assistance">
+            <div class="homline-card service-card-animated d-flex flex-column justify-content-between bg-white h-100 p-4">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi bi-mortarboard"></i>
+                  </div>
+                  <span class="badge bg-light text-navy border small">Student</span>
+                </div>
+                <span class="badge bg-light text-navy border border-teal small mb-2">Education & Exams</span>
+                <h5 class="fw-bold text-navy mb-2">Student Scholarship Portal Assistance</h5>
+                <p class="text-muted small mb-3">Online application guidance for State, National Scholarship Portal (NSP) & private grants.</p>
+                <div class="fee-badge-box">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">HOMline Charge:</span>
+                    <span class="fee-badge-homline">₹150 - ₹250</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small text-muted">3rd Party/Gov Fee:</span>
+                    <span class="fee-badge-thirdparty">Free (Govt / NSP Portal)</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20Scholarship%20portal%20support." target="_blank" class="btn btn-outline-navy btn-sm flex-grow-1"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp</a>
+                <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-slug="scholarship-portal-assistance">Request</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Udyam MSME -->
+          <div class="col-lg-4 col-md-6 service-card-item" data-category="business-professional" data-title="udyam msme fssai registration">
+            <div class="homline-card service-card-animated d-flex flex-column justify-content-between bg-white h-100 p-4">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi bi-building-check"></i>
+                  </div>
+                  <span class="badge bg-teal text-white fw-bold px-3 py-1 rounded-pill">Business</span>
+                </div>
+                <span class="badge bg-light text-navy border border-teal small mb-2">Business & MSME</span>
+                <h5 class="fw-bold text-navy mb-2">Udyam MSME & FSSAI Registration</h5>
+                <p class="text-muted small mb-3">Government MSME recognition & Food License (FSSAI) application guidance for small businesses.</p>
+                <div class="fee-badge-box">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">HOMline Charge:</span>
+                    <span class="fee-badge-homline">₹250 - ₹450</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small text-muted">3rd Party/Gov Fee:</span>
+                    <span class="fee-badge-thirdparty">₹100 FSSAI / ₹0 Udyam</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20Udyam%20MSME%20/%20FSSAI%20registration." target="_blank" class="btn btn-outline-navy btn-sm flex-grow-1"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp</a>
+                <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-slug="udyam-msme-fssai-registration">Request</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. Digital Certificates -->
+          <div class="col-lg-4 col-md-6 service-card-item" data-category="digital-online" data-title="digital certificates download income caste nativity">
+            <div class="homline-card service-card-animated d-flex flex-column justify-content-between bg-white h-100 p-4">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi bi-file-earmark-lock-fill"></i>
+                  </div>
+                  <span class="badge bg-light text-navy border small">e-District</span>
+                </div>
+                <span class="badge bg-light text-navy border border-teal small mb-2">Digital & Revenue</span>
+                <h5 class="fw-bold text-navy mb-2">Digital Certificates & Online Downloads</h5>
+                <p class="text-muted small mb-3">Assistance downloading Income, Caste, Relationship & Domicile revenue e-Certificates.</p>
+                <div class="fee-badge-box">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">HOMline Charge:</span>
+                    <span class="fee-badge-homline">₹100 - ₹200</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small text-muted">3rd Party/Gov Fee:</span>
+                    <span class="fee-badge-thirdparty">₹15 - ₹30 (e-District)</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20Digital%20Certificates%20assistance." target="_blank" class="btn btn-outline-navy btn-sm flex-grow-1"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp</a>
+                <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-slug="digital-certificates-download">Request</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8. Document Formatting -->
+          <div class="col-lg-4 col-md-6 service-card-item" data-category="document-application" data-title="document formatting size optimization scan compression">
+            <div class="homline-card service-card-animated d-flex flex-column justify-content-between bg-white h-100 p-4">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi bi-aspect-ratio-fill"></i>
+                  </div>
+                  <span class="badge bg-gold text-dark fw-bold px-3 py-1 rounded-pill">Instant</span>
+                </div>
+                <span class="badge bg-light text-navy border border-teal small mb-2">Document Formatting</span>
+                <h5 class="fw-bold text-navy mb-2">Document Formatting & Size Optimization</h5>
+                <p class="text-muted small mb-3">Professional scan, PDF conversion, image compression & portal upload formatting.</p>
+                <div class="fee-badge-box">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">HOMline Charge:</span>
+                    <span class="fee-badge-homline">₹50 - ₹100</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small text-muted">3rd Party/Gov Fee:</span>
+                    <span class="fee-badge-thirdparty">None</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20Document%20Formatting." target="_blank" class="btn btn-outline-navy btn-sm flex-grow-1"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp</a>
+                <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-slug="document-formatting-optimization">Request</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 9. Ticket Bookings (NEW) -->
+          <div class="col-lg-4 col-md-6 service-card-item" data-category="creative-printing-travel" data-title="ticket bookings bus train flight irctc travel">
+            <div class="homline-card service-card-animated d-flex flex-column justify-content-between bg-white h-100 p-4">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi bi-ticket-perforated-fill text-success"></i>
+                  </div>
+                  <span class="badge bg-success text-white fw-bold px-3 py-1 rounded-pill">Travel Wing</span>
+                </div>
+                <span class="badge bg-light text-navy border border-teal small mb-2">Creative, Printing & Travel</span>
+                <h5 class="fw-bold text-navy mb-2">Ticket Bookings (Bus, Train, Flight)</h5>
+                <p class="text-muted small mb-3">Confirmed IRCTC train seats, inter-state bus reservations, and domestic/international flight bookings sent to WhatsApp.</p>
+                <div class="fee-badge-box">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">HOMline Charge:</span>
+                    <span class="fee-badge-homline">₹50 - ₹150</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small text-muted">3rd Party/Gov Fee:</span>
+                    <span class="fee-badge-thirdparty">Actual Ticket Fare</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20want%20to%20book%20travel%20tickets." target="_blank" class="btn btn-outline-navy btn-sm flex-grow-1"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp</a>
+                <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-slug="ticket-bookings">Request</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 10. Design Posters (NEW) -->
+          <div class="col-lg-4 col-md-6 service-card-item" data-category="creative-printing-travel" data-title="design posters banners flyers graphics amdg media">
+            <div class="homline-card service-card-animated d-flex flex-column justify-content-between bg-white h-100 p-4">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi bi-image-fill text-warning"></i>
+                  </div>
+                  <span class="badge bg-gold text-dark fw-bold px-3 py-1 rounded-pill">AMDG Media</span>
+                </div>
+                <span class="badge bg-light text-navy border border-teal small mb-2">Creative, Printing & Travel</span>
+                <h5 class="fw-bold text-navy mb-2">Design Posters & Social Media Banners</h5>
+                <p class="text-muted small mb-3">Custom graphic design for functions, weddings, business promotions, parish notices, flyers, and WhatsApp status.</p>
+                <div class="fee-badge-box">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">HOMline Charge:</span>
+                    <span class="fee-badge-homline">₹150 - ₹400</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small text-muted">3rd Party/Gov Fee:</span>
+                    <span class="fee-badge-thirdparty">Flex/Print extra if needed</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20want%20poster%20and%20banner%20design." target="_blank" class="btn btn-outline-navy btn-sm flex-grow-1"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp</a>
+                <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-slug="design-posters">Request</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 11. Website Designs (NEW) -->
+          <div class="col-lg-4 col-md-6 service-card-item" data-category="creative-printing-travel" data-title="website designs landing pages web development">
+            <div class="homline-card service-card-animated d-flex flex-column justify-content-between bg-white h-100 p-4">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi bi-window-fullscreen text-teal"></i>
+                  </div>
+                  <span class="badge bg-teal text-white fw-bold px-3 py-1 rounded-pill">AMDG Tech</span>
+                </div>
+                <span class="badge bg-light text-navy border border-teal small mb-2">Creative, Printing & Travel</span>
+                <h5 class="fw-bold text-navy mb-2">Website Designs & Landing Pages</h5>
+                <p class="text-muted small mb-3">Modern, rapid-loading responsive websites and portfolios for local businesses, shops, and individual brands.</p>
+                <div class="fee-badge-box">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">HOMline Charge:</span>
+                    <span class="fee-badge-homline">₹1,999 - ₹4,999</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small text-muted">3rd Party/Gov Fee:</span>
+                    <span class="fee-badge-thirdparty">Domain/Hosting provider actuals</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20want%20a%20website%20design." target="_blank" class="btn btn-outline-navy btn-sm flex-grow-1"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp</a>
+                <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-slug="website-designs">Request</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 12. DTP Services (NEW) -->
+          <div class="col-lg-4 col-md-6 service-card-item" data-category="creative-printing-travel" data-title="dtp services malayalam english typing legal agreement">
+            <div class="homline-card service-card-animated d-flex flex-column justify-content-between bg-white h-100 p-4">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi bi-fonts text-primary"></i>
+                  </div>
+                  <span class="badge bg-light text-navy border small">Publishing</span>
+                </div>
+                <span class="badge bg-light text-navy border border-teal small mb-2">Creative, Printing & Travel</span>
+                <h5 class="fw-bold text-navy mb-2">DTP (Desktop Publishing) & Typing</h5>
+                <p class="text-muted small mb-3">Fast and accurate Malayalam & English typing, legal rental agreements, project reports, CV bio-data and affidavits.</p>
+                <div class="fee-badge-box">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">HOMline Charge:</span>
+                    <span class="fee-badge-homline">₹40 - ₹100 / pg</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small text-muted">3rd Party/Gov Fee:</span>
+                    <span class="fee-badge-thirdparty">Stamp Paper actuals</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20DTP%20and%20typing%20work." target="_blank" class="btn btn-outline-navy btn-sm flex-grow-1"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp</a>
+                <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-slug="dtp-services">Request</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 13. Laminations (NEW) -->
+          <div class="col-lg-4 col-md-6 service-card-item" data-category="creative-printing-travel" data-title="laminations id cards certificates pvc waterproof">
+            <div class="homline-card service-card-animated d-flex flex-column justify-content-between bg-white h-100 p-4">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi bi-layers-fill text-info"></i>
+                  </div>
+                  <span class="badge bg-light text-navy border small">Doorstep</span>
+                </div>
+                <span class="badge bg-light text-navy border border-teal small mb-2">Creative, Printing & Travel</span>
+                <h5 class="fw-bold text-navy mb-2">Laminations (Cards & Certificates)</h5>
+                <p class="text-muted small mb-3">Heavy-duty heat lamination for academic degrees, marksheets, property records, and PVC identity cards.</p>
+                <div class="fee-badge-box">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">HOMline Charge:</span>
+                    <span class="fee-badge-homline">₹30 - ₹70 / item</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small text-muted">3rd Party/Gov Fee:</span>
+                    <span class="fee-badge-thirdparty">None</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20document%20lamination." target="_blank" class="btn btn-outline-navy btn-sm flex-grow-1"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp</a>
+                <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-slug="laminations">Request</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 14. Frame Works (NEW) -->
+          <div class="col-lg-4 col-md-6 service-card-item" data-category="creative-printing-travel" data-title="frame works photo framing mounting memories decor">
+            <div class="homline-card service-card-animated d-flex flex-column justify-content-between bg-white h-100 p-4">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="brand-icon-box bg-soft-mist text-navy" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                    <i class="bi bi-gem text-gold"></i>
+                  </div>
+                  <span class="badge bg-gold text-dark fw-bold px-3 py-1 rounded-pill">Art & Decor</span>
+                </div>
+                <span class="badge bg-light text-navy border border-teal small mb-2">Creative, Printing & Travel</span>
+                <h5 class="fw-bold text-navy mb-2">Frame Works & Photo Mounting</h5>
+                <p class="text-muted small mb-3">Custom synthetic and wooden frames with high-clarity facing for portraits, holy icons, certificates, and gifts.</p>
+                <div class="fee-badge-box">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">HOMline Charge:</span>
+                    <span class="fee-badge-homline">₹250 - ₹950</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small text-muted">3rd Party/Gov Fee:</span>
+                    <span class="fee-badge-thirdparty">None</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20custom%20photo%20framing." target="_blank" class="btn btn-outline-navy btn-sm flex-grow-1"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp</a>
+                <button type="button" class="btn btn-teal btn-sm px-3" data-bs-toggle="modal" data-bs-target="#requestModal" data-bs-service-slug="frame-works">Request</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Enquiry Form Last - Connect to WhatsApp -->
+        <div class="homline-card bg-navy text-white p-4 p-md-5 mt-5 shadow-lg position-relative overflow-hidden" id="serviceEnquirySection">
+          <div class="row align-items-center g-4">
+            <div class="col-lg-6">
+              <span class="badge bg-gold text-dark px-3 py-1 rounded-pill font-monospace fw-bold mb-2">QUICK ASSISTANCE</span>
+              <h3 class="fw-extrabold text-white mb-2">Can't Find Your Service or Need Immediate Help?</h3>
+              <p class="text-white-75 mb-4">
+                Send a quick enquiry directly to our operations caseworker desk. We respond immediately on WhatsApp with requirement details, fees, and timelines.
+              </p>
+              <div class="d-flex flex-column gap-2 text-white-50 small">
+                <span><i class="bi bi-check2-circle text-teal me-2"></i> Free eligibility assessment over WhatsApp</span>
+                <span><i class="bi bi-check2-circle text-teal me-2"></i> No upfront portal charges without clear quotation</span>
+                <span><i class="bi bi-check2-circle text-teal me-2"></i> PwD & elderly doorstep assistance priority</span>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="bg-white rounded-4 p-4 text-dark shadow">
+                <h5 class="fw-bold text-navy mb-3"><i class="bi bi-whatsapp text-success me-2"></i> Direct WhatsApp Enquiry</h5>
+                <form id="bottomEnquiryForm" onsubmit="handleBottomEnquiry(event)">
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label small fw-bold text-navy">Your Name *</label>
+                      <input type="text" id="botEnqName" class="form-control" placeholder="Full name" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small fw-bold text-navy">Phone / WhatsApp *</label>
+                      <input type="tel" id="botEnqMobile" class="form-control" placeholder="Mobile number" required>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label small fw-bold text-navy">Service / Query *</label>
+                      <input type="text" id="botEnqService" class="form-control" placeholder="e.g. Ticket Booking, Poster Design, DTP, Passport, Certificate" required>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label small fw-bold text-navy">Message / Instructions</label>
+                      <textarea id="botEnqMsg" class="form-control" rows="2" placeholder="Tell us what you need assistance with..."></textarea>
+                    </div>
+                    <div class="col-12 pt-2">
+                      <button type="submit" class="btn btn-whatsapp w-100 fw-bold py-2 shadow-sm">
+                        <i class="bi bi-whatsapp me-2"></i> Send to HOMline WhatsApp &rarr;
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (Reduced Size with Staff Login Box & AMDG Media Branding) -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="row g-4">
+        <!-- Column 1: HOMline Description & Brand -->
+        <div class="col-lg-4 col-md-6">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <div class="footer-logo-badge">
+              <img src="images/logo.png" alt="HOMline DIGI seva - Online Service at Doorstep">
+            </div>
+          </div>
+          <p class="text-white-50 small mb-3">
+            Digital Services. Simplified for You. Access essential online services with reliable assistance, convenient digital support and guidance — from the comfort of your home.
+          </p>
+          <div class="badge bg-teal text-white px-3 py-2 rounded-pill font-monospace small mb-3">
+            <i class="bi bi-shield-check me-1"></i> Connecting Convenience
+          </div>
+          <div class="d-flex flex-column gap-2 small text-white-50">
+            <div><i class="bi bi-box-arrow-up-right text-gold me-1"></i> <a href="https://www.amdgmedia.co.in/homline" target="_blank" rel="noopener noreferrer" class="text-gold fw-bold text-decoration-none">[AMDG MEDIA - HOMLINE]</a></div>
+            <div><i class="bi bi-envelope-fill text-teal me-1"></i> <a href="mailto:homelinedigital@gmail.com" class="text-white-50 text-decoration-none">homelinedigital@gmail.com</a></div>
+            <div><i class="bi bi-telephone-fill text-gold me-1"></i> <a href="tel:6282268453" class="text-white-50 text-decoration-none">+91 62822 68453</a></div>
+          </div>
+        </div>
+
+        <!-- Column 2: Quick Links -->
+        <div class="col-lg-2 col-md-6 col-6">
+          <h5 class="footer-title">Quick Links</h5>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About HOMline</a></li>
+            <li><a href="services.html">Services Directory</a></li>
+            <li><a href="how-it-works.html">How It Works</a></li>
+            <li><a href="membership.html">Membership Plans</a></li>
+            <li><a href="updates.html">Latest Updates</a></li>
+            <li><a href="faqs.html">FAQs</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Portals & Helplines -->
+        <div class="col-lg-3 col-md-6 col-6">
+          <h5 class="footer-title">Quick Portals</h5>
+          <ul class="footer-links">
+            <li><a href="services.html"><i class="bi bi-grid text-teal me-1"></i> Explore Services</a></li>
+            <li><a href="membership.html"><i class="bi bi-person-badge text-gold me-1"></i> Apply Membership</a></li>
+            <li><a href="track-request.html"><i class="bi bi-search text-cyan me-1"></i> Track Status</a></li>
+            <li><a href="index.html#pwd-section"><i class="bi bi-universal-access text-info me-1"></i> PwD-Friendly Desk</a></li>
+            <li><a href="contact.html"><i class="bi bi-chat-heart text-danger me-1"></i> Complaint / Suggestion</a></li>
+            <li><a href="https://www.amdgmedia.co.in/homline" target="_blank" rel="noopener noreferrer"><i class="bi bi-link-45deg text-gold me-1"></i> AMDG MEDIA - HOMLINE</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Operations & Staff Login Box -->
+        <div class="col-lg-3 col-md-6">
+          <h5 class="footer-title">HOMline Portal</h5>
+          <p class="text-white-50 small mb-2">All Internet Services at your fingertip. Designed to Easy Access and Reduce Travel.</p>
+          <div class="mb-3 small">
+            <a href="mailto:homelinedigital@gmail.com" class="text-teal text-decoration-none d-flex align-items-center gap-1">
+              <i class="bi bi-envelope"></i> homelinedigital@gmail.com
+            </a>
+          </div>
+          
+          <!-- Prominent STAFF LOGIN Box -->
+          <div class="mb-3">
+            <a href="/admin/" class="staff-login-box w-100 justify-content-center">
+              <i class="bi bi-shield-lock-fill text-gold fs-5"></i>
+              <div class="text-start">
+                <span class="d-block" style="font-size: 0.75rem; letter-spacing: 1px; color: #f59e0b; text-transform: uppercase;">Operations Desk</span>
+                <span class="fw-extrabold text-white">STAFF LOGIN &rarr;</span>
+              </div>
+            </a>
+          </div>
+
+          <ul class="footer-links small">
+            <li><a href="policy.html?name=terms">Terms & Privacy Policy</a></li>
+            <li><a href="policy.html?name=disclaimer">Service Disclaimer</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Reduced Footer Bottom with AMDG Media branding -->
+      <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 border-top border-secondary border-opacity-25 pt-3 mt-3">
+        <div class="d-flex flex-wrap align-items-center gap-2 text-center text-md-start">
+          <span class="fw-bold text-white">HOMline DIGI seva</span>
+          <span class="text-white-50 d-none d-sm-inline">•</span>
+          <a href="https://www.amdgmedia.co.in/homline" target="_blank" rel="noopener noreferrer" class="text-gold fw-semibold text-decoration-none">A Division Of AMDG MEDIA</a>
+          <span class="text-white-50 d-none d-sm-inline">•</span>
+          <span class="text-white-50">Powered By AMDG GROUP</span>
+        </div>
+        <div class="text-white-50 small d-flex flex-wrap align-items-center gap-2">
+          <span><a href="mailto:homelinedigital@gmail.com" class="text-white-50 text-decoration-none"><i class="bi bi-envelope me-1"></i>homelinedigital@gmail.com</a></span>
+          <span class="d-none d-sm-inline">|</span>
+          <span>© 2026 HOMline. Digital Services at Doorstep.</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Service Request Modal Form -->
+  <div class="modal fade" id="requestModal" tabindex="-1" aria-labelledby="requestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content rounded-4 border-0 shadow-lg">
+        <div class="modal-header bg-navy text-white p-4">
+          <div class="d-flex align-items-center gap-2">
+            <div class="brand-icon-box" style="width: 36px; height: 36px; font-size: 1.1rem;">
+              <i class="bi bi-send-fill"></i>
+            </div>
+            <div>
+              <h5 class="modal-title font-brand text-white mb-0" id="requestModalLabel">Request a Digital Service</h5>
+              <small class="text-white-50">Provide your details for instant guidance & assistance</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form class="homline-service-request-form p-4">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy">Full Name <span class="text-danger">*</span></label>
+              <input type="text" name="full_name" class="form-control form-control-lg" placeholder="Enter your full name" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy">Mobile Number <span class="text-danger">*</span></label>
+              <input type="tel" name="mobile" class="form-control form-control-lg" placeholder="Enter your mobile number" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy">Email Address (Optional)</label>
+              <input type="email" name="email" class="form-control form-control-lg" placeholder="name@example.com">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy">Preferred Service</label>
+              <select name="service" id="serviceSelect" class="form-select form-select-lg">
+                <option value="pan-card-services">PAN Card (New / Correction / Update)</option>
+                <option value="passport-application-assistance">Passport Online Application & Appointment</option>
+                <option value="voter-id-services">Voter ID Card Services</option>
+                <option value="academic-exam-registrations">Academic Exam & Admission Registrations</option>
+                <option value="scholarship-portal-assistance">Student Scholarship Portal Assistance</option>
+                <option value="udyam-msme-fssai-registration">Udyam MSME & FSSAI Registration</option>
+                <option value="digital-certificates-download">Digital Certificates & Online Downloads</option>
+                <option value="document-formatting-optimization">Document Formatting & Size Optimization</option>
+                <option value="ticket-bookings">Ticket Bookings (Bus, Train, Flight)</option>
+                <option value="design-posters">Design Posters & Banners</option>
+                <option value="website-designs">Website Designs & Landing Pages</option>
+                <option value="dtp-services">DTP & Malayalam / English Typing</option>
+                <option value="laminations">Laminations (ID Cards & Certificates)</option>
+                <option value="frame-works">Frame Works & Photo Mounting</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold text-navy">Requirement Details <span class="text-danger">*</span></label>
+              <textarea name="requirement_details" class="form-control" rows="3" placeholder="Describe what service you need assistance with..." required></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy">Preferred Contact Channel</label>
+              <select name="contact_preference" class="form-select">
+                <option value="WhatsApp" selected>WhatsApp Message</option>
+                <option value="Call">Direct Phone Call</option>
+                <option value="Email">Email Communication</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-navy">Upload Document (Optional)</label>
+              <input type="file" name="document_upload" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+            </div>
+          </div>
+          <div class="alert alert-light border border-teal rounded-3 mt-3 p-3 small text-muted">
+            <i class="bi bi-shield-lock-fill text-teal me-1"></i> Your details are handled with strict confidentiality per HOMline privacy practices.
+          </div>
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-teal px-4">Submit Service Request <i class="bi bi-arrow-right ms-1"></i></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script>        });
+      });
+
+      // Search logic
+      const searchInput = document.getElementById('serviceSearchInput');
+      if (searchInput) {
+        searchInput.addEventListener('input', function() {
+          const query = this.value.toLowerCase().trim();
+          cards.forEach(card => {
+            const title = (card.getAttribute('data-title') || '').toLowerCase();
+            const text = card.innerText.toLowerCase();
+            if (!query || title.includes(query) || text.includes(query)) {
+              card.style.display = 'block';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      }
+    });
+
+    function handleBottomEnquiry(e) {
+      e.preventDefault();
+      const name = document.getElementById('botEnqName').value;
+      const mobile = document.getElementById('botEnqMobile').value;
+      const service = document.getElementById('botEnqService').value;
+      const msg = document.getElementById('botEnqMsg').value;
+
+      const waText = encodeURIComponent(
+        `Hello HOMline Caseworker,\n` +
+        `I would like to enquire about a service:\n` +
+        `Name: ${name}\n` +
+        `Mobile: ${mobile}\n` +
+        `Service Needed: ${service}\n` +
+        `Message: ${msg}`
+      );
+
+      alert(`Thank you ${name}! Opening HOMline WhatsApp to send your enquiry directly to our team.`);
+      window.open(`https://wa.me/916282268453?text=${waText}`, '_blank');
+      document.getElementById('bottomEnquiryForm').reset();
+    }
+  </script>
+</body>
+</html>

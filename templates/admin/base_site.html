@@ -1,0 +1,42 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | HOMline DIGI seva Control Panel{% endblock %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <!-- Google Fonts: Plus Jakarta Sans & Inter + Bootstrap Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+  <!-- Custom HOMline Modern Admin Stylesheet -->
+  <link rel="stylesheet" href="{% static 'css/admin_custom.css' %}">
+{% endblock %}
+
+{% block branding %}
+  <div style="display: flex; align-items: center; gap: 14px;">
+    <h1 id="site-name">
+      <a href="{% url 'admin:index' %}">
+        <i class="bi bi-shield-check" style="color: #67e8f9; font-size: 1.5rem;"></i>
+        <span>HOMline <strong style="color: #fef08a;">DIGI</strong></span>
+      </a>
+    </h1>
+    <span class="brand-badge">Control Hub</span>
+
+    <div class="header-quick-links">
+      <a href="/" target="_blank" class="quick-btn quick-btn-gold">
+        <i class="bi bi-globe2"></i> Live Website
+      </a>
+      <a href="/track/" target="_blank" class="quick-btn quick-btn-teal">
+        <i class="bi bi-search"></i> Track Portal
+      </a>
+      <a href="/admin/core/servicerequest/" class="quick-btn">
+        <i class="bi bi-inbox-fill"></i> Requests Inbox
+      </a>
+    </div>
+  </div>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
