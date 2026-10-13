@@ -71,14 +71,8 @@ def health_view(request):
 
 @ratelimit('home', 20)
 def home_view(request):
-    categories = Category.objects.prefetch_related('services').all()
     featured_services = Service.objects.filter(is_featured=True)[:8]
     featured_updates = Update.objects.filter(is_featured=True)[:4]
-    membership_plans = MembershipPlan.objects.all()
-    faqs = FAQ.objects.all()[:6]
-    reviews = CustomerReview.objects.filter(is_verified=True)[:5]
-    all_services = Service.objects.all()
-    announcements = Announcement.objects.filter(is_active=True).order_by('order', '-created_at')
     
     initial_request = {}
     if request.user.is_authenticated:
@@ -112,14 +106,8 @@ def home_view(request):
             return redirect('complaint_suggestion')
 
     context = {
-        'categories': categories,
         'featured_services': featured_services,
         'featured_updates': featured_updates,
-        'membership_plans': membership_plans,
-        'faqs': faqs,
-        'reviews': reviews,
-        'all_services': all_services,
-        'announcements': announcements,
         'service_request_form': service_request_form,
         'track_form': track_form,
         'pwd_form': pwd_form,
