@@ -18,4 +18,12 @@ urlpatterns = [
     path('request/', views.request_service_view, name='request_service'),
     path('receipt/<str:request_id>/', views.receipt_view, name='receipt'),
     path('policy/<str:policy_name>/', views.policy_view, name='policy'),
+    path('pwd-request/', views.pwd_request_view, name='pwd_request'),
+    path('complaint-suggestion/', views.complaint_suggestion_view, name='complaint_suggestion'),
+    path('membership/card/<str:membership_code>/', views.membership_card_view, name='membership_card'),
+    path('membership/check/', views.check_membership_view, name='check_membership'),
+    path('login/', views.login_view, name='login'),
+    path('signup/', views.signup_view, name='signup'),
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('logout/', views.logout_view, name='logout'),
 ]

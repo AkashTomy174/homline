@@ -94,8 +94,49 @@
               <strong class="text-navy fs-6">{{ tracked_request.get_service_title }}</strong>
             </div>
             <div class="col-md-6">
+              <span class="text-muted small d-block">Applicant Name:</span>
+              <strong class="text-navy fs-6">{{ tracked_request.full_name }}</strong>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted small d-block">Contact Preference:</span>
+              <span class="badge bg-light text-navy border font-monospace">{{ tracked_request.contact_preference }}</span>
+            </div>
+            <div class="col-md-6">
               <span class="text-muted small d-block">Last Updated:</span>
               <strong class="text-navy fs-6">{{ tracked_request.updated_at|date:"d M Y, h:i A" }}</strong>
+            </div>
+          </div>
+
+          <!-- Service Charge, Govt Fee & QR Code Box (Client Viewable) -->
+          <div class="card border-1 mb-4 shadow-sm" style="border-color: #0d9488; background: #f8fafc;">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+              <strong class="text-navy"><i class="bi bi-receipt-cutoff text-teal me-2"></i> Verified Service Rates & Fee Structure</strong>
+              <span class="badge bg-teal text-white font-monospace">Official Notice</span>
+            </div>
+            <div class="card-body p-4">
+              <div class="row align-items-center g-3">
+                <div class="col-md-8">
+                  <div class="d-flex justify-content-between pb-2 mb-2 border-bottom">
+                    <span class="text-muted">HOMline Assistance & Process Fee:</span>
+                    <strong class="text-navy font-monospace fs-6">{{ tracked_request.service_charge|default:"₹150" }}</strong>
+                  </div>
+                  <div class="d-flex justify-content-between pb-2 mb-2 border-bottom">
+                    <span class="text-muted">Third-Party / Government Portal Fee:</span>
+                    <strong class="text-teal font-monospace fs-6">{{ tracked_request.portal_fee|default:"As per Govt portal" }}</strong>
+                  </div>
+                  <small class="text-muted d-block font-monospace" style="font-size: 0.76rem;">
+                    * Government & third-party fees are charged strictly as per official portal tariffs. Rate set by HOMline operations desk.
+                  </small>
+                </div>
+                
+                <!-- Dynamic QR Code -->
+                <div class="col-md-4 text-center border-start border-md ps-md-3">
+                  {% if qr_code_url %}
+                    <img src="{{ qr_code_url }}" alt="Verification QR Code" width="110" height="110" class="rounded border p-1 bg-white shadow-sm mb-1">
+                    <small class="text-muted d-block font-monospace" style="font-size: 0.7rem;">Scan to Verify Request</small>
+                  {% endif %}
+                </div>
+              </div>
             </div>
           </div>
 

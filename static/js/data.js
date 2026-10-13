@@ -58,6 +58,33 @@ const HOMLINE_DATA = {
       icon_class: "bi-file-earmark-text-fill",
       badgeText: "1 Service",
       order: 5
+    },
+    {
+      id: 6,
+      slug: "creative-printing-travel",
+      name: "Creative, Printing & Travel",
+      description: "Ticket bookings, poster designs, website development, DTP, laminations, and framing services.",
+      icon_class: "bi-palette-fill",
+      badgeText: "6 Services",
+      order: 6
+    }
+  ],
+
+  announcements: [
+    {
+      badge: "DIGITAL SERVICES",
+      message: "All Internet Service at your fingertip, Designed to Easy Access and Reduce Travel.",
+      link: "services.html"
+    },
+    {
+      badge: "PwD-FRIENDLY",
+      message: "“Accessible digital empowerment for all abilities — no travel required.” Dedicated door desk support available.",
+      link: "index.html#pwd-section"
+    },
+    {
+      badge: "NEW SERVICES",
+      message: "Ticket Bookings, Poster Designs, Website Designs, DTP, Laminations & Framing now live!",
+      link: "services.html"
     }
   ],
 
@@ -243,6 +270,136 @@ const HOMLINE_DATA = {
       is_featured: true,
       badge: "Instant Service",
       icon_class: "bi-aspect-ratio-fill"
+    },
+    {
+      id: "srv-tickets",
+      slug: "ticket-bookings",
+      categorySlug: "creative-printing-travel",
+      categoryName: "Creative, Printing & Travel",
+      title: "Ticket Bookings (Bus, Train, Flight)",
+      short_summary: "Confirmed seat bookings for IRCTC Indian Railways, KSRTC / private sleeper buses & domestic/international flights.",
+      description: "Fast and reliable online ticket reservations for trains (general & Tatkal), inter-state buses, and air tickets. Receive instant confirmations, boarding passes, and cancellation assistance directly on WhatsApp.",
+      required_documents: [
+        "Passenger Government ID (Aadhaar, Voter ID, or Passport)",
+        "Travel Origin, Destination & Date of Journey",
+        "Berth / Seat Preferences & Active Mobile Number"
+      ],
+      homline_charge: "₹50 - ₹150",
+      homline_fee: "₹50 - ₹150",
+      homline_fee_numeric: 80,
+      third_party_fee: "Actual Fare as per IRCTC / Airline / Bus Operator",
+      processing_time: "Instant / Under 30 Mins",
+      is_featured: true,
+      badge: "Fast Booking",
+      icon_class: "bi-ticket-perforated-fill"
+    },
+    {
+      id: "srv-posters",
+      slug: "design-posters",
+      categorySlug: "creative-printing-travel",
+      categoryName: "Creative, Printing & Travel",
+      title: "Design Posters & Social Media Banners",
+      short_summary: "Custom graphic designs for family functions, announcements, business flyers, and digital marketing banners.",
+      description: "Professional digital graphic design crafted by AMDG Media designers. Eye-catching posters for weddings, birthday celebrations, shop promotions, parish notices, obituary tributes, and Instagram/WhatsApp status announcements.",
+      required_documents: [
+        "Event or business text content & details",
+        "High-resolution photos / brand logo (if any)",
+        "Preferred size (A4, Flex banner, Story 9:16, or Square)"
+      ],
+      homline_charge: "₹150 - ₹400",
+      homline_fee: "₹150 - ₹400",
+      homline_fee_numeric: 250,
+      third_party_fee: "Printing / Flex charges extra if physical delivery required",
+      processing_time: "Same Day / Within 24 Hours",
+      is_featured: true,
+      badge: "Creative Wing",
+      icon_class: "bi-image-fill"
+    },
+    {
+      id: "srv-websites",
+      slug: "website-designs",
+      categorySlug: "creative-printing-travel",
+      categoryName: "Creative, Printing & Travel",
+      title: "Website Designs & Digital Landing Pages",
+      short_summary: "Clean, mobile-first responsive websites, landing pages & digital portfolios for businesses.",
+      description: "Modern, rapid-loading website design and business landing page setup powered by AMDG Media. Features mobile-first layouts, WhatsApp quick-chat buttons, Google Maps location integration, and SEO best practices.",
+      required_documents: [
+        "Business Profile & Services Offered",
+        "Owner Contact Details & Address",
+        "Logo and Photos of products / premises"
+      ],
+      homline_charge: "₹1,999 - ₹4,999",
+      homline_fee: "₹1,999 - ₹4,999",
+      homline_fee_numeric: 2500,
+      third_party_fee: "Domain & Hosting at actual provider pricing",
+      processing_time: "3 - 7 Working Days",
+      is_featured: true,
+      badge: "AMDG Tech",
+      icon_class: "bi-window-fullscreen"
+    },
+    {
+      id: "srv-dtp",
+      slug: "dtp-services",
+      categorySlug: "creative-printing-travel",
+      categoryName: "Creative, Printing & Travel",
+      title: "DTP (Desktop Publishing) & Malayalam / English Typing",
+      short_summary: "Accurate Malayalam & English computer typing, formatting of legal agreements, project reports & bio-data.",
+      description: "High-speed and error-free Desktop Publishing (DTP) in Malayalam (Unicode / ML-TT fonts) and English. We type and format rental agreements, affidavits, CV/resumes, school/college project reports, church notices, and government representations.",
+      required_documents: [
+        "Rough handwritten draft, scanned notes, or voice note of text",
+        "Specific paper format (A4, Legal, Stamp paper)"
+      ],
+      homline_charge: "₹40 - ₹100 per page",
+      homline_fee: "₹40 - ₹100 per page",
+      homline_fee_numeric: 60,
+      third_party_fee: "Stamp paper / Legal paper at actuals",
+      processing_time: "Same Day / 2 - 4 Hours",
+      is_featured: false,
+      badge: "Doorstep Print",
+      icon_class: "bi-fonts"
+    },
+    {
+      id: "srv-laminations",
+      slug: "laminations",
+      categorySlug: "creative-printing-travel",
+      categoryName: "Creative, Printing & Travel",
+      title: "Laminations (ID Cards, Certificates & Documents)",
+      short_summary: "Heavy-duty heat lamination for academic certificates, Aadhaar / Voter PVC cards, land tax receipts & records.",
+      description: "Protect your irreplaceable paper records from moisture, tearing, and aging. We provide premium 250-micron pouch heat lamination for SSLC/Degree marksheets, property documents, birth certificates, and identity cards with doorstep pickup and delivery.",
+      required_documents: [
+        "Physical document or printed copies to be laminated",
+        "Preferred size (ID Card, A4, or Legal)"
+      ],
+      homline_charge: "₹30 - ₹70 per item",
+      homline_fee: "₹30 - ₹70 per item",
+      homline_fee_numeric: 40,
+      third_party_fee: "None",
+      processing_time: "Doorstep Pickup / Same Day Return",
+      is_featured: false,
+      badge: "Protection",
+      icon_class: "bi-layers-fill"
+    },
+    {
+      id: "srv-frameworks",
+      slug: "frame-works",
+      categorySlug: "creative-printing-travel",
+      categoryName: "Creative, Printing & Travel",
+      title: "Frame Works & Custom Photo Mounting",
+      short_summary: "Artistic wooden, synthetic & acrylic framing for family portraits, religious icons, awards & certificates.",
+      description: "Cherish your proud achievements and family milestones with custom-crafted frames. High-clarity glass / acrylic facing, durable synthetic/wooden borders, and doorstep delivery handled with utmost care.",
+      required_documents: [
+        "Photo file for high-res printing or original picture to be framed",
+        "Frame size preference (8x10, 10x12, 12x18, or custom)",
+        "Border style selection (Classic Gold, Elegant Teak, Minimal Black)"
+      ],
+      homline_charge: "₹250 - ₹950",
+      homline_fee: "₹250 - ₹950",
+      homline_fee_numeric: 350,
+      third_party_fee: "None",
+      processing_time: "2 - 3 Working Days",
+      is_featured: true,
+      badge: "Art & Decor",
+      icon_class: "bi-gem"
     }
   ],
 

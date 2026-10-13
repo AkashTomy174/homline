@@ -1,4 +1,5 @@
 import uuid
+from django.conf import settings
 from django.utils import timezone
 from django.db import models
 from django.utils.text import slugify
@@ -102,25 +103,68 @@ class MembershipPlan(models.Model):
         return [b.strip() for b in self.welcome_benefits.split('\n') if b.strip()]
 
 
+class Announcement(models.Model):
+    message = models.CharField(max_length=255, help_text="Announcement text to display in the top bar")
+    badge_text = models.CharField(max_length=30, default="NEW", help_text="Badge label e.g. NEW, UPDATE, NOTICE")
+    link_url = models.CharField(max_length=255, blank=True, help_text="Optional link e.g. /services/ or https://...")
+    is_active = models.BooleanField(default=True, help_text="Show in top announcement bar")
+    order = models.IntegerField(default=0, help_text="Order in rotation")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', '-created_at']
+
+    def __str__(self):
+        return f"[{self.badge_text}] {self.message}"
+
+
 class MembershipEnquiry(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Processing', 'Processing'),
+        ('Approved', 'Approved'),
+        ('Active', 'Active'),
+        ('Answered', 'Answered'),
+        ('Closed', 'Closed'),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='membership_enquiries')
     name = models.CharField(max_length=120)
     mobile = models.CharField(max_length=20)
     email = models.EmailField(blank=True, null=True)
+    place = models.CharField(max_length=150, blank=True, default="Kerala")
     preferred_plan = models.ForeignKey(MembershipPlan, on_delete=models.SET_NULL, null=True, blank=True)
     notes = models.TextField(blank=True)
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='Pending')
+    membership_code = models.CharField(max_length=50, blank=True, null=True, unique=True, help_text="Unique Member ID, e.g. HOM-MBR-2026-0123")
+    open_date = models.DateField(null=True, blank=True)
+    valid_till = models.DateField(null=True, blank=True)
+    admin_notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-created_at']
+        verbose_name = 'Membership enquiry & card'
+        verbose_name_plural = 'Membership enquiries & cards'
 
     def __str__(self):
-        return f"Enquiry from {self.name} - {self.mobile}"
+        code_str = f" [{self.membership_code}]" if self.membership_code else ""
+        return f"Enquiry from {self.name} - {self.mobile}{code_str} ({self.status})"
 
 
 class ContactEnquiry(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Processing', 'Processing'),
+        ('Answered', 'Answered'),
+        ('Closed', 'Closed'),
+    ]
+
     name = models.CharField(max_length=120)
     mobile = models.CharField(max_length=20)
     message = models.TextField()
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='Pending')
+    admin_notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -129,7 +173,75 @@ class ContactEnquiry(models.Model):
         verbose_name_plural = 'Contact enquiries'
 
     def __str__(self):
-        return f"Contact enquiry from {self.name} ({self.created_at:%Y-%m-%d})"
+        return f"Contact enquiry from {self.name} ({self.status}) - {self.mobile}"
+
+
+class PwDRequest(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Processing', 'Processing'),
+        ('Answered', 'Answered'),
+        ('Closed', 'Closed'),
+    ]
+
+    ASSISTANCE_CHOICES = [
+        ('Doorstep Visit Assistance', 'Doorstep Visit Assistance'),
+        ('WhatsApp / Chat Support', 'WhatsApp / Chat Support'),
+        ('Direct Phone Call Support', 'Direct Phone Call Support'),
+        ('Mobility / Senior Support', 'Mobility / Senior Support'),
+        ('Voice / Visual Support', 'Voice / Visual Support'),
+        ('General Assistance', 'General Assistance'),
+    ]
+
+    name = models.CharField(max_length=120)
+    mobile = models.CharField(max_length=20)
+    place = models.CharField(max_length=150, blank=True)
+    assistance_type = models.CharField(max_length=50, choices=ASSISTANCE_CHOICES, default='Doorstep Visit Assistance')
+    service_needed = models.CharField(max_length=200)
+    details = models.TextField(blank=True)
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='Pending')
+    admin_notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'PwD Request'
+        verbose_name_plural = 'PwD Requests'
+
+    def __str__(self):
+        return f"PwD Request from {self.name} ({self.place or 'Kerala'}) - {self.status}"
+
+
+class ComplaintSuggestion(models.Model):
+    TYPE_CHOICES = [
+        ('Complaint', 'Complaint'),
+        ('Suggestion', 'Suggestion'),
+    ]
+
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Processing', 'Processing'),
+        ('Answered', 'Answered'),
+        ('Closed', 'Closed'),
+    ]
+
+    entry_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='Complaint')
+    name = models.CharField(max_length=120)
+    mobile = models.CharField(max_length=20)
+    email = models.EmailField(blank=True, null=True)
+    subject = models.CharField(max_length=200)
+    details = models.TextField()
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='Pending')
+    admin_notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Complaint / Suggestion'
+        verbose_name_plural = 'Complaints & Suggestions'
+
+    def __str__(self):
+        return f"[{self.entry_type}] {self.subject} by {self.name} ({self.status})"
 
 
 class ServiceRequest(models.Model):
@@ -148,6 +260,7 @@ class ServiceRequest(models.Model):
         ('Email', 'Email'),
     ]
 
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='service_requests')
     request_id = models.CharField(max_length=30, unique=True, default=generate_request_id)
     full_name = models.CharField(max_length=120)
     mobile = models.CharField(max_length=20)
@@ -157,6 +270,8 @@ class ServiceRequest(models.Model):
     requirement_details = models.TextField()
     contact_preference = models.CharField(max_length=20, choices=CONTACT_CHOICES, default='WhatsApp')
     document_upload = models.FileField(upload_to='service_docs/%Y/%m/', blank=True, null=True)
+    service_charge = models.CharField(max_length=100, default="₹150", blank=True, help_text="HOMline Assistance Charge (client can view on track page)")
+    portal_fee = models.CharField(max_length=100, default="As per Govt portal", blank=True, help_text="Official / Portal Fee (client can view on track page)")
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='Pending')
     admin_notes = models.TextField(blank=True, help_text="Notes visible or status updates")
     created_at = models.DateTimeField(auto_now_add=True)

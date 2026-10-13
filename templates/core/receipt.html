@@ -150,24 +150,34 @@
         </div>
       </div>
 
-      <!-- Financial / Charge Breakdown -->
+      <!-- Financial / Charge Breakdown & QR Code -->
       <div class="card border-1 mb-4" style="border-color: #00A6A6;">
-        <div class="card-header bg-light fw-bold text-navy">
-          <i class="bi bi-calculator me-1"></i> Service Charge & Fee Structure Notice
+        <div class="card-header bg-light fw-bold text-navy d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-calculator me-1"></i> Service Charge & Official Fee Schedule</span>
+          <span class="badge bg-teal text-white font-monospace" style="background-color: #00A6A6 !important;">VERIFIED RATE</span>
         </div>
-        <div class="card-body p-3 small text-muted">
-          <div class="d-flex justify-content-between mb-1">
-            <span>HOMline DIGI seva Assistance & Process Guidance Fee:</span>
-            <strong class="text-navy">As per Service Schedule</strong>
+        <div class="card-body p-3">
+          <div class="row align-items-center g-3">
+            <div class="col-md-8">
+              <div class="d-flex justify-content-between mb-2 pb-1 border-bottom">
+                <span class="text-muted">HOMline DIGI seva Assistance Fee:</span>
+                <strong class="text-navy font-monospace fs-6">{{ req_obj.service_charge|default:"₹150" }}</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2 pb-1 border-bottom">
+                <span class="text-muted">Official / Government Portal Fee:</span>
+                <strong class="text-teal font-monospace fs-6" style="color: #00A6A6 !important;">{{ req_obj.portal_fee|default:"As per Govt portal" }}</strong>
+              </div>
+              <small class="font-monospace text-muted d-block" style="font-size: 0.76rem;">
+                * Government application fees are charged strictly as per official portal tariffs. Rate set by HOMline operations desk.
+              </small>
+            </div>
+            <div class="col-md-4 text-center border-start">
+              {% if qr_code_url %}
+              <img src="{{ qr_code_url }}" alt="Receipt QR Code" width="95" height="95" class="border p-1 bg-white rounded shadow-sm mb-1">
+              <small class="d-block text-muted font-monospace" style="font-size: 0.68rem;">Scan to Verify Online</small>
+              {% endif %}
+            </div>
           </div>
-          <div class="d-flex justify-content-between mb-1">
-            <span>Third-Party / Government Application Portal Fee:</span>
-            <strong class="text-teal">Paid directly / Official Portal Rates</strong>
-          </div>
-          <hr class="my-2">
-          <span class="font-monospace" style="font-size: 0.78rem;">
-            * Official portal fees are determined by the respective government department, university, or institution.
-          </span>
         </div>
       </div>
 
@@ -184,7 +194,7 @@
         </div>
         <div class="text-end">
           <div class="fw-bold text-navy">HOMline DIGI seva</div>
-          <small class="text-muted">An Initiative of AMDG Group</small>
+          <small class="text-muted">A Division Of AMDG MEDIA | Powered By AMDG GROUP</small>
         </div>
       </div>
     </div>

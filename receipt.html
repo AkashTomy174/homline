@@ -82,6 +82,21 @@
               <th class="bg-light text-navy">Current Processing Status</th>
               <td><span class="badge bg-success px-3 py-2 rounded-pill font-monospace" id="receiptStatusBadge">Processing</span></td>
             </tr>
+            <tr>
+              <th class="bg-light text-navy">HOMline Service Charge</th>
+              <td class="fw-bold text-teal fs-6" id="receiptServiceCharge">₹150 - ₹250 (Doorstep Assistance)</td>
+            </tr>
+            <tr>
+              <th class="bg-light text-navy">Govt / Portal Fee</th>
+              <td class="fw-bold text-navy fs-6" id="receiptPortalFee">Paid to official portal / Actuals</td>
+            </tr>
+            <tr>
+              <th class="bg-light text-navy">Digital Verification QR</th>
+              <td>
+                <img id="receiptQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=HOMline" alt="Receipt QR" style="width: 80px; height: 80px; padding: 4px; border: 1px solid #cbd5e1; border-radius: 8px;">
+                <small class="text-muted d-block mt-1 font-monospace">Scan to verify authentic HOMline issuance</small>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -107,7 +122,7 @@
         </div>
         <div class="text-end">
           <div class="fw-bold text-navy font-monospace small">HOMline Verification Desk</div>
-          <small class="text-muted font-monospace">AMDG Group Digital Portal</small>
+          <small class="text-muted font-monospace">A Division Of AMDG MEDIA | Powered By AMDG GROUP</small>
         </div>
       </div>
     </div>

@@ -86,11 +86,37 @@ class HOMlineProjectTests(TestCase):
         self.assertContains(response, "Your digital tasks,")
         self.assertContains(response, reverse('admin:login'))
         self.assertContains(response, "6282268453")
+        self.assertContains(response, "Our Vision")
+        self.assertContains(response, "To make digital services simple, accessible, and convenient for everyone.")
+        self.assertContains(response, "Our Mission")
+        self.assertContains(response, "HOMline Founder")
+        self.assertContains(response, "founder.jpg")
 
     def test_about_page(self):
         response = self.client.get(reverse('about'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "About HOMline DIGI seva")
+        self.assertContains(response, "HOMline")
+        self.assertContains(response, "DIGI seva")
+        self.assertContains(response, "Why to Choose HOMline?")
+        self.assertContains(response, "What is HOMline?")
+        self.assertContains(response, "AMDG Group")
+        self.assertContains(response, "AMDG Media & Designs")
+        self.assertContains(response, "EVARA Tours & Decorations")
+        # Newly added brochure sections
+        self.assertContains(response, "PHASE 3")
+        self.assertContains(response, "HOMLINE ACROSS KERALA")
+        self.assertContains(response, "PHASE 4")
+        self.assertContains(response, "EXPANSION ACROSS INDIA")
+        self.assertContains(response, "THE BIGGER VISION")
+        self.assertContains(response, "Digital Assistance Ecosystem")
+        self.assertContains(response, "YUVA Manass")
+        self.assertContains(response, "FOUNDER’S MOTIVATION")
+        self.assertContains(response, "Social Work + Technology + Creativity + Accessibility")
+        self.assertContains(response, "WHAT HOMLINE ULTIMATELY STANDS FOR")
+        self.assertContains(response, "https://www.amdgmedia.co.in/homline")
+        self.assertContains(response, "homelinedigital@gmail.com")
+        self.assertContains(response, "A Division Of AMDG MEDIA")
+        self.assertContains(response, "Powered By AMDG GROUP")
 
     def test_services_list_page(self):
         response = self.client.get(reverse('services_list'))
@@ -276,4 +302,190 @@ class HOMlineProjectTests(TestCase):
             requirement_details='ID check'
         )
         self.assertEqual(len(created.request_id.rsplit('-', 1)[-1]), 16)
+
+    def test_pwd_request_submission(self):
+        response = self.client.post(reverse('pwd_request'), {
+            'name': 'Ramesh Kumar',
+            'mobile': '9847123456',
+            'place': 'Aluva',
+            'assistance_type': 'Doorstep Visit Assistance',
+            'service_needed': 'Disability Certificate Renewal',
+            'details': 'Wheelchair user, needs assistance at residence.'
+        })
+        self.assertEqual(response.status_code, 302)
+        from core.models import PwDRequest
+        self.assertTrue(PwDRequest.objects.filter(name='Ramesh Kumar').exists())
+
+    def test_complaint_suggestion_submission(self):
+        response = self.client.post(reverse('complaint_suggestion'), {
+            'entry_type': 'Suggestion',
+            'name': 'Anu Thomas',
+            'mobile': '9847654321',
+            'email': 'anu@example.com',
+            'subject': 'Add more DTP font options',
+            'details': 'Please add stylish Malayalam Unicode fonts.'
+        })
+        self.assertEqual(response.status_code, 302)
+        from core.models import ComplaintSuggestion
+        self.assertTrue(ComplaintSuggestion.objects.filter(name='Anu Thomas').exists())
+
+    def test_membership_card_and_check(self):
+        from core.models import MembershipEnquiry
+        mem = MembershipEnquiry.objects.create(
+            name='Joseph Paul',
+            mobile='9447112233',
+            place='Kochi',
+            preferred_plan=self.plan,
+            status='Active',
+            membership_code='HOM-MBR-2026-TEST'
+        )
+        # Test direct card view
+        card_res = self.client.get(reverse('membership_card', kwargs={'membership_code': 'HOM-MBR-2026-TEST'}))
+        self.assertEqual(card_res.status_code, 200)
+        self.assertContains(card_res, 'Joseph Paul')
+        self.assertContains(card_res, 'HOM-MBR-2026-TEST')
+        self.assertContains(card_res, 'AMDG MEDIA')
+
+        # Test check membership query
+        check_res = self.client.get(reverse('membership'), {'check_code': 'HOM-MBR-2026-TEST'})
+        self.assertEqual(check_res.status_code, 200)
+        self.assertContains(check_res, 'Joseph Paul')
+        self.assertContains(check_res, 'HOM-MBR-2026-TEST')
+
+    def test_track_fee_breakdown_and_qr(self):
+        self.service_request.service_charge = "₹200.00"
+        self.service_request.portal_fee = "₹107.00"
+        self.service_request.save()
+        response = self.client.get(reverse('track_request_with_id', kwargs={'request_id': self.service_request.request_id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "₹200.00")
+        self.assertContains(response, "₹107.00")
+        self.assertContains(response, "api.qrserver.com")
+
+    def test_homepage_accessible_without_login(self):
+        # Visitor can access homepage without authentication
+        response = self.client.get(reverse('home'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Sign In")
+        self.assertContains(response, "Sign Up")
+        self.assertContains(response, "Explore Services")
+
+    def test_services_browsing_without_login(self):
+        # Visitor can browse services catalog and service detail without logging in
+        res_list = self.client.get(reverse('services_list'))
+        self.assertEqual(res_list.status_code, 200)
+        self.assertContains(res_list, self.service.title)
+
+        res_detail = self.client.get(reverse('service_detail', kwargs={'slug': self.service.slug}))
+        self.assertEqual(res_detail.status_code, 200)
+        self.assertContains(res_detail, self.service.title)
+        self.assertContains(res_detail, self.service.homline_charge)
+
+    def test_user_signup_login_logout_flow(self):
+        # 1. Sign up new regular user
+        signup_data = {
+            'full_name': 'Meera Krishnan',
+            'username': 'meerak',
+            'email': 'meera@example.com',
+            'password': 'SecurePassword123!',
+            'confirm_password': 'SecurePassword123!'
+        }
+        res_signup = self.client.post(reverse('signup'), signup_data, follow=True)
+        self.assertEqual(res_signup.status_code, 200)
+        self.assertIn(reverse('dashboard'), [r[0] for r in res_signup.redirect_chain])
+        
+        # Verify user attributes
+        user = get_user_model().objects.get(username='meerak')
+        self.assertFalse(user.is_staff)
+        self.assertFalse(user.is_superuser)
+        self.assertEqual(user.first_name, 'Meera Krishnan')
+
+        # Verify user is logged in and sees username on home
+        res_home = self.client.get(reverse('home'))
+        self.assertEqual(res_home.status_code, 200)
+        self.assertContains(res_home, 'meerak')
+
+        # 2. Logout
+        res_logout = self.client.get(reverse('logout'))
+        self.assertEqual(res_logout.status_code, 302)
+
+        # 3. Log in with email identifier
+        res_login = self.client.post(reverse('login'), {
+            'username': 'meera@example.com',
+            'password': 'SecurePassword123!',
+            'remember_me': True
+        }, follow=True)
+        self.assertEqual(res_login.status_code, 200)
+        self.assertIn(reverse('dashboard'), [r[0] for r in res_login.redirect_chain])
+
+    def test_dashboard_requires_login(self):
+        res = self.client.get(reverse('dashboard'))
+        self.assertEqual(res.status_code, 302)
+        self.assertIn(reverse('login'), res['Location'])
+
+    def test_dashboard_authenticated_and_profile_actions(self):
+        user = get_user_model().objects.create_user(
+            username='arjun_client',
+            email='arjun@example.com',
+            password='InitialPassword123!',
+            first_name='Arjun Nair'
+        )
+        self.client.force_login(user)
+
+        # Create a service request for this user
+        sr = ServiceRequest.objects.create(
+            user=user,
+            service=self.service,
+            full_name='Arjun Nair',
+            mobile='9846123456',
+            email='arjun@example.com',
+            requirement_details='Need PAN application assistance'
+        )
+
+        # 1. View dashboard
+        res_dash = self.client.get(reverse('dashboard'))
+        self.assertEqual(res_dash.status_code, 200)
+        self.assertContains(res_dash, 'Arjun Nair')
+        self.assertContains(res_dash, sr.request_id)
+        self.assertContains(res_dash, 'My Service Requests')
+
+        # 2. Update profile
+        res_prof = self.client.post(reverse('dashboard'), {
+            'action': 'update_profile',
+            'first_name': 'Arjun V. Nair',
+            'email': 'arjun.updated@example.com'
+        }, follow=True)
+        self.assertEqual(res_prof.status_code, 200)
+        user.refresh_from_db()
+        self.assertEqual(user.first_name, 'Arjun V. Nair')
+        self.assertEqual(user.email, 'arjun.updated@example.com')
+
+        # 3. Change password
+        res_pwd = self.client.post(reverse('dashboard'), {
+            'action': 'change_password',
+            'old_password': 'InitialPassword123!',
+            'new_password1': 'UpdatedSecret456#',
+            'new_password2': 'UpdatedSecret456#'
+        }, follow=True)
+        self.assertEqual(res_pwd.status_code, 200)
+        # Verify user still authenticated
+        res_check = self.client.get(reverse('dashboard'))
+        self.assertEqual(res_check.status_code, 200)
+
+        # 4. Link an offline request
+        offline_sr = ServiceRequest.objects.create(
+            service=self.service,
+            full_name='Walk-in Customer',
+            mobile='9000000000',
+            requirement_details='Offline ticket counter request'
+        )
+        res_link = self.client.post(reverse('dashboard'), {
+            'action': 'link_request',
+            'request_id': offline_sr.request_id
+        }, follow=True)
+        self.assertEqual(res_link.status_code, 200)
+        offline_sr.refresh_from_db()
+        self.assertEqual(offline_sr.user, user)
+
+
 

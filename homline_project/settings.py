@@ -31,7 +31,7 @@ if not SECRET_KEY:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 ALLOWED_HOSTS = [host.strip() for host in os.environ.get(
-    'ALLOWED_HOSTS', 'localhost,127.0.0.1,.localhost'
+    'ALLOWED_HOSTS', 'localhost,127.0.0.1,.localhost,testserver'
 ).split(',') if host.strip()]
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 VERCEL_URL = os.environ.get('VERCEL_URL')
@@ -98,6 +98,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
+                'core.context_processors.global_site_context',
             ],
         },
     },

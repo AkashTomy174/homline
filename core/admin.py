@@ -1,15 +1,22 @@
 import csv
 import urllib.parse
+import secrets
+from datetime import timedelta
 from django.contrib import admin
 from django.http import HttpResponse
 from django.utils.html import format_html
+from django.utils import timezone
 from django.urls import reverse
 from django import forms
 from django.db import transaction
 from django.db.models import Count, Q
+from django.contrib.auth.models import User, Permission
+from django.contrib.auth.admin import UserAdmin
+
 from .models import (
     Category, Service, Update, MembershipPlan, 
-    MembershipEnquiry, ContactEnquiry, ServiceRequest, ServiceRequestLog, FAQ, CustomerReview
+    MembershipEnquiry, ContactEnquiry, ServiceRequest, ServiceRequestLog, 
+    FAQ, CustomerReview, Announcement, PwDRequest, ComplaintSuggestion
 )
 
 
@@ -31,7 +38,14 @@ def custom_admin_index(request, extra_context=None):
     extra_context['total_services'] = Service.objects.count()
     extra_context['total_categories'] = Category.objects.count()
     extra_context['total_enquiries'] = MembershipEnquiry.objects.count()
+    extra_context['approved_memberships'] = MembershipEnquiry.objects.filter(status__in=['Approved', 'Active']).count()
     extra_context['total_contact_enquiries'] = ContactEnquiry.objects.count()
+    extra_context['total_pwd_requests'] = PwDRequest.objects.count()
+    extra_context['pending_pwd_requests'] = PwDRequest.objects.filter(status='Pending').count()
+    extra_context['total_complaints'] = ComplaintSuggestion.objects.count()
+    extra_context['pending_complaints'] = ComplaintSuggestion.objects.filter(status='Pending').count()
+    extra_context['total_announcements'] = Announcement.objects.count()
+
     recent_query = request.GET.get('request_search', '').strip()
     recent_requests = ServiceRequest.objects.select_related('service').order_by('-created_at')
     if recent_query:
@@ -49,11 +63,67 @@ def custom_admin_index(request, extra_context=None):
 admin.site.index = custom_admin_index
 
 
+# Custom User Admin for Seamless Staff Access & Role Management
+try:
+    admin.site.unregister(User)
+except admin.sites.NotRegistered:
+    pass
+
+@admin.register(User)
+class HOMlineUserAdmin(UserAdmin):
+    list_display = ('username', 'email', 'first_name', 'last_name', 'login_access_badge', 'staff_role_tag', 'is_active', 'date_joined')
+    list_filter = ('is_staff', 'is_superuser', 'is_active')
+    actions = ['grant_operations_staff_access', 'grant_superuser_admin_access', 'revoke_staff_access']
+
+    def login_access_badge(self, obj):
+        if obj.is_staff or obj.is_superuser:
+            return format_html('<span style="background: #dcfce7; color: #15803d; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">{}</span>', '✅ Login Enabled')
+        return format_html('<span style="background: #fee2e2; color: #b91c1c; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">{}</span>', '❌ No Login Access')
+    login_access_badge.short_description = "Admin Access"
+
+    def staff_role_tag(self, obj):
+        if obj.is_superuser:
+            return format_html('<span style="background: #ede9fe; color: #6d28d9; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">{}</span>', '👑 Superadmin')
+        elif obj.is_staff:
+            return format_html('<span style="background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">{}</span>', '⚡ Operations Staff')
+        return '-'
+    staff_role_tag.short_description = "Role"
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        # When user is saved as staff, grant core app permissions so they don't get permission errors
+        if obj.is_staff and not obj.is_superuser:
+            core_perms = Permission.objects.filter(content_type__app_label='core')
+            obj.user_permissions.add(*core_perms)
+
+    def grant_operations_staff_access(self, request, queryset):
+        core_perms = Permission.objects.filter(content_type__app_label='core')
+        count = 0
+        for user in queryset:
+            user.is_staff = True
+            user.is_active = True
+            user.save()
+            user.user_permissions.add(*core_perms)
+            count += 1
+        self.message_user(request, f"{count} user(s) granted HOMline Operations Staff Access (Login enabled with full core permissions).")
+    grant_operations_staff_access.short_description = "⚡ Grant Staff Login Access (Operations & Core Permissions)"
+
+    def grant_superuser_admin_access(self, request, queryset):
+        queryset.update(is_staff=True, is_superuser=True, is_active=True)
+        self.message_user(request, "Selected user(s) granted Superuser Administrator status.")
+    grant_superuser_admin_access.short_description = "👑 Grant Superuser Admin Access"
+
+    def revoke_staff_access(self, request, queryset):
+        queryset.update(is_staff=False, is_superuser=False)
+        self.message_user(request, "Staff login access revoked for selected user(s).")
+    revoke_staff_access.short_description = "🚫 Revoke Staff Login Access"
+
+
 def export_requests_csv(modeladmin, request, queryset):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="homline_service_requests.csv"'
     writer = csv.writer(response)
-    writer.writerow(['Request ID', 'Full Name', 'Mobile', 'Email', 'Service', 'Status', 'Preference', 'Created At'])
+    writer.writerow(['Request ID', 'Full Name', 'Mobile', 'Email', 'Service', 'Service Charge', 'Govt Fee', 'Status', 'Preference', 'Created At'])
     for obj in queryset:
         writer.writerow([
             obj.request_id,
@@ -61,6 +131,8 @@ def export_requests_csv(modeladmin, request, queryset):
             obj.mobile,
             obj.email or '',
             obj.get_service_title(),
+            obj.service_charge,
+            obj.portal_fee,
             obj.status,
             obj.contact_preference,
             obj.created_at.strftime('%Y-%m-%d %H:%M:%S')
@@ -68,6 +140,21 @@ def export_requests_csv(modeladmin, request, queryset):
     return response
 
 export_requests_csv.short_description = "📊 Export Selected Requests to CSV"
+
+
+@admin.register(Announcement)
+class AnnouncementAdmin(admin.ModelAdmin):
+    list_display = ('badge_tag', 'message', 'link_url', 'is_active', 'order', 'created_at')
+    list_editable = ('is_active', 'order')
+    list_filter = ('is_active',)
+    search_fields = ('message', 'badge_text')
+
+    def badge_tag(self, obj):
+        return format_html(
+            '<span style="background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">{}</span>',
+            obj.badge_text
+        )
+    badge_tag.short_description = "Badge"
 
 
 class ServiceRequestLogInline(admin.TabularInline):
@@ -107,7 +194,6 @@ class CategoryAdmin(admin.ModelAdmin):
     @admin.display(description='Services', ordering='_service_count')
     def service_count_badge(self, obj):
         return format_html('<span class="admin-count-badge">{} service{}</span>', obj._service_count, '' if obj._service_count == 1 else 's')
-
 
 
 @admin.register(Service)
@@ -167,16 +253,20 @@ class MembershipPlanAdmin(admin.ModelAdmin):
 
 @admin.register(MembershipEnquiry)
 class MembershipEnquiryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'contact_info', 'plan_badge', 'quick_whatsapp', 'created_at')
-    list_filter = ('preferred_plan', 'created_at')
-    search_fields = ('name', 'mobile', 'email')
+    list_display = (
+        'name', 'place', 'contact_info', 'plan_badge', 
+        'membership_code_badge', 'status_badge', 
+        'quick_whatsapp_action', 'view_card_btn', 'valid_till', 'created_at'
+    )
+    list_filter = ('status', 'preferred_plan', 'created_at')
+    search_fields = ('name', 'mobile', 'email', 'place', 'membership_code')
+    readonly_fields = ('created_at',)
+    actions = ['verify_and_approve_membership', 'mark_as_active', 'mark_as_closed']
 
     def contact_info(self, obj):
         email_line = format_html('<br><span style="color: #64748b; font-size: 11px;">{}</span>', obj.email) if obj.email else ''
         return format_html('<strong>{}</strong>{}', obj.mobile, email_line)
     contact_info.short_description = "Contact"
-
-
 
     def plan_badge(self, obj):
         if obj.preferred_plan:
@@ -187,36 +277,246 @@ class MembershipEnquiryAdmin(admin.ModelAdmin):
         return '<span style="color: #94a3b8;">General</span>'
     plan_badge.short_description = "Preferred Plan"
 
-    def quick_whatsapp(self, obj):
+    def membership_code_badge(self, obj):
+        if obj.membership_code:
+            return format_html(
+                '<span style="font-family: monospace; font-weight: 700; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 3px 8px; border-radius: 6px; font-size: 11px;">{}</span>',
+                obj.membership_code
+            )
+        return '<span style="color: #94a3b8; font-size: 11px;">Not Issued</span>'
+    membership_code_badge.short_description = "Membership Code"
+
+    def status_badge(self, obj):
+        colors = {
+            'Pending': ('#b45309', '#fef3c7'),
+            'Processing': ('#0284c7', '#e0f2fe'),
+            'Approved': ('#15803d', '#dcfce7'),
+            'Active': ('#059669', '#d1fae5'),
+            'Answered': ('#4f46e5', '#e0e7ff'),
+            'Closed': ('#64748b', '#f1f5f9'),
+        }
+        fg, bg = colors.get(obj.status, ('#475569', '#f1f5f9'))
+        return format_html(
+            '<span style="background: {}; color: {}; padding: 3px 8px; border-radius: 12px; font-weight: 700; font-size: 11px;">{}</span>',
+            bg, fg, obj.status
+        )
+    status_badge.short_description = "Status"
+
+    def quick_whatsapp_action(self, obj):
         clean_mob = "".join([c for c in obj.mobile if c.isdigit()])
         if len(clean_mob) == 10:
             clean_mob = "91" + clean_mob
         plan_name = obj.preferred_plan.name if obj.preferred_plan else "HOMline Membership"
-        msg = f"Hi {obj.name}, HOMline support here regarding your enquiry for {plan_name}."
+        
+        if obj.status in ('Approved', 'Active') and obj.membership_code:
+            valid_str = obj.valid_till.strftime('%d-%m-%Y') if obj.valid_till else "1 Year"
+            msg = (
+                f"Dear {obj.name}, Greetings from HOMline DIGI seva! "
+                f"Your {plan_name} has been APPROVED! "
+                f"Unique Membership Code: {obj.membership_code}. "
+                f"Valid Till: {valid_str}. "
+                f"Open Date: {obj.open_date.strftime('%d-%m-%Y') if obj.open_date else 'Today'}. "
+                f"You can view and download your official Membership Card on our website. "
+                f"Thank you for choosing HOMline!"
+            )
+            btn_label = "Send Approval"
+            btn_color = "#16a34a"
+        else:
+            msg = f"Hi {obj.name}, HOMline support team here regarding your enquiry for {plan_name}."
+            btn_label = "Chat"
+            btn_color = "#0d9488"
+
         url = f"https://wa.me/{clean_mob}?text={urllib.parse.quote(msg)}"
         return format_html(
-            '<a href="{}" target="_blank" style="display: inline-flex; align-items: center; gap: 4px; background: #25d366; color: white; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600;">'
-            '<i class="bi bi-whatsapp"></i> Chat'
-            '</a>',
-            url
+            '<a href="{}" target="_blank" style="display: inline-flex; align-items: center; gap: 4px; background: {}; color: white; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: 700;">'
+            '<i class="bi bi-whatsapp"></i> {}</a>',
+            url, btn_color, btn_label
         )
-    quick_whatsapp.short_description = "WhatsApp"
+    quick_whatsapp_action.short_description = "WhatsApp"
+
+    def view_card_btn(self, obj):
+        if obj.membership_code:
+            url = reverse('membership_card', kwargs={'membership_code': obj.membership_code})
+            return format_html(
+                '<a href="{}" target="_blank" style="display: inline-flex; align-items: center; gap: 4px; background: #1e40af; color: white; padding: 4px 8px; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: 600;">'
+                '<i class="bi bi-person-badge"></i> Card</a>',
+                url
+            )
+        return '-'
+    view_card_btn.short_description = "Card"
+
+    def verify_and_approve_membership(self, request, queryset):
+        count = 0
+        for obj in queryset:
+            if not obj.membership_code:
+                random_hex = secrets.token_hex(2).upper()
+                obj.membership_code = f"HOM-MBR-{timezone.localdate().year}-{random_hex}"
+            obj.status = 'Approved'
+            if not obj.open_date:
+                obj.open_date = timezone.localdate()
+            if not obj.valid_till:
+                obj.valid_till = timezone.localdate() + timedelta(days=365)
+            obj.save()
+            count += 1
+        self.message_user(request, f"{count} membership application(s) verified & approved with unique membership code.")
+    verify_and_approve_membership.short_description = "✅ Verify & Approve (Generate Code & 1-Yr Validity)"
+
+    def mark_as_active(self, request, queryset):
+        queryset.update(status='Active')
+        self.message_user(request, "Selected membership(s) marked as Active.")
+    mark_as_active.short_description = "🌟 Mark as Active"
+
+    def mark_as_closed(self, request, queryset):
+        queryset.update(status='Closed')
+        self.message_user(request, "Selected membership(s) marked as Closed.")
+    mark_as_closed.short_description = "📁 Mark as Closed"
 
 
-class ServiceRequestAdminForm(forms.ModelForm):
-    class Meta:
-        model = ServiceRequest
-        fields = '__all__'
-        widgets = {'document_upload': forms.FileInput(attrs={'accept': '.pdf,.doc,.docx,.jpg,.jpeg,.png'})}
+@admin.register(PwDRequest)
+class PwDRequestAdmin(admin.ModelAdmin):
+    list_display = (
+        'name', 'place', 'mobile', 'assistance_type_badge', 
+        'service_needed', 'status_badge', 'quick_actions', 'created_at'
+    )
+    list_filter = ('status', 'assistance_type', 'created_at')
+    search_fields = ('name', 'mobile', 'place', 'service_needed', 'details', 'admin_notes')
+    readonly_fields = ('created_at',)
+    actions = ['mark_as_processing', 'mark_as_answered', 'mark_as_closed']
+
+    def assistance_type_badge(self, obj):
+        return format_html(
+            '<span style="background: #e0e7ff; color: #3730a3; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 11px;">'
+            '<i class="bi bi-universal-access"></i> {}'
+            '</span>',
+            obj.assistance_type
+        )
+    assistance_type_badge.short_description = "Assistance Type"
+
+    def status_badge(self, obj):
+        colors = {
+            'Pending': ('#b45309', '#fef3c7'),
+            'Processing': ('#0284c7', '#e0f2fe'),
+            'Answered': ('#15803d', '#dcfce7'),
+            'Closed': ('#64748b', '#f1f5f9'),
+        }
+        fg, bg = colors.get(obj.status, ('#475569', '#f1f5f9'))
+        return format_html(
+            '<span style="background: {}; color: {}; padding: 3px 8px; border-radius: 12px; font-weight: 700; font-size: 11px;">{}</span>',
+            bg, fg, obj.status
+        )
+    status_badge.short_description = "Status"
+
+    def quick_actions(self, obj):
+        clean_mob = "".join([c for c in obj.mobile if c.isdigit()])
+        if len(clean_mob) == 10:
+            clean_mob = "91" + clean_mob
+        msg = f"Hi {obj.name}, HOMline PwD-Friendly Assistance Desk here regarding your request for {obj.service_needed}. How can we support you best?"
+        wa_url = f"https://wa.me/{clean_mob}?text={urllib.parse.quote(msg)}"
+        return format_html(
+            '<a href="tel:{}" style="margin-right: 6px; display: inline-flex; align-items: center; gap: 3px; background: #1e293b; color: white; padding: 4px 8px; border-radius: 6px; text-decoration: none; font-size: 11px;"><i class="bi bi-telephone-fill"></i> Call</a>'
+            '<a href="{}" target="_blank" style="display: inline-flex; align-items: center; gap: 3px; background: #22c55e; color: white; padding: 4px 8px; border-radius: 6px; text-decoration: none; font-size: 11px;"><i class="bi bi-whatsapp"></i> WhatsApp</a>',
+            obj.mobile, wa_url
+        )
+    quick_actions.short_description = "Follow up"
+
+    def mark_as_processing(self, request, queryset):
+        queryset.update(status='Processing')
+        self.message_user(request, "Selected PwD request(s) marked as Processing.")
+    mark_as_processing.short_description = "Status ➔ Processing"
+
+    def mark_as_answered(self, request, queryset):
+        queryset.update(status='Answered')
+        self.message_user(request, "Selected PwD request(s) marked as Answered.")
+    mark_as_answered.short_description = "Status ➔ Answered"
+
+    def mark_as_closed(self, request, queryset):
+        queryset.update(status='Closed')
+        self.message_user(request, "Selected PwD request(s) marked as Closed.")
+    mark_as_closed.short_description = "Status ➔ Closed"
+
+
+@admin.register(ComplaintSuggestion)
+class ComplaintSuggestionAdmin(admin.ModelAdmin):
+    list_display = (
+        'type_badge', 'subject', 'name', 'mobile', 
+        'status_badge', 'quick_actions', 'created_at'
+    )
+    list_filter = ('entry_type', 'status', 'created_at')
+    search_fields = ('name', 'mobile', 'email', 'subject', 'details', 'admin_notes')
+    readonly_fields = ('created_at',)
+    actions = ['mark_as_processing', 'mark_as_answered', 'mark_as_closed']
+
+    def type_badge(self, obj):
+        if obj.entry_type == 'Complaint':
+            return format_html('<span style="background: #fee2e2; color: #b91c1c; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">{}</span>', '⚠️ Complaint')
+        return format_html('<span style="background: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">{}</span>', '💡 Suggestion')
+    type_badge.short_description = "Type"
+
+    def status_badge(self, obj):
+        colors = {
+            'Pending': ('#b45309', '#fef3c7'),
+            'Processing': ('#0284c7', '#e0f2fe'),
+            'Answered': ('#15803d', '#dcfce7'),
+            'Closed': ('#64748b', '#f1f5f9'),
+        }
+        fg, bg = colors.get(obj.status, ('#475569', '#f1f5f9'))
+        return format_html(
+            '<span style="background: {}; color: {}; padding: 3px 8px; border-radius: 12px; font-weight: 700; font-size: 11px;">{}</span>',
+            bg, fg, obj.status
+        )
+    status_badge.short_description = "Status"
+
+    def quick_actions(self, obj):
+        clean_mob = "".join([c for c in obj.mobile if c.isdigit()])
+        if len(clean_mob) == 10:
+            clean_mob = "91" + clean_mob
+        msg = f"Hi {obj.name}, HOMline management team following up on your {obj.entry_type} ({obj.subject})."
+        wa_url = f"https://wa.me/{clean_mob}?text={urllib.parse.quote(msg)}"
+        return format_html(
+            '<a href="tel:{}" style="margin-right: 6px; display: inline-flex; align-items: center; gap: 3px; background: #1e293b; color: white; padding: 4px 8px; border-radius: 6px; text-decoration: none; font-size: 11px;"><i class="bi bi-telephone-fill"></i> Call</a>'
+            '<a href="{}" target="_blank" style="display: inline-flex; align-items: center; gap: 3px; background: #22c55e; color: white; padding: 4px 8px; border-radius: 6px; text-decoration: none; font-size: 11px;"><i class="bi bi-whatsapp"></i> WhatsApp</a>',
+            obj.mobile, wa_url
+        )
+    quick_actions.short_description = "Follow up"
+
+    def mark_as_processing(self, request, queryset):
+        queryset.update(status='Processing')
+        self.message_user(request, "Selected item(s) marked as Processing.")
+    mark_as_processing.short_description = "Status ➔ Processing"
+
+    def mark_as_answered(self, request, queryset):
+        queryset.update(status='Answered')
+        self.message_user(request, "Selected item(s) marked as Answered.")
+    mark_as_answered.short_description = "Status ➔ Answered"
+
+    def mark_as_closed(self, request, queryset):
+        queryset.update(status='Closed')
+        self.message_user(request, "Selected item(s) marked as Closed.")
+    mark_as_closed.short_description = "Status ➔ Closed"
 
 
 @admin.register(ContactEnquiry)
 class ContactEnquiryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'mobile', 'quick_actions', 'created_at')
+    list_display = ('name', 'mobile', 'status_badge', 'quick_actions', 'created_at')
     search_fields = ('name', 'mobile', 'message')
-    list_filter = ('created_at',)
+    list_filter = ('status', 'created_at')
     readonly_fields = ('created_at',)
-    fields = ('name', 'mobile', 'message', 'created_at')
+    fields = ('name', 'mobile', 'message', 'status', 'admin_notes', 'created_at')
+    actions = ['mark_as_processing', 'mark_as_answered', 'mark_as_closed']
+
+    def status_badge(self, obj):
+        colors = {
+            'Pending': ('#b45309', '#fef3c7'),
+            'Processing': ('#0284c7', '#e0f2fe'),
+            'Answered': ('#15803d', '#dcfce7'),
+            'Closed': ('#64748b', '#f1f5f9'),
+        }
+        fg, bg = colors.get(obj.status, ('#475569', '#f1f5f9'))
+        return format_html(
+            '<span style="background: {}; color: {}; padding: 3px 8px; border-radius: 12px; font-weight: 700; font-size: 11px;">{}</span>',
+            bg, fg, obj.status
+        )
+    status_badge.short_description = "Status"
 
     def quick_actions(self, obj):
         digits = ''.join(character for character in obj.mobile if character.isdigit())
@@ -229,6 +529,28 @@ class ContactEnquiryAdmin(admin.ModelAdmin):
         )
     quick_actions.short_description = 'Follow up'
 
+    def mark_as_processing(self, request, queryset):
+        queryset.update(status='Processing')
+        self.message_user(request, "Selected enquiry(ies) marked as Processing.")
+    mark_as_processing.short_description = "Status ➔ Processing"
+
+    def mark_as_answered(self, request, queryset):
+        queryset.update(status='Answered')
+        self.message_user(request, "Selected enquiry(ies) marked as Answered.")
+    mark_as_answered.short_description = "Status ➔ Answered"
+
+    def mark_as_closed(self, request, queryset):
+        queryset.update(status='Closed')
+        self.message_user(request, "Selected enquiry(ies) marked as Closed.")
+    mark_as_closed.short_description = "Status ➔ Closed"
+
+
+class ServiceRequestAdminForm(forms.ModelForm):
+    class Meta:
+        model = ServiceRequest
+        fields = '__all__'
+        widgets = {'document_upload': forms.FileInput(attrs={'accept': '.pdf,.doc,.docx,.jpg,.jpeg,.png'})}
+
 
 @admin.register(ServiceRequest)
 class ServiceRequestAdmin(admin.ModelAdmin):
@@ -237,6 +559,7 @@ class ServiceRequestAdmin(admin.ModelAdmin):
         'request_id_badge', 
         'customer_card', 
         'service_display', 
+        'pricing_display',
         'status_badge', 
         'quick_actions', 
         'contact_preference', 
@@ -265,12 +588,23 @@ class ServiceRequestAdmin(admin.ModelAdmin):
         ('Service Details', {
             'fields': ('service', 'service_name_manual', 'requirement_details', 'document_upload', 'document_download')
         }),
+        ('Service Pricing & Charges (Editable by Admin)', {
+            'fields': ('service_charge', 'portal_fee'),
+            'description': 'These charges are visible to the client when they track status or download the receipt.'
+        }),
         ('System Timestamps', {
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',)
         }),
     )
     readonly_fields = ('request_id', 'created_at', 'updated_at', 'document_download')
+
+    def pricing_display(self, obj):
+        return format_html(
+            '<div style="font-size: 11px;"><strong>HOM:</strong> {}<br><span style="color: #64748b;"><strong>Govt:</strong> {}</span></div>',
+            obj.service_charge or '₹150', obj.portal_fee or '₹0'
+        )
+    pricing_display.short_description = "Rates (Admin Set)"
 
     def document_download(self, obj):
         if not obj or not obj.document_upload:
@@ -360,7 +694,6 @@ class ServiceRequestAdmin(admin.ModelAdmin):
         )
     quick_actions.short_description = "Quick Actions"
 
-
     # Status Bulk Actions
     def mark_as_under_review(self, request, queryset):
         self._set_status(request, queryset, 'Under Review')
@@ -377,7 +710,6 @@ class ServiceRequestAdmin(admin.ModelAdmin):
     def mark_as_cancelled(self, request, queryset):
         self._set_status(request, queryset, 'Cancelled')
     mark_as_cancelled.short_description = "Status ➔ Mark as Cancelled"
-
 
     def mark_as_information_required(self, request, queryset):
         self._set_status(request, queryset, 'Information Required')

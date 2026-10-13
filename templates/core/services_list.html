@@ -67,7 +67,7 @@
     <div class="row g-4" id="servicesGrid">
       {% for service in services %}
       <div class="col-lg-4 col-md-6 service-result" data-title="{{ service.title|lower }}" data-search="{{ service.title|lower }} {{ service.short_summary|lower }} {{ service.category.name|lower }}">
-        <article class="service-directory-card h-100">
+        <article class="service-directory-card service-card-animated h-100">
           <div class="service-card-top">
             <div class="service-directory-icon"><i class="bi {{ service.icon_class }}"></i></div>
             {% if service.badge %}<span class="badge bg-gold text-dark rounded-pill">{{ service.badge }}</span>{% endif %}
@@ -98,6 +98,63 @@
         </article>
       </div>
       {% endfor %}
+    </div>
+
+    <!-- Quick Enquiry Form Connected Directly to WhatsApp -->
+    <div class="homline-card bg-white p-4 p-md-5 mt-5 shadow-sm border border-teal-subtle rounded-4">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-5">
+          <span class="badge bg-gold text-dark font-monospace fw-bold mb-2">INSTANT ENQUIRY</span>
+          <h3 class="fw-bold text-navy mb-2">Can't Find Your Service or Need Immediate Help?</h3>
+          <p class="text-muted mb-4">
+            Send your service enquiry directly to our WhatsApp assistance team. We handle custom typing, registrations, ticket booking, poster design, DTP, laminations, and framing.
+          </p>
+          <div class="d-flex flex-column gap-2 text-muted small">
+            <div><i class="bi bi-check2-circle text-teal me-2"></i> Instant caseworker response on WhatsApp</div>
+            <div><i class="bi bi-check2-circle text-teal me-2"></i> Transparent nominal service charges</div>
+            <div><i class="bi bi-check2-circle text-teal me-2"></i> Zero travel required from your home</div>
+          </div>
+        </div>
+
+        <div class="col-lg-7">
+          <form id="servicesWhatsAppForm" class="p-3 bg-soft-mist rounded-4 border">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-navy small">Your Full Name *</label>
+                <input type="text" id="waEnquiryName" class="form-control" placeholder="Enter full name" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-navy small">WhatsApp Number *</label>
+                <input type="tel" id="waEnquiryPhone" class="form-control" placeholder="Mobile / WhatsApp" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-bold text-navy small">Service Interested In *</label>
+                <select id="waEnquiryService" class="form-select">
+                  <option value="Ticket Bookings (Train, Flight, Bus)">Ticket Bookings (Train, Flight, Bus)</option>
+                  <option value="Design Posters">Design Posters</option>
+                  <option value="Website Designs">Website Designs</option>
+                  <option value="DTP & Typing Works">DTP & Typing Works</option>
+                  <option value="Laminations">Laminations</option>
+                  <option value="Frame Works">Frame Works</option>
+                  <option value="PAN Card Application">PAN Card Application</option>
+                  <option value="Passport Appointment">Passport Appointment</option>
+                  <option value="Voter ID Card">Voter ID Card</option>
+                  <option value="Other Custom Service">Other Custom Service</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-bold text-navy small">Specific Notes / Requirement Details</label>
+                <textarea id="waEnquiryNotes" class="form-control" rows="2" placeholder="Briefly describe what you need..."></textarea>
+              </div>
+              <div class="col-12 text-end">
+                <button type="submit" class="btn btn-whatsapp btn-lg px-4 fw-bold">
+                  <i class="bi bi-whatsapp me-2"></i> Connect to WhatsApp Desk &rarr;
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 
     <div class="services-empty-state mt-4" id="liveSearchEmpty" {% if services %}hidden{% endif %}>
@@ -167,6 +224,21 @@
       input.blur();
     }
   });
+  const waForm = document.getElementById('servicesWhatsAppForm');
+  if (waForm) {
+    waForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('waEnquiryName').value.trim();
+      const phone = document.getElementById('waEnquiryPhone').value.trim();
+      const srv = document.getElementById('waEnquiryService').value;
+      const notes = document.getElementById('waEnquiryNotes').value.trim();
+
+      const message = `Hi HOMline, I have a service enquiry.\n\n*Name:* ${name}\n*Phone:* ${phone}\n*Service:* ${srv}\n*Details:* ${notes || 'Need more guidance'}`;
+      const url = `https://wa.me/916282268453?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+    });
+  }
+
   filterCards();
 })();
 </script>

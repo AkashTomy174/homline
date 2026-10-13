@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from core.models import (
     Category, Service, Update, MembershipPlan, 
-    FAQ
+    FAQ, Announcement
 )
 
 class Command(BaseCommand):
@@ -9,6 +9,35 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write(self.style.SUCCESS('Starting database seeding...'))
+
+        # 0. Announcements
+        announcements_data = [
+            {
+                'badge_text': 'DIGITAL SERVICES',
+                'message': 'All Internet Service at your fingertip, Designed to Easy Access and Reduce Travel.',
+                'link_url': '/services/',
+                'is_active': True,
+                'order': 1,
+            },
+            {
+                'badge_text': 'PwD-FRIENDLY',
+                'message': '“Empowering every citizen with accessible doorstep and digital support.” Dedicated assistance for PwD.',
+                'link_url': '/#pwd-assistance',
+                'is_active': True,
+                'order': 2,
+            },
+            {
+                'badge_text': 'NEW',
+                'message': 'Ticket Bookings, Design Posters, Website Designs, DTP, Laminations & Frame Works now live!',
+                'link_url': '/services/',
+                'is_active': True,
+                'order': 3,
+            },
+        ]
+        for a_data in announcements_data:
+            Announcement.objects.get_or_create(message=a_data['message'], defaults=a_data)
+
+        self.stdout.write(self.style.SUCCESS('Created Announcements.'))
 
         # 1. Categories
         cat_gov, _ = Category.objects.get_or_create(
@@ -61,7 +90,17 @@ class Command(BaseCommand):
             }
         )
 
-        self.stdout.write(self.style.SUCCESS('Created 5 Categories.'))
+        cat_creative, _ = Category.objects.get_or_create(
+            slug='creative-printing-travel',
+            defaults={
+                'name': 'Creative, Printing & Travel',
+                'description': 'Ticket bookings, poster designs, website design, DTP, laminations and photo framing',
+                'icon_class': 'bi-brush-fill',
+                'order': 6
+            }
+        )
+
+        self.stdout.write(self.style.SUCCESS('Created 6 Categories.'))
 
         # 2. Services
         services_data = [
@@ -185,6 +224,92 @@ class Command(BaseCommand):
                 'is_featured': True,
                 'badge': 'Fast',
                 'icon_class': 'bi-aspect-ratio-fill'
+            },
+
+            # Creative, Printing & Travel
+            {
+                'category': cat_creative,
+                'title': 'Ticket Bookings (Train, Flight, Bus & Events)',
+                'slug': 'ticket-bookings-travel',
+                'short_summary': 'Instant booking assistance for IRCTC Train tickets, Domestic/International flights, and Intercity buses.',
+                'description': 'Skip the booking queues and complex portal forms. HOMline provides fast ticket reservations for train tatkal/general, flights, bus journeys, and cultural event tickets right from your home.',
+                'required_documents': '• Passenger ID details (Aadhaar / Passport / Voter ID)\n• Travel dates, origin and destination details\n• Special quota / senior citizen certificates if applicable',
+                'homline_charge': '₹50 - ₹150 per ticket',
+                'third_party_fee': 'Actual IRCTC / Airline / Bus portal ticket charges',
+                'processing_time': 'Immediate / Within 30 minutes',
+                'is_featured': True,
+                'badge': 'Popular',
+                'icon_class': 'bi-ticket-perforated-fill'
+            },
+            {
+                'category': cat_creative,
+                'title': 'Design Posters (Event & Business Posters)',
+                'slug': 'design-posters-marketing',
+                'short_summary': 'Professional, high-resolution poster designs for celebrations, social media, festivals, and business promotions.',
+                'description': 'Get custom, vibrant posters tailored to your brand or event. HOMline media creates print-ready posters and engaging social media artwork with fast turnaround.',
+                'required_documents': '• Event or business text and key details\n• High quality photos or company logos (via WhatsApp)\n• Preferred color theme and dimensions',
+                'homline_charge': '₹200 - ₹500',
+                'third_party_fee': 'None / Optional physical printing cost',
+                'processing_time': '1 - 2 Days',
+                'is_featured': True,
+                'badge': 'Creative',
+                'icon_class': 'bi-palette-fill'
+            },
+            {
+                'category': cat_creative,
+                'title': 'Website Designs (Business Websites & Portfolios)',
+                'slug': 'website-designs-digital',
+                'short_summary': 'Modern, mobile-friendly websites, single-page profiles, and digital catalog setups for local businesses.',
+                'description': 'Establish a powerful online presence. Powered by AMDG Media & Designs, we craft clean, lightning-fast, and search-optimized websites designed to bring you customers.',
+                'required_documents': '• Business profile, services list and contact details\n• Images of shop, products, or previous work\n• Domain name preference',
+                'homline_charge': 'Custom Package / From ₹2,999',
+                'third_party_fee': 'Domain & hosting provider fee',
+                'processing_time': '3 - 7 Working Days',
+                'is_featured': True,
+                'badge': 'High Value',
+                'icon_class': 'bi-globe'
+            },
+            {
+                'category': cat_creative,
+                'title': 'DTP (Desktop Publishing & Typing Works)',
+                'slug': 'dtp-typing-works',
+                'short_summary': 'Fast Malayalam & English typing, official letter drafting, legal formats, agreements, and bio-data creation.',
+                'description': 'Accurate computer typing and document typesetting services. We assist with biodatas, resumes, Malayalam typing, school/college project reports, rental agreements, and government application letters.',
+                'required_documents': '• Handwritten rough notes, draft audio, or photo of content',
+                'homline_charge': '₹30 - ₹70 per page',
+                'third_party_fee': 'None',
+                'processing_time': 'Same Day / Within a few hours',
+                'is_featured': True,
+                'badge': 'Essential',
+                'icon_class': 'bi-keyboard-fill'
+            },
+            {
+                'category': cat_creative,
+                'title': 'Laminations (ID Cards & Document Preservation)',
+                'slug': 'laminations-document-care',
+                'short_summary': 'Durable thermal laminations for certificates, Aadhaar/PAN cards, marksheets, and official documents.',
+                'description': 'Protect your valuable certificates and identity cards from moisture, dust, and tearing with high-micron transparent lamination.',
+                'required_documents': '• Original document to be preserved',
+                'homline_charge': '₹30 - ₹100',
+                'third_party_fee': 'None',
+                'processing_time': 'Same Day Doorstep Pickup / Handover',
+                'is_featured': False,
+                'badge': 'Doorstep',
+                'icon_class': 'bi-shield-check'
+            },
+            {
+                'category': cat_creative,
+                'title': 'Frame Works (Photo & Certificate Framing)',
+                'slug': 'frame-works-art',
+                'short_summary': 'Custom framing for family portraits, degree certificates, awards, devotion artwork, and memorabilia.',
+                'description': 'Enhance your memories and achievements with premium frames. Choose from acrylic glass, wooden textures, synthetic border styles, and LED backlight options.',
+                'required_documents': '• Photograph or certificate to be framed\n• Preferred frame dimension and border finish',
+                'homline_charge': '₹250 - ₹1,500 (based on size & moulding)',
+                'third_party_fee': 'None',
+                'processing_time': '2 - 4 Working Days',
+                'is_featured': False,
+                'badge': 'Artisan',
+                'icon_class': 'bi-image-fill'
             },
         ]
 

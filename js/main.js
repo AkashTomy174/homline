@@ -267,6 +267,21 @@ function renderTrackResult(reqId, container) {
             </div>
           </div>
 
+          <!-- Fee Breakdown & Scannable QR Code -->
+          <div class="row g-3 mb-3 p-3 bg-light rounded-3 border align-items-center">
+            <div class="col-sm-4 col-6">
+              <span class="text-muted small d-block font-monospace">HOMline Service Charge:</span>
+              <strong class="text-teal fs-6">${data.service_charge || '₹150 - ₹250 (Doorstep)'}</strong>
+            </div>
+            <div class="col-sm-4 col-6">
+              <span class="text-muted small d-block font-monospace">Govt / Portal Fee:</span>
+              <strong class="text-navy fs-6">${data.portal_fee || 'As per Official Portal'}</strong>
+            </div>
+            <div class="col-sm-4 text-sm-end text-center mt-2 mt-sm-0">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=${encodeURIComponent(data.request_id)}" alt="Tracking QR Code" style="width: 58px; height: 58px; border-radius: 6px; background: white; padding: 2px; border: 1px solid #cbd5e1;" title="Scan to Verify on Mobile">
+            </div>
+          </div>
+
           <div class="p-3 bg-soft-mist rounded-3 border-start border-4 border-teal mb-3">
             <span class="text-muted small d-block fw-semibold mb-1">HOMline Official Case Notes:</span>
             <p class="mb-0 text-body font-monospace small">${data.admin_notes}</p>
@@ -1299,4 +1314,12 @@ function initReceiptPage() {
   if (statusEl) statusEl.textContent = reqData.status;
   if (notesEl) notesEl.textContent = reqData.admin_notes || 'Application received and securely queued.';
   if (trackerLinkEl) trackerLinkEl.href = `track-request.html?id=${encodeURIComponent(reqData.request_id)}`;
+
+  const serviceChargeEl = document.getElementById('receiptServiceCharge');
+  const portalFeeEl = document.getElementById('receiptPortalFee');
+  const qrImgEl = document.getElementById('receiptQrImg');
+
+  if (serviceChargeEl) serviceChargeEl.textContent = reqData.service_charge || '₹150 - ₹250 (Doorstep Assistance)';
+  if (portalFeeEl) portalFeeEl.textContent = reqData.portal_fee || 'As per Official Portal / Actuals';
+  if (qrImgEl) qrImgEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(window.location.origin + '/track-request.html?id=' + reqData.request_id)}`;
 }
