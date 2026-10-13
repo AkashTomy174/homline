@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-DEBUG = os.environ.get('DEBUG', 'False' if os.environ.get('VERCEL') else 'True').lower() in ('true', '1', 'yes')
+DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 'yes')
 SECRET_KEY = os.environ.get('SECRET_KEY')
 if not SECRET_KEY:
     if not DEBUG:
@@ -34,23 +34,19 @@ ALLOWED_HOSTS = [host.strip() for host in os.environ.get(
     'ALLOWED_HOSTS', 'localhost,127.0.0.1,.localhost,testserver'
 ).split(',') if host.strip()]
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-VERCEL_URL = os.environ.get('VERCEL_URL')
 if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-if VERCEL_URL and VERCEL_URL not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append(VERCEL_URL)
 
 CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.environ.get(
     'CSRF_TRUSTED_ORIGINS',
     'http://localhost:8000,http://127.0.0.1:8000,http://localhost:3000,http://127.0.0.1:3000'
 ).split(',') if origin.strip()]
-if VERCEL_URL:
-    CSRF_TRUSTED_ORIGINS.append(f'https://{VERCEL_URL}')
 if RENDER_EXTERNAL_HOSTNAME:
     CSRF_TRUSTED_ORIGINS.append(f'https://{RENDER_EXTERNAL_HOSTNAME}')
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = not DEBUG
+SECURE_REDIRECT_EXEMPT = [r'^healthz/$']
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -128,6 +124,7 @@ if DATABASE_URL:
             default=DATABASE_URL,
             conn_max_age=600,
             conn_health_checks=True,
+            ssl_require=not DEBUG,
         )
     except Exception as exc:
         raise ImproperlyConfigured('DATABASE_URL is not a valid database connection string.') from exc
@@ -171,20 +168,57 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles_build' / 'static'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Private document storage. In production, uploads MUST go to an S3-compatible
+# bucket (Cloudflare R2): Render's filesystem is ephemeral.
+R2_BUCKET_NAME = os.environ.get('R2_BUCKET_NAME')
+_r2_vars = ('R2_BUCKET_NAME', 'R2_ENDPOINT_URL', 'R2_ACCESS_KEY_ID', 'R2_SECRET_ACCESS_KEY')
+if R2_BUCKET_NAME:
+    _missing = [v for v in _r2_vars if not os.environ.get(v)]
+    if _missing:
+        raise ImproperlyConfigured(f"Missing storage settings: {', '.join(_missing)}")
+    DEFAULT_FILE_STORAGE_CONFIG = {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "bucket_name": R2_BUCKET_NAME,
+            "endpoint_url": os.environ['R2_ENDPOINT_URL'],
+            "access_key": os.environ['R2_ACCESS_KEY_ID'],
+            "secret_key": os.environ['R2_SECRET_ACCESS_KEY'],
+            "region_name": "auto",
+            "signature_version": "s3v4",
+            "default_acl": None,
+            "querystring_auth": True,
+            "file_overwrite": False,
+        },
+    }
+elif not DEBUG:
+    raise ImproperlyConfigured('Set R2_BUCKET_NAME and the other R2_* variables: production uploads need persistent private storage.')
+else:
+    DEFAULT_FILE_STORAGE_CONFIG = {"BACKEND": "django.core.files.storage.FileSystemStorage"}
 
 STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
+    "default": DEFAULT_FILE_STORAGE_CONFIG,
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
 
+# MEDIA_URL is intentionally unused: documents are only served via the staff download view.
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = Path(os.environ.get('MEDIA_ROOT', BASE_DIR / 'media'))
 
 
 
+
+# Logs go to stdout/stderr (collected by Render).
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {'console': {'class': 'logging.StreamHandler'}},
+    'root': {'handlers': ['console'], 'level': os.environ.get('LOG_LEVEL', 'INFO')},
+}
+
+# Reject uploads above Django's in-memory limit early (documents are capped at 10 MB in the form).
+DATA_UPLOAD_MAX_MEMORY_SIZE = 12 * 1024 * 1024

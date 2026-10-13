@@ -1,0 +1,285 @@
+/* ==========================================================================
+   HOMline UX polish layer — loaded after style.css.
+   Same brand palette (cobalt / cyan / emerald / amber on navy). Changes only
+   the *feel*: quieter depth, clearer hierarchy, bigger targets, calmer motion.
+   Direction: warm, generous, easy for first-time and older users.
+   Depth strategy: borders + one soft shadow. No glow shadows, no big lifts.
+   ========================================================================== */
+
+:root {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ring: 0 0 0 3px rgba(37, 99, 235, 0.35);
+  --radius-control: 12px;
+  --space-section: clamp(48px, 6vw, 88px);
+  --measure: 68ch;
+}
+
+/* ---- Base type: comfortable reading size and rhythm -------------------- */
+body {
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4, .h1, .h2, .h3, .h4 {
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+p { text-wrap: pretty; }
+.lead { line-height: 1.6; }
+.font-monospace, .font-mono {
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace !important;
+  font-variant-numeric: tabular-nums;
+}
+.hero-headline {
+  font-size: clamp(2rem, 1.2rem + 3.2vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+}
+.hero-subtitle { font-size: clamp(1rem, 0.95rem + 0.3vw, 1.15rem); line-height: 1.65; }
+.display-5, .display-6 { font-weight: 800; letter-spacing: -0.02em; }
+
+/* ---- Section rhythm ---------------------------------------------------- */
+section.py-5, .py-5.section { padding-block: var(--space-section) !important; }
+section.py-4 { padding-block: clamp(28px, 4vw, 48px) !important; }
+.hero-section { padding: clamp(40px, 6vw, 80px) 0 clamp(48px, 7vw, 96px); }
+
+/* ---- Focus: visible, consistent, never removed ------------------------- */
+:focus-visible {
+  outline: 3px solid var(--brand-primary);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.btn:focus-visible, .header-btn:focus-visible, .mobile-nav-btn:focus-visible {
+  outline-offset: 3px;
+}
+.skip-link {
+  position: absolute; left: 12px; top: -64px; z-index: 2000;
+  background: #0B172E; color: #fff; padding: 12px 18px; border-radius: 10px;
+  font-weight: 700; text-decoration: none; transition: top 0.2s var(--ease-out);
+}
+.skip-link:focus { top: 12px; color: #fff; }
+
+/* ---- Buttons: solid, calm, 44px+ targets -------------------------------- */
+.btn-navy, .btn-teal, .btn-primary, .btn-gold, .btn-whatsapp, .btn-outline-navy {
+  min-height: 44px;
+  border-radius: var(--radius-control);
+  font-weight: 700;
+  letter-spacing: 0;
+  transition: background-color 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.12s;
+}
+.btn-lg { min-height: 52px; padding-inline: 28px; font-size: 1.05rem; }
+.btn-teal, .btn-primary {
+  background: var(--brand-primary); box-shadow: var(--shadow-xs);
+}
+.btn-teal:hover, .btn-primary:hover {
+  background: var(--brand-primary-hover); transform: translateY(-1px); box-shadow: var(--shadow-sm);
+}
+.btn-navy { background: #0B172E; box-shadow: var(--shadow-xs); }
+.btn-navy:hover { background: #1E3A68; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.btn-gold { background: var(--highlight-gold); box-shadow: var(--shadow-xs); }
+.btn-gold:hover { background: var(--highlight-gold-hover); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+/* WhatsApp green darkened so white text reaches 4.5:1 */
+.btn-whatsapp { background: #15803D; box-shadow: var(--shadow-xs); }
+.btn-whatsapp:hover { background: #166534; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.btn-outline-navy:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.btn:active, .header-btn:active { transform: scale(0.98); }
+.btn:disabled, .btn.disabled, button:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+/* ---- Cards: still, quiet, border does the work ------------------------ */
+.homline-card, .category-highlight-card, .quick-box-gateway, .service-card-animated, .service-box-highlight {
+  border-radius: 16px;
+  box-shadow: var(--shadow-xs);
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s var(--ease-out);
+}
+.homline-card:hover, .quick-box-gateway:hover, .service-card-animated:hover, .service-box-highlight:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+.homline-card { padding: clamp(20px, 3vw, 32px); }
+
+/* Quick actions: the four things people come here to do get real presence */
+.quick-box-gateway { padding: 20px 22px; min-height: 92px; }
+.quick-box-gateway strong { font-size: 1.05rem !important; }
+.quick-box-icon { width: 52px; height: 52px; border-radius: 14px; }
+
+/* ---- Header: calm, one primary action, no rainbow icons ---------------- */
+.main-header, header { backdrop-filter: saturate(160%) blur(12px); }
+.nav-link { font-weight: 600; border-radius: 10px; min-height: 40px; }
+.navbar .nav-link i, .dropdown-item i {
+  color: currentColor !important;
+  opacity: 0.65;
+}
+.dropdown-menu { border-radius: 14px; border: 1px solid var(--border-color); box-shadow: var(--shadow-md); padding: 8px; }
+.dropdown-item { border-radius: 8px; padding: 10px 12px; font-weight: 500; min-height: 40px; }
+.header-btn { height: 44px; border-radius: 12px; }
+.btn-header-signup { background: var(--brand-primary); box-shadow: none; }
+.btn-header-signup:hover { background: var(--brand-primary-hover); box-shadow: var(--shadow-sm); transform: none; }
+/* Staff entry lives in the footer; keep the public header focused on customers */
+.btn-header-staff { display: none !important; }
+
+/* ---- Hero: one clear path, calmer decoration --------------------------- */
+.hero-cta-primary { box-shadow: var(--shadow-sm); }
+.home-service-card { border-radius: 20px; box-shadow: var(--shadow-sm); }
+.home-service-orbit { opacity: 0.35; }
+.home-trust-notes { gap: 10px 24px; font-size: 0.95rem; }
+.floating-pill-badge { box-shadow: var(--shadow-xs); }
+
+/* ---- Forms: roomy, clear labels, clear errors -------------------------- */
+.form-control, .form-select {
+  min-height: 48px;
+  border-width: 1px;
+  border-radius: var(--radius-control);
+  font-size: 1rem;
+}
+textarea.form-control { min-height: 112px; line-height: 1.55; }
+.form-control:hover:not(:focus), .form-select:hover:not(:focus) { border-color: rgba(37, 99, 235, 0.45); }
+.form-control:focus, .form-select:focus { box-shadow: var(--ring); }
+.form-label { font-weight: 600; margin-bottom: 6px; color: var(--text-dark); }
+.form-text, .form-control::placeholder { color: var(--text-muted); }
+.form-control::placeholder { opacity: 0.8; }
+.form-check-input { width: 1.3em; height: 1.3em; margin-top: 0.15em; }
+.form-check-label { padding-left: 4px; }
+.is-invalid, .form-control.is-invalid { border-color: #DC2626; }
+.invalid-feedback, .errorlist { color: #B91C1C; font-weight: 600; font-size: 0.9rem; }
+.errorlist { list-style: none; padding-left: 0; margin: 6px 0 0; }
+
+/* ---- Messages / alerts: readable, not shouty ---------------------------- */
+.alert { border-radius: 14px; border-width: 1px; padding: 14px 18px; }
+.alert-success { border-left: 4px solid #15803D; }
+.alert-danger, .alert-error { border-left: 4px solid #DC2626; }
+.alert-warning { border-left: 4px solid var(--highlight-gold); }
+.alert-info { border-left: 4px solid var(--brand-primary); }
+
+/* ---- Request-ID token: the one memorable object in the product ---------- */
+.token-id {
+  position: relative;
+  display: inline-flex; flex-direction: column; gap: 2px;
+  padding: 14px 28px;
+  background: var(--card-bg);
+  border: 1.5px dashed var(--brand-primary);
+  border-radius: 14px;
+  text-align: center;
+}
+.token-id::before, .token-id::after {
+  content: ""; position: absolute; top: 50%; width: 14px; height: 14px;
+  background: var(--bg-soft-mist); border: 1.5px dashed var(--brand-primary);
+  border-radius: 50%; transform: translateY(-50%);
+}
+.token-id::before { left: -8px; border-left-color: transparent; border-top-color: transparent; transform: translateY(-50%) rotate(45deg); }
+.token-id::after { right: -8px; border-right-color: transparent; border-bottom-color: transparent; transform: translateY(-50%) rotate(45deg); }
+.token-id .token-label { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); font-weight: 700; }
+.token-id .token-value { font-size: clamp(0.95rem, 0.8rem + 0.9vw, 1.3rem); font-weight: 800; color: var(--primary-navy); letter-spacing: 0.02em; user-select: all; white-space: nowrap; }
+@media (max-width: 420px) { .token-id { padding-inline: 18px; } .token-id .token-value { white-space: normal; overflow-wrap: anywhere; } }
+
+/* ---- Footer: quieter, comfortable link targets -------------------------- */
+.footer-links a { display: inline-block; padding-block: 4px; }
+
+/* ---- Mobile: thumb-reach bar, safe areas, no hidden content ------------- */
+@media (max-width: 767.98px) {
+  body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  .fixed-mobile-bottom-nav { padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06); }
+  .mobile-nav-btn { min-height: 48px; border-radius: 12px; font-size: 0.95rem; }
+  .btn-lg { width: 100%; }
+  .hero-section .btn { width: 100%; }
+  .quick-box-gateway { min-height: 84px; }
+  .stats-ribbon { margin-top: 0; }
+}
+
+/* ---- Motion: gentle, and off for people who ask ------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---- Print (receipts) -------------------------------------------------- */
+@media print {
+  .fixed-mobile-bottom-nav, header, .main-footer, .announcement-bar, .skip-link { display: none !important; }
+  body { padding-bottom: 0; }
+}
+
+/* ---- Dark theme parity -------------------------------------------------- */
+
+/* ---- About: shorter hero + in-page jump navigation --------------------- */
+.about-hero { padding: clamp(40px, 6vw, 72px) 0; }
+.page-jump {
+  position: sticky; top: 78px; z-index: 30;
+  background: var(--header-bg); backdrop-filter: saturate(160%) blur(12px);
+  border-bottom: 1px solid var(--border-color);
+}
+.page-jump ul {
+  display: flex; gap: 8px; margin: 0; padding: 10px 0; list-style: none;
+  overflow-x: auto; scrollbar-width: thin; -webkit-overflow-scrolling: touch;
+}
+.page-jump a {
+  display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px;
+  white-space: nowrap; border-radius: 999px; border: 1px solid var(--border-color);
+  background: var(--card-bg); color: var(--text-body); font-weight: 600; font-size: 0.92rem; text-decoration: none;
+}
+.page-jump a:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+section[id], div[id] { scroll-margin-top: 72px; }
+
+/* ---- Services directory: align the fee boxes across a row -------------- */
+.service-summary { min-height: 4.8em; }
+.service-directory-card { border-radius: 16px; }
+.service-directory-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+@media (max-width: 767.98px) { .service-summary { min-height: 0; } }
+
+/* ---- Page-title banners: compact, content starts sooner ---------------- */
+main > section:first-child.bg-navy,
+main > section:first-child.py-5.text-center { padding-block: clamp(32px, 4.5vw, 60px) !important; }
+.how-step-card .brand-icon-box i { color: #fff !important; }
+
+/* ---- Membership: "Most popular" as a ribbon so plan cards stay aligned -- */
+.membership-card { position: relative; }
+.membership-card .popular-badge {
+  position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+  background: var(--highlight-gold); color: #050B16; font-weight: 800; font-size: 0.78rem;
+  letter-spacing: 0.04em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px;
+  box-shadow: var(--shadow-xs); white-space: nowrap;
+}
+.membership-card.popular { border-color: var(--brand-primary); border-width: 2px; }
+
+/* ---- Legal / long-form text: readable measure and calmer headings ------- */
+.policy-content { max-width: var(--measure); }
+.policy-content h3 { font-size: 1.2rem; margin: 2rem 0 0.5rem; letter-spacing: -0.01em; }
+.policy-content h3:first-child { margin-top: 0; }
+.policy-content p, .policy-content li { line-height: 1.75; }
+
+/* ---- Dashboard: keep request IDs on one line ---------------------------- */
+.request-id-badge { white-space: nowrap; font-size: 0.85rem; letter-spacing: 0.01em; }
+
+/* ---- Tracker: step labels that fit a phone, current step stands out ----- */
+.track-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; font-size: 0.82rem; font-weight: 500; }
+.track-steps span:nth-child(2), .track-steps span:nth-child(3) { text-align: center; }
+.track-steps span:last-child { text-align: right; }
+.track-steps .is-current { color: var(--text-dark); font-weight: 800; }
+@media (max-width: 575.98px) {
+  .track-steps { font-size: 0.7rem; }
+  /* search rows: input on top, button below, so the ID is never clipped */
+  .input-group-lg { flex-wrap: wrap; gap: 8px; }
+  .input-group-lg > .form-control, .input-group-lg > .btn { flex: 1 1 100%; width: 100%; border-radius: var(--radius-control) !important; }
+}
+
+/* ---- Evaluation fixes: nav calm-down, readable labels, themed cards ----- */
+.custom-navbar .nav-link i { color: inherit !important; opacity: .8; }
+.badge.font-monospace, span.font-monospace, small.font-monospace {
+  font-family: inherit !important; letter-spacing: 0 !important; text-transform: none !important;
+  font-size: max(0.82rem, 1em); font-weight: 600;
+}
+.vm-card-teal { background: linear-gradient(135deg, var(--bg-soft-mist) 0%, var(--card-bg) 100%); }
+.vm-card-navy { background: var(--card-bg); }
+.pwd-icon-tile {
+  width: 52px; height: 52px; border-radius: 14px; background: #4f46e5; color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0;
+}
+.feature-icon-tile {
+  width: 48px; height: 48px; border-radius: 12px; background: rgba(2,132,199,.14); color: #0284c7;
+  display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+}

@@ -10,7 +10,7 @@
         <!-- Disability Friendly Tag & Quote -->
         <div class="d-inline-flex align-items-center gap-2 bg-white border border-warning rounded-pill px-3 py-1 shadow-sm mb-3">
           <span class="badge bg-gold text-dark font-monospace fw-bold">DIGITAL SERVICES</span>
-          <span class="small text-muted font-monospace"><i class="bi bi-universal-access text-indigo me-1"></i> “Accessible digital empowerment for all abilities — no travel required.”</span>
+          <span class="small text-muted"><i class="bi bi-universal-access text-indigo me-1"></i> Accessible for all abilities — no travel required.</span>
         </div>
 
         <!-- Animated Title Letters -->
@@ -23,25 +23,31 @@
           Designed to Easy Access and Reduce Travel. Access passport assistance, PAN cards, exam applications, ticket bookings, poster designs & DTP with friendly doorstep and online guidance.
         </p>
 
-        <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
-          <a href="{% url 'services_list' %}" class="btn btn-teal btn-lg px-4 shadow-sm">
-            <i class="bi bi-grid-fill me-2"></i> Explore Services
+        <form action="{% url 'services_list' %}" method="get" class="services-search mb-4" role="search">
+          <label class="visually-hidden" for="homeSearch">Search services</label>
+          <i class="bi bi-search" aria-hidden="true"></i>
+          <input id="homeSearch" type="search" name="q" placeholder="Find a service: PAN, passport, exam…" autocomplete="off">
+          <button class="btn btn-teal" type="submit">Search</button>
+        </form>
+
+        <div class="d-flex flex-wrap align-items-center gap-3 mb-2">
+          <a href="{% url 'request_service' %}" class="btn btn-teal btn-lg px-4 hero-cta-primary">
+            <i class="bi bi-pencil-square me-2" aria-hidden="true"></i> Request a Service
           </a>
-          <a href="#pwd-assistance" class="btn btn-navy btn-lg px-4 shadow-sm">
-            <i class="bi bi-universal-access me-2"></i> PwD-Friendly Desk
-          </a>
-          <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20assistance%20with%20a%20digital%20service." target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg px-4 shadow-sm">
-            <i class="bi bi-whatsapp me-2"></i> WhatsApp Support
+          <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20assistance%20with%20a%20digital%20service." target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg px-4">
+            <i class="bi bi-whatsapp me-2" aria-hidden="true"></i> WhatsApp Us
           </a>
         </div>
+        <p class="mb-4 small">
+          <a href="{% url 'services_list' %}" class="fw-bold text-decoration-none">Browse all services &rarr;</a>
+          <span class="text-muted mx-2" aria-hidden="true">·</span>
+          <a href="#pwd-assistance" class="fw-bold text-decoration-none"><i class="bi bi-universal-access me-1" aria-hidden="true"></i>PwD-friendly desk</a>
+        </p>
 
         <div class="home-trust-notes">
           <span><i class="bi bi-shield-check text-teal"></i> Clear, guided support</span>
           <span><i class="bi bi-house-door text-teal"></i> Help from home</span>
           <span><i class="bi bi-receipt text-teal"></i> Transparent charges</span>
-          <a class="home-admin-link" href="{% url 'admin:login' %}" aria-label="Staff admin sign in">
-            <i class="bi bi-shield-lock-fill" aria-hidden="true"></i> Admin sign in
-          </a>
         </div>
       </div>
 
@@ -50,7 +56,7 @@
         <div class="hero-console-card home-service-card position-relative">
           <div class="floating-pill-badge floating-pill-top-right">
             <span class="pulse-dot"></span>
-            <span class="text-navy fw-bold">Desk Online • 24×7</span>
+            <span class="text-navy fw-bold">Help by call &amp; WhatsApp</span>
           </div>
           
           <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom">
@@ -59,7 +65,7 @@
             </div>
             <div>
               <h2 class="h6 fw-extrabold text-navy mb-0">Doorstep Digital Desk</h2>
-              <small class="text-muted">Certified assistance without leaving your home</small>
+              <small class="text-muted">Assistance without leaving your home</small>
             </div>
           </div>
 
@@ -69,7 +75,7 @@
             <div class="home-service-orbit orbit-two desk-orbit-glow" style="animation-direction: reverse;"></div>
             <div class="home-service-paper shadow-sm">
               <i class="bi bi-file-earmark-check-fill text-teal"></i>
-              <span>Official Filing<br>Ready to Go</span>
+              <span>Documents<br>Prepared &amp; Checked</span>
             </div>
             <div class="home-service-icon icon-id desk-float-icon" title="Identity Services"><i class="bi bi-person-vcard-fill text-primary"></i></div>
             <div class="home-service-icon icon-cap desk-float-icon" title="Education & Exams"><i class="bi bi-mortarboard-fill text-warning"></i></div>
@@ -78,10 +84,10 @@
 
           <div class="p-3 bg-soft-mist rounded-3 border border-teal-subtle">
             <div class="d-flex justify-content-between align-items-center mb-1">
-              <strong class="text-navy small"><i class="bi bi-patch-check-fill text-teal me-1"></i> Zero-Travel Guarantee</strong>
-              <span class="badge bg-teal text-white font-monospace small">Certified</span>
+              <strong class="text-navy small"><i class="bi bi-patch-check-fill text-teal me-1"></i> No-Travel Assistance</strong>
+              
             </div>
-            <p class="small text-muted mb-0">We assist you through document preparation, sizing, verification, and portal submission comfortably from your residence.</p>
+            <p class="small text-muted mb-0">HOMline is an independent assistance service, not a government office. We help you through document preparation, sizing, verification, and portal submission comfortably from your residence.</p>
           </div>
         </div>
       </div>
@@ -102,14 +108,14 @@
           <div>
             <span class="small text-muted d-block font-monospace">CATALOG</span>
             <strong class="fs-6 d-block text-navy">Explore Services</strong>
-            <small class="text-muted">14+ Doorstep services &rarr;</small>
+            <small class="text-muted">Browse all doorstep services &rarr;</small>
           </div>
         </a>
       </div>
 
       <!-- Box 2: Complaint / Suggestion -->
       <div class="col-lg-3 col-sm-6">
-        <a href="#complaintModal" data-bs-toggle="modal" class="quick-box-gateway shadow-sm">
+        <a href="{% url 'complaint_suggestion' %}" class="quick-box-gateway shadow-sm">
           <div class="quick-box-icon bg-danger-subtle text-danger">
             <i class="bi bi-chat-heart-fill"></i>
           </div>
@@ -152,6 +158,53 @@
   </div>
 </section>
 
+<!-- 04 Featured Services with Border Highlight Animation -->
+<section class="py-5 bg-white home-featured-section">
+  <div class="container">
+    <div class="text-center max-width-700 mx-auto mb-5">
+      <span class="badge bg-teal text-white px-3 py-2 rounded-pill font-monospace text-uppercase">Directory Highlights</span>
+      <h2 class="fw-extrabold display-6 text-navy mt-2 mb-3">Popular Services</h2>
+      <p class="text-muted">Doorstep assistance for official documents, tickets, printing, designing, and online registrations.</p>
+    </div>
+
+    <div class="row g-4">
+      {% for service in featured_services %}
+      <div class="col-lg-3 col-md-6">
+        <a href="{% url 'service_detail' slug=service.slug %}" class="home-feature-card service-card-animated p-4 h-100 d-flex flex-column justify-content-between text-decoration-none">
+          <div>
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div class="home-feature-icon feature-icon-tile" >
+                <i class="bi {{ service.icon_class }}"></i>
+              </div>
+              {% if service.badge %}
+                <span class="badge bg-gold text-dark font-monospace small">{{ service.badge }}</span>
+              {% endif %}
+            </div>
+            
+            <span class="small text-muted font-monospace d-block mb-1">{{ service.category.name }}</span>
+            <h3 class="h6 fw-bold text-navy mb-2">{{ service.title }}</h3>
+            <p class="text-muted small mb-3">{{ service.short_summary|truncatewords:14 }}</p>
+          </div>
+
+          <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+            <span class="small font-monospace text-teal fw-bold">{{ service.homline_charge }}</span>
+            <span class="btn btn-sm btn-outline-navy py-1 px-2" style="font-size: 0.75rem;">View Details &rarr;</span>
+          </div>
+        </a>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center"><p class="text-muted">Explore the directory to find the service you need.</p></div>
+      {% endfor %}
+    </div>
+
+    <div class="text-center mt-5">
+      <a href="{% url 'services_list' %}" class="btn btn-teal btn-lg px-4 shadow-sm">
+        <i class="bi bi-grid-fill me-2"></i> View All Services
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- 02.5 Our Vision & Our Mission (With Founder Spotlight) -->
 <section class="py-5 bg-white border-bottom">
   <div class="container py-2">
@@ -172,7 +225,7 @@
 
         <div class="d-flex flex-column gap-3 my-2">
           <!-- Our Vision Card -->
-          <div class="p-4 rounded-4 border border-teal shadow-sm bg-gradient-light position-relative overflow-hidden" style="background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);">
+          <div class="p-4 rounded-4 border border-teal shadow-sm position-relative overflow-hidden vm-card vm-card-teal">
             <div class="d-flex align-items-center gap-3 mb-2">
               <div class="brand-icon-box bg-teal text-white flex-shrink-0" style="width: 44px; height: 44px; font-size: 1.3rem;">
                 <i class="bi bi-eye-fill"></i>
@@ -188,7 +241,7 @@
           </div>
 
           <!-- Our Mission Card -->
-          <div class="p-4 rounded-4 border border-navy shadow-sm bg-gradient-light position-relative overflow-hidden" style="background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);">
+          <div class="p-4 rounded-4 border border-navy shadow-sm position-relative overflow-hidden vm-card vm-card-navy">
             <div class="d-flex align-items-center gap-3 mb-2">
               <div class="brand-icon-box bg-navy text-white flex-shrink-0" style="width: 44px; height: 44px; font-size: 1.3rem;">
                 <i class="bi bi-flag-fill text-gold"></i>
@@ -221,9 +274,6 @@
               <span class="badge bg-gold text-dark font-monospace fw-bold text-uppercase px-3 py-1 rounded-pill">Leadership & Vision</span>
               <div class="d-flex align-items-center gap-2">
                 <span class="badge bg-white bg-opacity-10 text-white-75 font-monospace small">AMDG MEDIA</span>
-                <span class="badge rounded-pill font-monospace d-inline-flex align-items-center gap-1 shadow-sm" style="background-color: #16a34a !important; color: #ffffff !important; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.03em; padding: 4px 10px; border: 1px solid rgba(255, 255, 255, 0.25);" title="Verified Initiative">
-                  <i class="bi bi-shield-fill-check text-white"></i> Verified
-                </span>
               </div>
             </div>
 
@@ -234,16 +284,12 @@
                        onerror="this.onerror=null; this.src='{% static 'images/founder-placeholder.svg' %}';" 
                        alt="HOMline Founder" 
                        class="w-100 h-100 object-fit-cover shadow-sm">
-                  <div class="position-absolute bottom-0 end-0 m-2 badge bg-teal text-white rounded-circle p-1 shadow d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 0.85rem;" title="Verified Profile">
-                    <i class="bi bi-check-lg"></i>
-                  </div>
                 </div>
               </div>
               <div class="col-sm-7">
                 <span class="text-gold small fw-bold font-monospace d-block">FOUNDER & SOCIAL INNOVATOR</span>
                 <h4 class="fw-extrabold text-white mb-1 d-inline-flex align-items-center gap-2" style="letter-spacing: 0.02em;">
                   HOMline Founder
-                  <i class="bi bi-patch-check-fill text-info" style="color: #38bdf8 !important; font-size: 1.2rem;" title="Verified Profile"></i>
                 </h4>
                 <p class="small text-white-75 mb-2">AMDG Group • AMDG Media • YUVA Manass</p>
                 <div class="badge bg-teal text-white small px-2 py-1 font-monospace">
@@ -286,7 +332,7 @@
         <div class="pwd-assistance-card shadow-lg">
           <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="d-flex align-items-center gap-3">
-              <div style="width: 52px; height: 52px; background: #4f46e5; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white;">
+              <div class="pwd-icon-tile">
                 <i class="bi bi-universal-access"></i>
               </div>
               <div>
@@ -306,61 +352,16 @@
             Persons with Disabilities (PwD) and elderly citizens can request specialized assistance for official certificates, welfare applications, exam forms, ticket bookings, or identity cards without leaving their residence.
           </p>
 
-          <!-- Enquiry Form special For PwD's -->
-          <div class="bg-white rounded-4 p-4 text-dark shadow-sm">
-            <h5 class="fw-bold text-navy mb-3"><i class="bi bi-pencil-square text-teal me-2"></i> Submit PwD Assistance Enquiry</h5>
-            
-            <form action="{% url 'pwd_request' %}" method="POST">
-              {% csrf_token %}
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label fw-bold text-navy small">Applicant / Contact Name *</label>
-                  <input type="text" name="name" class="form-control" placeholder="Enter full name" required>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold text-navy small">WhatsApp / Phone Number *</label>
-                  <input type="tel" name="mobile" class="form-control" placeholder="Mobile number" required>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold text-navy small">Location / Place *</label>
-                  <input type="text" name="place" class="form-control" placeholder="Village / Town / District" required>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold text-navy small">Assistance Preference</label>
-                  <select name="assistance_type" class="form-select">
-                    <option value="Doorstep Visit Assistance">Doorstep Visit Assistance</option>
-                    <option value="WhatsApp / Chat Support">WhatsApp / Chat Support</option>
-                    <option value="Direct Phone Call Support">Direct Phone Call Support</option>
-                    <option value="Mobility / Senior Support">Mobility / Senior Support</option>
-                    <option value="Voice / Visual Support">Voice / Visual Support</option>
-                    <option value="General Assistance">General Assistance</option>
-                  </select>
-                </div>
-                <div class="col-12">
-                  <label class="form-label fw-bold text-navy small">Service Needed *</label>
-                  <input type="text" name="service_needed" class="form-control" placeholder="e.g. Disability Certificate, Medical Board, Train Ticket, Pension, Ration Card" required>
-                </div>
-                <div class="col-12">
-                  <label class="form-label fw-bold text-navy small">Caregiver / Specific Requirement Notes</label>
-                  <textarea name="details" class="form-control" rows="2" placeholder="Tell us how our caseworkers can comfortably communicate and assist you..."></textarea>
-                </div>
-              </div>
-
-              <!-- Submit + Direct WhatsApp & Call Options -->
-              <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mt-3 pt-3 border-top">
-                <div class="d-flex gap-2">
-                  <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20PwD-Friendly%20Assistance%20for%20a%20digital%20service." target="_blank" class="btn btn-whatsapp btn-sm fw-bold">
-                    <i class="bi bi-whatsapp me-1"></i> WhatsApp Now
-                  </a>
-                  <a href="tel:6282268453" class="btn btn-outline-navy btn-sm fw-bold">
-                    <i class="bi bi-telephone-fill me-1"></i> Call Support
-                  </a>
-                </div>
-                <button type="submit" class="btn btn-teal fw-bold px-4">
-                  Submit Enquiry <i class="bi bi-arrow-right ms-1"></i>
-                </button>
-              </div>
-            </form>
+          <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-teal btn-lg fw-bold" data-bs-toggle="modal" data-bs-target="#pwdModal">
+              <i class="bi bi-pencil-square me-2" aria-hidden="true"></i> Request assistance
+            </button>
+            <a href="https://wa.me/916282268453?text=Hi%20HOMline,%20I%20need%20PwD-Friendly%20Assistance%20for%20a%20digital%20service." target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg fw-bold">
+              <i class="bi bi-whatsapp me-1" aria-hidden="true"></i> WhatsApp
+            </a>
+            <a href="tel:6282268453" class="btn btn-outline-light btn-lg fw-bold">
+              <i class="bi bi-telephone-fill me-1" aria-hidden="true"></i> Call
+            </a>
           </div>
         </div>
       </div>
@@ -373,10 +374,6 @@
               <span class="badge bg-gold text-dark font-monospace small">BULLETIN</span>
               <h4 class="fw-bold text-navy mb-0">Latest Updates</h4>
             </div>
-            <!-- Admin Panel Access Link in Side Box -->
-            <a href="{% url 'admin:core_update_changelist' %}" class="btn btn-outline-navy btn-sm fw-bold d-flex align-items-center gap-1" title="Manage updates in Admin Panel">
-              <i class="bi bi-shield-lock-fill text-gold"></i> Admin Access
-            </a>
           </div>
 
           <div class="d-flex flex-column gap-3 mb-4">
@@ -401,9 +398,6 @@
             <a href="{% url 'updates_list' %}" class="btn btn-link text-teal p-0 fw-bold text-decoration-none">
               View all updates <i class="bi bi-arrow-right ms-1"></i>
             </a>
-            <a href="{% url 'admin:index' %}" class="text-muted small text-decoration-none">
-              <i class="bi bi-gear-fill me-1"></i> Admin Operations
-            </a>
           </div>
         </div>
       </div>
@@ -411,50 +405,4 @@
   </div>
 </section>
 
-<!-- 04 Featured Services with Border Highlight Animation -->
-<section class="py-5 bg-white home-featured-section">
-  <div class="container">
-    <div class="text-center max-width-700 mx-auto mb-5">
-      <span class="badge bg-teal text-white px-3 py-2 rounded-pill font-monospace text-uppercase">Directory Highlights</span>
-      <h2 class="fw-extrabold display-6 text-navy mt-2 mb-3">Popular Services</h2>
-      <p class="text-muted">Doorstep assistance for official documents, tickets, printing, designing, and online registrations.</p>
-    </div>
-
-    <div class="row g-4">
-      {% for service in featured_services %}
-      <div class="col-lg-3 col-md-6">
-        <a href="{% url 'service_detail' slug=service.slug %}" class="home-feature-card service-card-animated p-4 h-100 d-flex flex-column justify-content-between text-decoration-none">
-          <div>
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <div class="home-feature-icon" style="width: 48px; height: 48px; border-radius: 12px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
-                <i class="bi {{ service.icon_class }}"></i>
-              </div>
-              {% if service.badge %}
-                <span class="badge bg-gold text-dark font-monospace small">{{ service.badge }}</span>
-              {% endif %}
-            </div>
-            
-            <span class="small text-muted font-monospace d-block mb-1">{{ service.category.name }}</span>
-            <h3 class="h6 fw-bold text-navy mb-2">{{ service.title }}</h3>
-            <p class="text-muted small mb-3">{{ service.short_summary|truncatewords:14 }}</p>
-          </div>
-
-          <div class="pt-3 border-top d-flex justify-content-between align-items-center">
-            <span class="small font-monospace text-teal fw-bold">{{ service.homline_charge }}</span>
-            <span class="btn btn-sm btn-outline-navy py-1 px-2" style="font-size: 0.75rem;">View Details &rarr;</span>
-          </div>
-        </a>
-      </div>
-      {% empty %}
-      <div class="col-12 text-center"><p class="text-muted">Explore the directory to find the service you need.</p></div>
-      {% endfor %}
-    </div>
-
-    <div class="text-center mt-5">
-      <a href="{% url 'services_list' %}" class="btn btn-teal btn-lg px-4 shadow-sm">
-        <i class="bi bi-grid-fill me-2"></i> View All Services Directory (14+ Options)
-      </a>
-    </div>
-  </div>
-</section>
 {% endblock %}

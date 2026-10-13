@@ -45,8 +45,10 @@
         <div class="homline-card bg-white p-4 p-md-5 shadow-lg border-0 overflow-hidden">
           <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 border-bottom pb-3 gap-3">
             <div>
-              <span class="text-muted small d-block font-monospace">Request Reference ID</span>
-              <h3 class="fw-extrabold text-navy font-monospace mb-0">{{ tracked_request.request_id }}</h3>
+              <div class="token-id">
+                <span class="token-label">Request Reference ID</span>
+                <span class="token-value font-monospace">{{ tracked_request.request_id }}</span>
+              </div>
             </div>
             <div class="d-flex align-items-center gap-2">
               {% if tracked_request.status == 'Completed' %}
@@ -67,23 +69,23 @@
 
           <!-- Progress Bar Visualizer -->
           <div class="mb-4">
-            <div class="d-flex justify-content-between text-muted font-monospace small mb-2">
-              <span>Pending</span>
-              <span>Under Review</span>
-              <span>Processing</span>
-              <span>Completed</span>
+            <div class="track-steps text-muted mb-2" aria-hidden="true">
+              <span {% if tracked_request.status == 'Pending' %}class="is-current"{% endif %}>Pending</span>
+              <span {% if tracked_request.status == 'Under Review' %}class="is-current"{% endif %}>Under Review</span>
+              <span {% if tracked_request.status == 'Processing' %}class="is-current"{% endif %}>Processing</span>
+              <span {% if tracked_request.status == 'Completed' %}class="is-current"{% endif %}>Completed</span>
             </div>
-            <div class="progress" style="height: 10px;">
+            <div class="progress" style="height: 10px;" role="progressbar" aria-label="Request progress: {{ tracked_request.status }}">
               {% if tracked_request.status == 'Pending' %}
-                <div class="progress-bar bg-secondary" role="progressbar" style="width: 25%"></div>
+                <div class="progress-bar bg-secondary" style="width: 25%"></div>
               {% elif tracked_request.status == 'Under Review' %}
-                <div class="progress-bar bg-warning" role="progressbar" style="width: 50%"></div>
+                <div class="progress-bar bg-warning" style="width: 50%"></div>
               {% elif tracked_request.status == 'Processing' %}
-                <div class="progress-bar bg-info" role="progressbar" style="width: 75%"></div>
+                <div class="progress-bar bg-info" style="width: 75%"></div>
               {% elif tracked_request.status == 'Completed' %}
-                <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                <div class="progress-bar bg-success" style="width: 100%"></div>
               {% else %}
-                <div class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div>
+                <div class="progress-bar bg-danger" style="width: 100%"></div>
               {% endif %}
             </div>
           </div>

@@ -5,11 +5,11 @@
 
 {% block content %}
 <!-- Top Hero: HOMline with Sub Bar -->
-<section class="py-5 bg-navy text-white text-center position-relative overflow-hidden">
+<section id="intro" class="about-hero bg-navy text-white text-center position-relative overflow-hidden">
   <div class="position-absolute top-0 start-0 w-100 h-100 bg-radial-glow opacity-20 pointer-events-none"></div>
   <div class="container py-4 position-relative z-1">
     <div class="d-inline-flex align-items-center gap-2 bg-white bg-opacity-10 border border-white border-opacity-20 px-3 py-1 rounded-pill mb-3">
-      <span class="badge bg-gold text-dark font-monospace text-uppercase fw-bold">Official Identity</span>
+      <span class="badge bg-gold text-dark font-monospace text-uppercase fw-bold">About Us</span>
       <span class="small text-white-75">AMDG MEDIA Initiative</span>
     </div>
 
@@ -39,18 +39,34 @@
       <button class="btn btn-outline-light px-4 rounded-pill" data-bs-toggle="modal" data-bs-target="#founderStoryModal">
         <i class="bi bi-person-heart me-2 text-teal"></i> Founder’s Story & Motivation
       </button>
-      <a href="#futurePlansSection" class="btn btn-teal text-white px-4 rounded-pill">
+      <a href="#futurePlansSection" class="btn btn-outline-light px-4 rounded-pill">
         <i class="bi bi-compass-fill me-2"></i> Future Plans (Kerala & India)
       </a>
-      <a href="{% url 'services_list' %}" class="btn btn-outline-teal text-white border-teal px-4 rounded-pill">
+      <a href="{% url 'services_list' %}" class="btn btn-teal text-white px-4 rounded-pill">
         <i class="bi bi-grid-fill me-2"></i> Explore Services
       </a>
     </div>
   </div>
 </section>
 
+
+<!-- In-page navigation: this page is long, so let people jump -->
+<nav class="page-jump" aria-label="On this page">
+  <div class="container">
+    <ul>
+      <li><a href="#intro">What is HOMline</a></li>
+      <li><a href="#social-innovation">Social innovation</a></li>
+      <li><a href="#beneficiaries">Who benefits</a></li>
+      <li><a href="#vision-mission">Vision &amp; mission</a></li>
+      <li><a href="#futurePlansSection">Future plans</a></li>
+      <li><a href="#founderMotivationSection">Founder</a></li>
+      <li><a href="#amdg">AMDG Group</a></li>
+    </ul>
+  </div>
+</nav>
+
 <!-- SECTION 1: What is HOMline? & Why Choose HOMline? -->
-<section class="py-5 bg-white">
+<section id="social-innovation" class="py-5 bg-white">
   <div class="container py-3">
     <!-- What is HOMline? -->
     <div class="row align-items-center g-5 mb-5 pb-4 border-bottom">
@@ -81,9 +97,6 @@
 
       <div class="col-lg-6">
         <div class="homline-card bg-navy text-white p-4 p-md-5 position-relative overflow-hidden shadow-lg rounded-4">
-          <div class="position-absolute end-0 bottom-0 opacity-10" style="font-size: 10rem; transform: translate(20%, 20%);">
-            <i class="bi bi-laptop"></i>
-          </div>
           <span class="badge bg-gold text-dark px-3 py-1 rounded-pill font-monospace fw-bold mb-3">The Core Idea</span>
           <h3 class="fw-bold text-white mb-3">HOMline e-Service Hub</h3>
           <p class="text-white-75 mb-4">
@@ -325,7 +338,7 @@
 </section>
 
 <!-- SECTION 3: Who Benefits from HOMline? (All 9 Segments) -->
-<section class="py-5 bg-white">
+<section id="beneficiaries" class="py-5 bg-white">
   <div class="container py-3">
     <div class="text-center max-width-800 mx-auto mb-5">
       <span class="badge bg-teal text-white px-3 py-1 rounded-pill font-monospace mb-2">Audience Breakdown</span>
@@ -411,7 +424,7 @@
 </section>
 
 <!-- SECTION 4: Our Vision, Mission & 5-Step Approach -->
-<section class="py-5 bg-navy text-white">
+<section id="vision-mission" class="py-5 bg-navy text-white">
   <div class="container py-3">
     <div class="row g-5 align-items-center mb-5">
       <div class="col-lg-6">
@@ -832,7 +845,7 @@
 </section>
 
 <!-- SECTION 7: WHAT HOMLINE ULTIMATELY STANDS FOR -->
-<section class="py-5 bg-navy text-white text-center position-relative overflow-hidden">
+<section id="amdg" class="py-5 bg-navy text-white text-center position-relative overflow-hidden">
   <div class="container py-4 position-relative z-1">
     <div class="max-width-900 mx-auto">
       <span class="badge bg-gold text-dark px-3 py-1 rounded-pill font-monospace fw-bold mb-3">Core Belief & Creed</span>

@@ -43,7 +43,7 @@ def custom_admin_index(request, extra_context=None):
     extra_context['total_pwd_requests'] = PwDRequest.objects.count()
     extra_context['pending_pwd_requests'] = PwDRequest.objects.filter(status='Pending').count()
     extra_context['total_complaints'] = ComplaintSuggestion.objects.count()
-    extra_context['pending_complaints'] = ComplaintSuggestion.objects.filter(status='Pending').count()
+    extra_context['pending_complaints'] = ComplaintSuggestion.objects.filter(status='Received').count()
     extra_context['total_announcements'] = Announcement.objects.count()
 
     recent_query = request.GET.get('request_search', '').strip()
@@ -349,8 +349,11 @@ class MembershipEnquiryAdmin(admin.ModelAdmin):
         count = 0
         for obj in queryset:
             if not obj.membership_code:
-                random_hex = secrets.token_hex(2).upper()
-                obj.membership_code = f"HOM-MBR-{timezone.localdate().year}-{random_hex}"
+                while True:
+                    code = f"HOM-MBR-{timezone.localdate().year}-{secrets.token_hex(5).upper()}"
+                    if not MembershipEnquiry.objects.filter(membership_code=code).exists():
+                        break
+                obj.membership_code = code
             obj.status = 'Approved'
             if not obj.open_date:
                 obj.open_date = timezone.localdate()
@@ -438,25 +441,40 @@ class PwDRequestAdmin(admin.ModelAdmin):
 @admin.register(ComplaintSuggestion)
 class ComplaintSuggestionAdmin(admin.ModelAdmin):
     list_display = (
-        'type_badge', 'subject', 'name', 'mobile', 
+        'reference_no', 'type_badge', 'subject', 'name', 'mobile', 'priority',
         'status_badge', 'quick_actions', 'created_at'
     )
-    list_filter = ('entry_type', 'status', 'created_at')
-    search_fields = ('name', 'mobile', 'email', 'subject', 'details', 'admin_notes')
-    readonly_fields = ('created_at',)
-    actions = ['mark_as_processing', 'mark_as_answered', 'mark_as_closed']
+    list_filter = ('entry_type', 'status', 'priority', 'is_member', 'assigned_to', 'created_at')
+    search_fields = ('reference_no', 'name', 'mobile', 'email', 'subject', 'details', 'admin_notes', 'membership_id', 'related_reference')
+    readonly_fields = ('reference_no', 'created_at', 'document_download', 'document_original_name')
+    fieldsets = (
+        ('Submission', {'fields': ('reference_no', 'created_at', 'entry_type', 'subject', 'details', 'consent')}),
+        ('Customer', {'fields': ('name', 'mobile', 'email', 'is_member', 'membership_id')}),
+        ('Related service', {'fields': ('related_to_service', 'service_name', 'related_reference')}),
+        ('Supporting document (private)', {'fields': ('document_download', 'document_original_name')}),
+        ('Preferred response', {'fields': ('preferred_response', 'preferred_time')}),
+        ('Internal tracking', {'fields': ('status', 'priority', 'assigned_to', 'action_taken', 'response_date', 'resolution', 'admin_notes')}),
+    )
+    actions = ['mark_as_under_review', 'mark_as_action_required', 'mark_as_escalated', 'mark_as_resolved', 'mark_as_closed']
+
+    def document_download(self, obj):
+        if not obj or not obj.supporting_document:
+            return 'No document uploaded'
+        url = reverse('private_complaint_document', kwargs={'reference_no': obj.reference_no})
+        return format_html('<a href="{}">Download supporting document</a>', url)
+    document_download.short_description = 'Supporting document'
 
     def type_badge(self, obj):
-        if obj.entry_type == 'Complaint':
-            return format_html('<span style="background: #fee2e2; color: #b91c1c; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">{}</span>', '⚠️ Complaint')
-        return format_html('<span style="background: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">{}</span>', '💡 Suggestion')
+        return format_html('<span style="background: #e0f2fe; color: #0c4a6e; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">{}</span>', obj.entry_type)
     type_badge.short_description = "Type"
 
     def status_badge(self, obj):
         colors = {
-            'Pending': ('#b45309', '#fef3c7'),
-            'Processing': ('#0284c7', '#e0f2fe'),
-            'Answered': ('#15803d', '#dcfce7'),
+            'Received': ('#b45309', '#fef3c7'),
+            'Under Review': ('#0284c7', '#e0f2fe'),
+            'Action Required': ('#9a3412', '#ffedd5'),
+            'Escalated': ('#b91c1c', '#fee2e2'),
+            'Resolved': ('#15803d', '#dcfce7'),
             'Closed': ('#64748b', '#f1f5f9'),
         }
         fg, bg = colors.get(obj.status, ('#475569', '#f1f5f9'))
@@ -470,28 +488,37 @@ class ComplaintSuggestionAdmin(admin.ModelAdmin):
         clean_mob = "".join([c for c in obj.mobile if c.isdigit()])
         if len(clean_mob) == 10:
             clean_mob = "91" + clean_mob
-        msg = f"Hi {obj.name}, HOMline management team following up on your {obj.entry_type} ({obj.subject})."
+        msg = f"Hi {obj.name}, HOMline management team following up on your {obj.entry_type} ({obj.reference_no})."
         wa_url = f"https://wa.me/{clean_mob}?text={urllib.parse.quote(msg)}"
         return format_html(
             '<a href="tel:{}" style="margin-right: 6px; display: inline-flex; align-items: center; gap: 3px; background: #1e293b; color: white; padding: 4px 8px; border-radius: 6px; text-decoration: none; font-size: 11px;"><i class="bi bi-telephone-fill"></i> Call</a>'
-            '<a href="{}" target="_blank" style="display: inline-flex; align-items: center; gap: 3px; background: #22c55e; color: white; padding: 4px 8px; border-radius: 6px; text-decoration: none; font-size: 11px;"><i class="bi bi-whatsapp"></i> WhatsApp</a>',
+            '<a href="{}" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 3px; background: #22c55e; color: white; padding: 4px 8px; border-radius: 6px; text-decoration: none; font-size: 11px;"><i class="bi bi-whatsapp"></i> WhatsApp</a>',
             obj.mobile, wa_url
         )
     quick_actions.short_description = "Follow up"
 
-    def mark_as_processing(self, request, queryset):
-        queryset.update(status='Processing')
-        self.message_user(request, "Selected item(s) marked as Processing.")
-    mark_as_processing.short_description = "Status ➔ Processing"
+    def _set_status(self, request, queryset, status):
+        queryset.update(status=status)
+        self.message_user(request, f"Selected item(s) marked as {status}.")
 
-    def mark_as_answered(self, request, queryset):
-        queryset.update(status='Answered')
-        self.message_user(request, "Selected item(s) marked as Answered.")
-    mark_as_answered.short_description = "Status ➔ Answered"
+    def mark_as_under_review(self, request, queryset):
+        self._set_status(request, queryset, 'Under Review')
+    mark_as_under_review.short_description = "Status ➔ Under Review"
+
+    def mark_as_action_required(self, request, queryset):
+        self._set_status(request, queryset, 'Action Required')
+    mark_as_action_required.short_description = "Status ➔ Action Required"
+
+    def mark_as_escalated(self, request, queryset):
+        self._set_status(request, queryset, 'Escalated')
+    mark_as_escalated.short_description = "Status ➔ Escalated"
+
+    def mark_as_resolved(self, request, queryset):
+        self._set_status(request, queryset, 'Resolved')
+    mark_as_resolved.short_description = "Status ➔ Resolved"
 
     def mark_as_closed(self, request, queryset):
-        queryset.update(status='Closed')
-        self.message_user(request, "Selected item(s) marked as Closed.")
+        self._set_status(request, queryset, 'Closed')
     mark_as_closed.short_description = "Status ➔ Closed"
 
 

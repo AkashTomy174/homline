@@ -1,3 +1,4 @@
+import logging
 import urllib.parse
 from pathlib import Path
 from django.shortcuts import render, get_object_or_404, redirect
@@ -7,6 +8,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse, FileResponse
 from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.views.decorators.http import require_POST
+from .ratelimit import ratelimit
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.models import User
@@ -22,6 +26,50 @@ from .forms import (
     UserLoginForm, UserRegistrationForm, UserProfileForm, LinkRequestForm
 )
 
+logger = logging.getLogger(__name__)
+
+
+def _register_service_request(request, form, title, description, success_msg):
+    req_obj = form.save(commit=False)
+    upload = form.cleaned_data.get('document_upload')
+    if upload:
+        req_obj.document_original_name = Path(upload.name).name[:255]
+    if req_obj.service:
+        req_obj.service_charge = req_obj.service.homline_charge
+        req_obj.portal_fee = req_obj.service.third_party_fee
+    if request.user.is_authenticated:
+        req_obj.user = request.user
+    req_obj.save()
+    ServiceRequestLog.objects.create(request=req_obj, status='Pending', title=title, description=description)
+    _verify_request_access(request, req_obj)
+    messages.success(request, success_msg.format(id=req_obj.request_id))
+    return redirect('track_request_with_id', request_id=req_obj.request_id)
+
+
+def _verify_request_access(request, req_obj):
+    ids = request.session.get('verified_requests', [])
+    if req_obj.request_id not in ids:
+        request.session['verified_requests'] = ids + [req_obj.request_id]
+
+
+def _can_view_request(request, req_obj):
+    u = request.user
+    return (
+        (u.is_authenticated and (u.is_staff or req_obj.user_id == u.id))
+        or req_obj.request_id in request.session.get('verified_requests', [])
+    )
+
+
+def health_view(request):
+    from django.db import connection
+    try:
+        connection.ensure_connection()
+    except Exception:
+        return JsonResponse({'status': 'database unavailable'}, status=503)
+    return JsonResponse({'status': 'ok'})
+
+
+@ratelimit('home', 20)
 def home_view(request):
     categories = Category.objects.prefetch_related('services').all()
     featured_services = Service.objects.filter(is_featured=True)[:8]
@@ -41,33 +89,15 @@ def home_view(request):
     service_request_form = ServiceRequestForm(initial=initial_request if initial_request else None)
     track_form = TrackRequestForm()
     pwd_form = PwDRequestForm()
-    complaint_form = ComplaintSuggestionForm()
 
     if request.method == 'POST':
         if 'submit_request' in request.POST:
             service_request_form = ServiceRequestForm(request.POST, request.FILES)
             if service_request_form.is_valid():
-                req_obj = service_request_form.save(commit=False)
-                if req_obj.service:
-                    req_obj.service_charge = req_obj.service.homline_charge
-                    req_obj.portal_fee = req_obj.service.third_party_fee
-                if request.user.is_authenticated:
-                    req_obj.user = request.user
-                req_obj.save()
-                
-                # Create initial timeline log
-                ServiceRequestLog.objects.create(
-                    request=req_obj,
-                    status='Pending',
-                    title='Request Registered',
-                    description='Your digital service request has been logged successfully into HOMline systems.'
-                )
-                
-                messages.success(
-                    request, 
-                    f"Your request has been submitted successfully! Your Request ID is: {req_obj.request_id}. Please save this ID to track your request status."
-                )
-                return redirect('track_request_with_id', request_id=req_obj.request_id)
+                return _register_service_request(
+                    request, service_request_form, 'Request Registered',
+                    'Your digital service request has been logged successfully into HOMline systems.',
+                    "Your request has been submitted successfully! Your Request ID is: {id}. Please save this ID to track your request status.")
             else:
                 messages.error(request, "There was an error in your submission. Please check the form details.")
         
@@ -79,11 +109,7 @@ def home_view(request):
                 return redirect(f"{reverse('home')}#pwd-assistance")
 
         elif 'submit_complaint' in request.POST:
-            complaint_form = ComplaintSuggestionForm(request.POST)
-            if complaint_form.is_valid():
-                c_obj = complaint_form.save()
-                messages.success(request, f"Thank you {c_obj.name}! Your {c_obj.entry_type} has been registered and forwarded to AMDG management. Ref ID: HOM-{c_obj.entry_type[:3].upper()}-{c_obj.id}")
-                return redirect('home')
+            return redirect('complaint_suggestion')
 
     context = {
         'categories': categories,
@@ -97,7 +123,6 @@ def home_view(request):
         'service_request_form': service_request_form,
         'track_form': track_form,
         'pwd_form': pwd_form,
-        'complaint_form': complaint_form,
         'active_tab': 'home'
     }
     return render(request, 'core/home.html', context)
@@ -154,6 +179,7 @@ def how_it_works_view(request):
     return render(request, 'core/how_it_works.html', {'active_tab': 'how_it_works'})
 
 
+@ratelimit('membership', 20, methods=('POST', 'GET'))
 def membership_view(request):
     plans = MembershipPlan.objects.all()
     initial_enquiry = {}
@@ -168,11 +194,11 @@ def membership_view(request):
     check_query = request.GET.get('check_code', '').strip() or request.POST.get('check_code', '').strip()
 
     if check_query:
-        checked_membership = MembershipEnquiry.objects.filter(
-            Q(membership_code__iexact=check_query) | Q(mobile__iexact=check_query)
-        ).first()
+        checked_membership = MembershipEnquiry.objects.filter(membership_code__iexact=check_query).first()
+        if checked_membership:
+            checked_membership.masked_mobile = '*' * 6 + checked_membership.mobile[-4:]
         if not checked_membership:
-            check_error = f"No active membership record found for '{check_query}'. Please check your Membership Code or registered mobile number."
+            check_error = f"No active membership record found for '{check_query}'. Please check your Membership Code."
 
     if request.method == 'POST' and 'apply_membership' in request.POST:
         enquiry_form = MembershipEnquiryForm(request.POST)
@@ -209,6 +235,7 @@ def check_membership_view(request):
     return redirect(f"{reverse('membership')}?check_code={urllib.parse.quote(code)}#check-membership")
 
 
+@ratelimit('pwd', 10)
 def pwd_request_view(request):
     if request.method == 'POST':
         form = PwDRequestForm(request.POST)
@@ -230,25 +257,40 @@ def pwd_request_view(request):
     return redirect('home')
 
 
+@ratelimit('complaint', 10)
 def complaint_suggestion_view(request):
+    wants_json = request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.GET.get('json') == '1'
+    form = ComplaintSuggestionForm()
     if request.method == 'POST':
-        form = ComplaintSuggestionForm(request.POST)
+        form = ComplaintSuggestionForm(request.POST, request.FILES)
         if form.is_valid():
-            obj = form.save()
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.GET.get('json') == '1':
+            obj = form.save(commit=False)
+            upload = form.cleaned_data.get('supporting_document')
+            if upload:
+                obj.document_original_name = Path(upload.name).name[:255]
+            obj.save()
+            if wants_json:
                 return JsonResponse({
                     'success': True,
                     'entry_type': obj.entry_type,
-                    'ref_id': f"HOM-{obj.entry_type[:3].upper()}-{obj.id}",
-                    'message': f'Thank you {obj.name}. Your {obj.entry_type} has been noted and submitted to AMDG management.'
+                    'ref_id': obj.reference_no,
+                    'message': f'Thank you {obj.name}. Your {obj.entry_type} has been noted and submitted to HOMline management.'
                 })
-            messages.success(request, f"Thank you {obj.name}! Your {obj.entry_type} has been received. Reference ID: HOM-{obj.entry_type[:3].upper()}-{obj.id}.")
-            return redirect('home')
-        else:
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({'success': False, 'errors': form.errors}, status=400)
-            messages.error(request, "Please fill in all required fields.")
-    return redirect('home')
+            request.session['last_complaint_ref'] = obj.reference_no
+            return redirect('complaint_received', reference_no=obj.reference_no)
+        if wants_json:
+            return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+        messages.error(request, "Please correct the highlighted fields and submit again.")
+    return render(request, 'core/complaint.html', {'form': form, 'active_tab': 'contact'})
+
+
+def complaint_received_view(request, reference_no):
+    if request.session.get('last_complaint_ref') != reference_no:
+        return redirect('complaint_suggestion')
+    obj = get_object_or_404(ComplaintSuggestion, reference_no=reference_no)
+    return render(request, 'core/complaint_received.html', {
+        'reference_no': obj.reference_no, 'entry_type': obj.entry_type, 'created_at': obj.created_at,
+        'active_tab': 'contact'})
 
 
 def updates_list_view(request):
@@ -299,6 +341,7 @@ def faqs_view(request):
     return render(request, 'core/faqs.html', context)
 
 
+@ratelimit('contact', 10)
 def contact_view(request):
     form = QuickContactForm()
     if request.method == 'POST':
@@ -311,6 +354,7 @@ def contact_view(request):
     return render(request, 'core/contact.html', {'form': form, 'active_tab': 'contact'})
 
 
+@ratelimit('track', 30, methods=('GET', 'POST'))
 def track_request_view(request, request_id=None):
     tracked_request = None
     searched_id = request_id or request.GET.get('request_id', '').strip()
@@ -321,6 +365,7 @@ def track_request_view(request, request_id=None):
     if searched_id:
         try:
             tracked_request = ServiceRequest.objects.get(request_id__iexact=searched_id)
+            _verify_request_access(request, tracked_request)
             timeline_logs = tracked_request.timeline_logs.all()
             track_url = request.build_absolute_uri(reverse('track_request_with_id', kwargs={'request_id': tracked_request.request_id}))
             qr_code_url = f"https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={urllib.parse.quote(track_url)}"
@@ -359,6 +404,7 @@ def track_request_view(request, request_id=None):
     return render(request, 'core/track_request.html', context)
 
 
+@ratelimit('request', 10)
 def request_service_view(request):
     service_id = request.GET.get('service_id')
     initial_service = None
@@ -379,33 +425,19 @@ def request_service_view(request):
     if request.method == 'POST':
         form = ServiceRequestForm(request.POST, request.FILES)
         if form.is_valid():
-            req_obj = form.save(commit=False)
-            if req_obj.service:
-                req_obj.service_charge = req_obj.service.homline_charge
-                req_obj.portal_fee = req_obj.service.third_party_fee
-            if request.user.is_authenticated:
-                req_obj.user = request.user
-            req_obj.save()
-            
-            # Create initial timeline log
-            ServiceRequestLog.objects.create(
-                request=req_obj,
-                status='Pending',
-                title='Request Form Submitted',
-                description='Your online application request has been received by HOMline support team.'
-            )
-            
-            messages.success(
-                request, 
-                f"Your request has been registered! Request ID: {req_obj.request_id}."
-            )
-            return redirect('track_request_with_id', request_id=req_obj.request_id)
+            return _register_service_request(
+                request, form, 'Request Form Submitted',
+                'Your online application request has been received by HOMline support team.',
+                "Your request has been registered! Request ID: {id}.")
 
     return render(request, 'core/request_service.html', {'form': form, 'selected_service': initial_service})
 
 
 def receipt_view(request, request_id):
     req_obj = get_object_or_404(ServiceRequest, request_id__iexact=request_id)
+    if not _can_view_request(request, req_obj):
+        messages.info(request, "Open your request from the tracking page to view its receipt.")
+        return redirect('track_request_with_id', request_id=req_obj.request_id)
     track_url = request.build_absolute_uri(reverse('track_request_with_id', kwargs={'request_id': req_obj.request_id}))
     qr_code_url = f"https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={urllib.parse.quote(track_url)}"
     return render(request, 'core/receipt.html', {
@@ -414,19 +446,35 @@ def receipt_view(request, request_id):
     })
 
 
+def _serve_private_document(request, perm, field_file, original_name, label):
+    if not request.user.has_perm(perm):
+        raise PermissionDenied
+    if not field_file:
+        from django.http import Http404
+        raise Http404('No document was uploaded.')
+    try:
+        handle = field_file.open('rb')
+    except FileNotFoundError:
+        from django.http import Http404
+        raise Http404('The stored document could not be found.')
+    except Exception:
+        logger.exception('Document storage failure for %s', label)
+        return HttpResponse('Document storage is temporarily unavailable.', status=503)
+    return FileResponse(handle, as_attachment=True, filename=original_name or Path(field_file.name).name)
+
+
 @staff_member_required(login_url='admin:login')
 def private_request_document_view(request, request_id):
     req_obj = get_object_or_404(ServiceRequest, request_id__iexact=request_id)
-    if not request.user.has_perm('core.view_servicerequest'):
-        raise PermissionDenied
-    if not req_obj.document_upload:
-        from django.http import Http404
-        raise Http404('No document was uploaded for this request.')
-    return FileResponse(
-        req_obj.document_upload.open('rb'),
-        as_attachment=True,
-        filename=Path(req_obj.document_upload.name).name,
-    )
+    return _serve_private_document(request, 'core.view_servicerequest', req_obj.document_upload,
+                                   req_obj.document_original_name, req_obj.request_id)
+
+
+@staff_member_required(login_url='admin:login')
+def private_complaint_document_view(request, reference_no):
+    obj = get_object_or_404(ComplaintSuggestion, reference_no=reference_no)
+    return _serve_private_document(request, 'core.view_complaintsuggestion', obj.supporting_document,
+                                   obj.document_original_name, obj.reference_no)
 
 
 def policy_view(request, policy_name):
@@ -489,6 +537,7 @@ def policy_view(request, policy_name):
     return render(request, 'core/policy.html', {'policy': policy_data, 'policy_name': policy_name})
 
 
+@ratelimit('login', 10)
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
@@ -520,13 +569,9 @@ def login_view(request):
                     else:
                         request.session.set_expiry(0)  # expires on browser close
 
-                    # Auto-link any previous guest service requests or memberships matching email
-                    if user_obj.email:
-                        ServiceRequest.objects.filter(email__iexact=user_obj.email, user__isnull=True).update(user=user_obj)
-                        MembershipEnquiry.objects.filter(email__iexact=user_obj.email, user__isnull=True).update(user=user_obj)
 
                     messages.success(request, f"Welcome back, {user_obj.first_name or user_obj.username}!")
-                    if next_url and next_url != 'dashboard' and next_url.startswith('/') and not next_url.startswith('//'):
+                    if next_url != 'dashboard' and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
                         return redirect(next_url)
                     return redirect('dashboard')
                 else:
@@ -537,6 +582,7 @@ def login_view(request):
     return render(request, 'core/login.html', {'form': form, 'next': next_url, 'active_tab': 'login'})
 
 
+@ratelimit('signup', 5)
 def signup_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
@@ -553,10 +599,6 @@ def signup_view(request):
             user.is_superuser = False
             user.save()
 
-            # Auto-link any prior guest requests with this email
-            if user.email:
-                ServiceRequest.objects.filter(email__iexact=user.email, user__isnull=True).update(user=user)
-                MembershipEnquiry.objects.filter(email__iexact=user.email, user__isnull=True).update(user=user)
 
             authenticated_user = authenticate(
                 request, 
@@ -575,6 +617,7 @@ def signup_view(request):
     return render(request, 'core/signup.html', {'form': form, 'active_tab': 'signup'})
 
 
+@require_POST
 def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
@@ -586,10 +629,6 @@ def logout_view(request):
 def dashboard_view(request):
     user = request.user
 
-    # Auto-link any unassociated requests or memberships matching user's email
-    if user.email:
-        ServiceRequest.objects.filter(email__iexact=user.email, user__isnull=True).update(user=user)
-        MembershipEnquiry.objects.filter(email__iexact=user.email, user__isnull=True).update(user=user)
 
     profile_form = UserProfileForm(instance=user)
     password_form = PasswordChangeForm(user=user)

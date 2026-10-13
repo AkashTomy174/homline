@@ -1,3 +1,4 @@
+import os
 import uuid
 from django.conf import settings
 from django.utils import timezone
@@ -6,6 +7,12 @@ from django.utils.text import slugify
 
 def generate_request_id():
     return f"HOM-{timezone.localdate().year}-{uuid.uuid4().hex[:16].upper()}"
+
+def service_document_path(instance, filename):
+    """Random storage name: no user-controlled path, no overwrites. Original name kept in a model field."""
+    ext = os.path.splitext(filename)[1].lower()
+    return f"service_docs/{timezone.localdate():%Y/%m}/{uuid.uuid4().hex}{ext}"
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -130,7 +137,7 @@ class MembershipEnquiry(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='membership_enquiries')
     name = models.CharField(max_length=120)
-    mobile = models.CharField(max_length=20)
+    mobile = models.CharField(max_length=20, db_index=True)
     email = models.EmailField(blank=True, null=True)
     place = models.CharField(max_length=150, blank=True, default="Kerala")
     preferred_plan = models.ForeignKey(MembershipPlan, on_delete=models.SET_NULL, null=True, blank=True)
@@ -212,26 +219,73 @@ class PwDRequest(models.Model):
         return f"PwD Request from {self.name} ({self.place or 'Kerala'}) - {self.status}"
 
 
+def complaint_document_path(instance, filename):
+    ext = os.path.splitext(filename)[1].lower()
+    return f"complaint_docs/{timezone.localdate():%Y/%m}/{uuid.uuid4().hex}{ext}"
+
+
+def generate_complaint_reference():
+    """HOM-CMP-YYYYMMDD-NNN, NNN = running number for the day."""
+    today = timezone.localdate()
+    prefix = f"HOM-CMP-{today:%Y%m%d}-"
+    n = ComplaintSuggestion.objects.filter(reference_no__startswith=prefix).count() + 1
+    while ComplaintSuggestion.objects.filter(reference_no=f"{prefix}{n:03d}").exists():
+        n += 1
+    return f"{prefix}{n:03d}"
+
+
 class ComplaintSuggestion(models.Model):
     TYPE_CHOICES = [
         ('Complaint', 'Complaint'),
         ('Suggestion', 'Suggestion'),
+        ('General Feedback', 'General Feedback'),
+        ('Accessibility Concern', 'Accessibility Concern'),
+        ('Service Issue', 'Service Issue'),
+        ('Appreciation', 'Appreciation'),
+        ('Other', 'Other'),
     ]
 
     STATUS_CHOICES = [
-        ('Pending', 'Pending'),
-        ('Processing', 'Processing'),
-        ('Answered', 'Answered'),
+        ('Received', 'Received'),
+        ('Under Review', 'Under Review'),
+        ('Action Required', 'Action Required'),
+        ('Escalated', 'Escalated'),
+        ('Resolved', 'Resolved'),
         ('Closed', 'Closed'),
     ]
 
-    entry_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='Complaint')
+    PRIORITY_CHOICES = [('Low', 'Low'), ('Normal', 'Normal'), ('High', 'High'), ('Urgent', 'Urgent')]
+    MEMBER_CHOICES = [('Yes', 'Yes'), ('No', 'No'), ('Not Sure', 'Not Sure')]
+    RESPONSE_CHOICES = [
+        ('Call', 'Call'), ('WhatsApp', 'WhatsApp'), ('Email', 'Email'), ('None', 'No response needed'),
+    ]
+    TIME_CHOICES = [
+        ('Anytime', 'Anytime'), ('Morning', 'Morning'), ('Afternoon', 'Afternoon'), ('Evening', 'Evening'),
+    ]
+
+    reference_no = models.CharField(max_length=30, unique=True, null=True, blank=True, editable=False)
+    entry_type = models.CharField(max_length=30, choices=TYPE_CHOICES, default='Complaint')
     name = models.CharField(max_length=120)
     mobile = models.CharField(max_length=20)
     email = models.EmailField(blank=True, null=True)
+    is_member = models.CharField(max_length=10, choices=MEMBER_CHOICES, default='No')
+    membership_id = models.CharField(max_length=50, blank=True)
+    related_to_service = models.BooleanField(default=False)
+    service_name = models.CharField(max_length=150, blank=True)
+    related_reference = models.CharField(max_length=50, blank=True, help_text="Service request / reference number, if any")
     subject = models.CharField(max_length=200)
     details = models.TextField()
-    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='Pending')
+    supporting_document = models.FileField(upload_to=complaint_document_path, blank=True, null=True)
+    document_original_name = models.CharField(max_length=255, blank=True)
+    preferred_response = models.CharField(max_length=20, choices=RESPONSE_CHOICES, default='Call')
+    preferred_time = models.CharField(max_length=20, choices=TIME_CHOICES, default='Anytime')
+    consent = models.BooleanField(default=False)
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='Normal')
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='Received')
+    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_complaints')
+    action_taken = models.TextField(blank=True)
+    response_date = models.DateField(null=True, blank=True)
+    resolution = models.TextField(blank=True)
     admin_notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -239,6 +293,11 @@ class ComplaintSuggestion(models.Model):
         ordering = ['-created_at']
         verbose_name = 'Complaint / Suggestion'
         verbose_name_plural = 'Complaints & Suggestions'
+
+    def save(self, *args, **kwargs):
+        if not self.reference_no:
+            self.reference_no = generate_complaint_reference()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"[{self.entry_type}] {self.subject} by {self.name} ({self.status})"
@@ -263,13 +322,14 @@ class ServiceRequest(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='service_requests')
     request_id = models.CharField(max_length=30, unique=True, default=generate_request_id)
     full_name = models.CharField(max_length=120)
-    mobile = models.CharField(max_length=20)
+    mobile = models.CharField(max_length=20, db_index=True)
     email = models.EmailField(blank=True, null=True)
     service = models.ForeignKey(Service, on_delete=models.SET_NULL, null=True, blank=True)
     service_name_manual = models.CharField(max_length=150, blank=True, help_text="Used if custom service requested")
     requirement_details = models.TextField()
     contact_preference = models.CharField(max_length=20, choices=CONTACT_CHOICES, default='WhatsApp')
-    document_upload = models.FileField(upload_to='service_docs/%Y/%m/', blank=True, null=True)
+    document_upload = models.FileField(upload_to=service_document_path, blank=True, null=True)
+    document_original_name = models.CharField(max_length=255, blank=True)
     service_charge = models.CharField(max_length=100, default="₹150", blank=True, help_text="HOMline Assistance Charge (client can view on track page)")
     portal_fee = models.CharField(max_length=100, default="As per Govt portal", blank=True, help_text="Official / Portal Fee (client can view on track page)")
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='Pending')

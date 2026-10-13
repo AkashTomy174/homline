@@ -12,9 +12,9 @@ python manage.py collectstatic --no-input
 python manage.py migrate
 
 # Ensure initial services, categories, FAQs are populated
-python manage.py seed_data || true
+python manage.py seed_data
 
 # Optionally create superuser if environment variables are present
 if [[ -n "$DJANGO_SUPERUSER_USERNAME" && -n "$DJANGO_SUPERUSER_PASSWORD" ]]; then
-  python manage.py createsuperuser --noinput || true
+  python manage.py createsuperuser --noinput || echo 'superuser already exists'
 fi

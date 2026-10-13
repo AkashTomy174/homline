@@ -1,17 +1,8 @@
 // HOMline DIGI seva - Master Interactive Client-Side Application JS
-// Features: Theme Switcher (Quantum Lumina & Cyber Midnight), Live Tracker, Interactive Checklist, Dynamic Fee Engine, and Reliable Service Application Workflow
-
-// Apply theme immediately before DOM load to avoid flash
-(function() {
-  const savedTheme = localStorage.getItem('homline_theme') || 'light';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-})();
+// Features: Live Tracker, Interactive Checklist, Dynamic Fee Engine, and Reliable Service Application Workflow
 
 document.addEventListener('DOMContentLoaded', function () {
   console.log('HOMline DIGI seva Engine ready.');
-
-  // 1. Initialize Theme Switcher
-  initThemeManager();
 
   // 2. Initialize Interactive Toast Engine
   initToastEngine();
@@ -49,48 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
   // 13. Initialize Receipt Page (if on receipt.html)
   initReceiptPage();
 });
-
-/* ==========================================================================
-   01. INTERACTIVE THEME SWITCHER (Lumina Day & Cyber Midnight)
-   ========================================================================== */
-function initThemeManager() {
-  const currentTheme = localStorage.getItem('homline_theme') || 'light';
-  applyTheme(currentTheme, false);
-
-  const toggleBtns = document.querySelectorAll('#themeToggleBtn, .theme-toggle-btn');
-  toggleBtns.forEach(btn => {
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
-      const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
-      applyTheme(newTheme, true);
-    });
-  });
-}
-
-function applyTheme(theme, showToast) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('homline_theme', theme);
-
-  const toggleBtns = document.querySelectorAll('#themeToggleBtn, .theme-toggle-btn');
-  toggleBtns.forEach(btn => {
-    if (theme === 'dark') {
-      btn.innerHTML = '<i class="bi bi-sun-fill text-gold"></i>';
-      btn.setAttribute('title', 'Switch to Quantum Lumina Day Mode');
-    } else {
-      btn.innerHTML = '<i class="bi bi-moon-stars-fill"></i>';
-      btn.setAttribute('title', 'Switch to Cyber Midnight Dark Mode');
-    }
-  });
-
-  if (showToast) {
-    if (theme === 'dark') {
-      showInteractiveToast('🌙 Cyber Midnight theme activated', 'bi-moon-stars-fill');
-    } else {
-      showInteractiveToast('☀️ Quantum Lumina theme activated', 'bi-sun-fill');
-    }
-  }
-}
 
 /* ==========================================================================
    02. INTERACTIVE TOAST ENGINE

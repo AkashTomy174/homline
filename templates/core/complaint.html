@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Feedback, Complaints &amp; Suggestions • HOMline DIGI seva{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-navy text-white text-center">
+  <div class="container py-2">
+    <span class="badge bg-gold text-dark px-3 py-2 rounded-pill font-monospace fw-bold text-uppercase mb-3">Feedback • Complaints • Suggestions</span>
+    <h1 class="display-5 fw-extrabold text-white mb-3">We’re Listening. Your Voice Matters.</h1>
+    <p class="lead text-white-50 mx-auto mb-0" style="max-width: 720px;">
+      Share a complaint, suggestion, feedback, accessibility concern or appreciation. Your input helps us improve our services and make digital assistance more accessible for everyone.
+    </p>
+  </div>
+</section>
+
+<section class="py-5 bg-soft-mist">
+  <div class="container" style="max-width: 860px;">
+    {% if form.errors %}
+    <div class="alert alert-danger rounded-4" role="alert" tabindex="-1" id="formErrors">
+      <strong>Please correct the following before submitting:</strong>
+      <ul class="mb-0">
+        {% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}
+        {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" class="homline-card bg-white p-4 p-md-5 shadow-sm" novalidate>
+      {% csrf_token %}
+
+      <h2 class="h5 fw-bold text-teal">A. Submission Type <span class="text-danger" aria-hidden="true">*</span></h2>
+      <div class="mb-4">
+        <label for="{{ form.entry_type.id_for_label }}" class="form-label fw-bold text-navy">What would you like to share?</label>
+        {{ form.entry_type }}
+      </div>
+
+      <h2 class="h5 fw-bold text-teal">B. Your Details</h2>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label for="{{ form.name.id_for_label }}" class="form-label fw-bold text-navy">Full Name <span class="text-danger" aria-hidden="true">*</span></label>
+          {{ form.name }}
+        </div>
+        <div class="col-md-6">
+          <label for="{{ form.mobile.id_for_label }}" class="form-label fw-bold text-navy">Mobile Number <span class="text-danger" aria-hidden="true">*</span></label>
+          {{ form.mobile }}
+        </div>
+        <div class="col-md-6">
+          <label for="{{ form.email.id_for_label }}" class="form-label fw-bold text-navy">Email Address</label>
+          {{ form.email }}
+        </div>
+        <div class="col-md-6">
+          <label for="{{ form.is_member.id_for_label }}" class="form-label fw-bold text-navy">HOMline Member?</label>
+          {{ form.is_member }}
+        </div>
+        <div class="col-md-6">
+          <label for="{{ form.membership_id.id_for_label }}" class="form-label fw-bold text-navy">Membership / Customer ID</label>
+          {{ form.membership_id }}
+        </div>
+      </div>
+
+      <h2 class="h5 fw-bold text-teal">C. Related Service</h2>
+      <div class="row g-3 mb-4">
+        <div class="col-12">
+          <fieldset>
+            <legend class="form-label fw-bold text-navy fs-6">Is this related to a HOMline service?</legend>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="related_to_service" id="rel_yes" value="True" {% if form.related_to_service.value == True or form.related_to_service.value == 'True' %}checked{% endif %}>
+              <label class="form-check-label" for="rel_yes">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="related_to_service" id="rel_no" value="False" {% if not form.related_to_service.value or form.related_to_service.value == 'False' %}checked{% endif %}>
+              <label class="form-check-label" for="rel_no">No</label>
+            </div>
+          </fieldset>
+        </div>
+        <div class="col-md-6">
+          <label for="{{ form.service_name.id_for_label }}" class="form-label fw-bold text-navy">Service</label>
+          {{ form.service_name }}
+        </div>
+        <div class="col-md-6">
+          <label for="{{ form.related_reference.id_for_label }}" class="form-label fw-bold text-navy">Request / Reference Number</label>
+          {{ form.related_reference }}
+        </div>
+      </div>
+
+      <h2 class="h5 fw-bold text-teal">D. Tell Us What Happened / What You Suggest</h2>
+      <div class="mb-3">
+        <label for="{{ form.subject.id_for_label }}" class="form-label fw-bold text-navy">Subject <span class="text-danger" aria-hidden="true">*</span></label>
+        {{ form.subject }}
+      </div>
+      <div class="mb-4">
+        <label for="{{ form.details.id_for_label }}" class="form-label fw-bold text-navy">Details <span class="text-danger" aria-hidden="true">*</span></label>
+        {{ form.details }}
+      </div>
+
+      <h2 class="h5 fw-bold text-teal">Supporting Information</h2>
+      <div class="mb-2">
+        <label for="{{ form.supporting_document.id_for_label }}" class="form-label fw-bold text-navy">Supporting Document / Screenshot <small class="text-muted fw-normal">(optional • JPG • PNG • PDF • max 10 MB)</small></label>
+        {{ form.supporting_document }}
+      </div>
+      <div class="alert alert-warning small" role="note">
+        <strong>Important:</strong> Do not upload passwords, OTPs, PINs, banking credentials or other unnecessary sensitive information.
+      </div>
+
+      <h2 class="h5 fw-bold text-teal">Preferred Response</h2>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label for="{{ form.preferred_response.id_for_label }}" class="form-label fw-bold text-navy">Contact me by</label>
+          {{ form.preferred_response }}
+        </div>
+        <div class="col-md-6">
+          <label for="{{ form.preferred_time.id_for_label }}" class="form-label fw-bold text-navy">Preferred time</label>
+          {{ form.preferred_time }}
+        </div>
+      </div>
+
+      <h2 class="h5 fw-bold text-teal">Declaration &amp; Consent</h2>
+      <div class="form-check mb-2">
+        {{ form.consent }}
+        <label class="form-check-label" for="{{ form.consent.id_for_label }}">I confirm that the information provided is accurate to the best of my knowledge and may be used by HOMline to review and respond to this submission. <span class="text-danger" aria-hidden="true">*</span></label>
+      </div>
+      <div class="form-check mb-4">
+        {{ form.acknowledge }}
+        <label class="form-check-label" for="{{ form.acknowledge.id_for_label }}">I understand that submission of a complaint or feedback does not automatically guarantee a particular outcome. <span class="text-danger" aria-hidden="true">*</span></label>
+      </div>
+
+      <button type="submit" class="btn btn-navy btn-lg w-100 fw-bold">SEND TO HOMLINE</button>
+
+      <p class="small text-muted mt-3 mb-0">
+        <strong>Privacy &amp; Confidentiality:</strong> Information submitted here is used only to review, respond to and improve HOMline services.
+        Can’t complete the form? <a href="tel:6282268453">Call 6282268453</a> or <a href="https://wa.me/916282268453">message us on WhatsApp</a>.
+      </p>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  var e = document.getElementById('formErrors'); if (e) e.focus();
+</script>
+{% endblock %}

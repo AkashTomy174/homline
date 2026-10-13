@@ -6,6 +6,11 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from core.models import Category, Service, Update, MembershipPlan, FAQ, CustomerReview, ServiceRequest, ContactEnquiry, ServiceRequestLog
 from core.forms import ServiceRequestForm
 
+import tempfile
+from django.test import override_settings
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp(prefix='homline-test-media-'))
 class HOMlineProjectTests(TestCase):
     def setUp(self):
         self.client = Client()
@@ -181,7 +186,24 @@ class HOMlineProjectTests(TestCase):
         self.assertNotIn('mobile', json_data)
         self.assertNotIn('notes', json_data)
 
+    def test_receipt_requires_verified_access(self):
+        url = reverse('receipt', kwargs={'request_id': 'HOM-2026-TEST'})
+        self.assertEqual(self.client.get(url).status_code, 302)
+
+    def test_membership_lookup_ignores_mobile_and_masks_phone(self):
+        from core.models import MembershipEnquiry
+        MembershipEnquiry.objects.create(name='A', mobile='9876543210', membership_code='HOM-MBR-2026-AAAAAAAAAA', status='Active')
+        r = self.client.get(reverse('membership'), {'check_code': '9876543210'})
+        self.assertNotContains(r, '3210</strong>')
+        r = self.client.get(reverse('membership'), {'check_code': 'HOM-MBR-2026-AAAAAAAAAA'})
+        self.assertContains(r, '******3210')
+        self.assertNotContains(r, '9876543210')
+
+    def test_logout_is_post_only(self):
+        self.assertEqual(self.client.get(reverse('logout')).status_code, 405)
+
     def test_receipt_page(self):
+        self.client.get(reverse('track_request_with_id', kwargs={'request_id': 'HOM-2026-TEST'}))
         response = self.client.get(reverse('receipt', kwargs={'request_id': 'HOM-2026-TEST'}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "VERIFIED ACKNOWLEDGEMENT")
@@ -323,11 +345,31 @@ class HOMlineProjectTests(TestCase):
             'mobile': '9847654321',
             'email': 'anu@example.com',
             'subject': 'Add more DTP font options',
-            'details': 'Please add stylish Malayalam Unicode fonts.'
+            'details': 'Please add stylish Malayalam Unicode fonts.',
+            'consent': 'on',
+            'acknowledge': 'on',
         })
-        self.assertEqual(response.status_code, 302)
         from core.models import ComplaintSuggestion
-        self.assertTrue(ComplaintSuggestion.objects.filter(name='Anu Thomas').exists())
+        obj = ComplaintSuggestion.objects.get(name='Anu Thomas')
+        self.assertRegex(obj.reference_no, r'^HOM-CMP-\d{8}-001$')
+        self.assertEqual(obj.status, 'Received')
+        self.assertRedirects(response, reverse('complaint_received', kwargs={'reference_no': obj.reference_no}))
+        self.assertContains(self.client.get(response.url), obj.reference_no)
+
+    def test_complaint_requires_consent_and_keeps_input(self):
+        response = self.client.post(reverse('complaint_suggestion'), {
+            'entry_type': 'Accessibility Concern', 'name': 'Anu', 'mobile': '9847654321',
+            'subject': 'Ramp missing', 'details': 'No ramp at the desk.'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Ramp missing')
+        self.assertContains(response, 'Please confirm the declaration')
+        from core.models import ComplaintSuggestion
+        self.assertFalse(ComplaintSuggestion.objects.exists())
+
+    def test_complaint_received_page_needs_own_session(self):
+        from core.models import ComplaintSuggestion
+        obj = ComplaintSuggestion.objects.create(name='A', mobile='9847654321', subject='s', details='d')
+        self.assertEqual(self.client.get(reverse('complaint_received', kwargs={'reference_no': obj.reference_no})).status_code, 302)
 
     def test_membership_card_and_check(self):
         from core.models import MembershipEnquiry
@@ -406,7 +448,7 @@ class HOMlineProjectTests(TestCase):
         self.assertContains(res_home, 'meerak')
 
         # 2. Logout
-        res_logout = self.client.get(reverse('logout'))
+        res_logout = self.client.post(reverse('logout'))
         self.assertEqual(res_logout.status_code, 302)
 
         # 3. Log in with email identifier

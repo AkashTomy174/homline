@@ -1,5 +1,5 @@
 from .models import Announcement
-from .forms import PwDRequestForm, ComplaintSuggestionForm
+from .forms import PwDRequestForm
 
 def global_site_context(request):
     try:
@@ -10,5 +10,4 @@ def global_site_context(request):
     return {
         'site_announcements': announcements,
         'pwd_global_form': PwDRequestForm(),
-        'complaint_global_form': ComplaintSuggestionForm(),
     }

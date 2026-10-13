@@ -25,13 +25,13 @@
         </div>
         <div>
           <h4 class="fw-bold text-navy mb-0">Check Your Membership Status</h4>
-          <small class="text-muted">Enter your unique Membership Code (e.g. HOM-MBR-2026-XXXX) or registered phone number</small>
+          <small class="text-muted">Enter the Membership Code sent to your WhatsApp (e.g. HOM-MBR-2026-A1B2C3D4E5)</small>
         </div>
       </div>
 
       <form action="{% url 'membership' %}" method="GET" class="row g-2 align-items-center">
         <div class="col-md-9">
-          <input type="text" name="check_code" value="{{ check_query }}" class="form-control form-control-lg font-monospace fw-bold text-uppercase" placeholder="Enter Membership Code (e.g. HOM-MBR-2026-X8Y9) or Mobile" required>
+          <input type="text" name="check_code" value="{{ check_query }}" class="form-control form-control-lg font-monospace fw-bold" placeholder="HOM-MBR-2026-XXXXXXXXXX" aria-label="Membership code" autocomplete="off" required>
         </div>
         <div class="col-md-3">
           <button type="submit" class="btn btn-navy btn-lg w-100 fw-bold">
@@ -71,7 +71,7 @@
           </div>
           <div class="col-6 col-md-3">
             <span class="d-block text-muted">Phone Number:</span>
-            <strong class="text-navy font-monospace">{{ checked_membership.mobile }}</strong>
+            <strong class="text-navy font-monospace">{{ checked_membership.masked_mobile }}</strong>
           </div>
           <div class="col-6 col-md-3">
             <span class="d-block text-muted">Open Date:</span>

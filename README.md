@@ -32,3 +32,7 @@ python manage.py check
 python manage.py makemigrations --check --dry-run
 python manage.py test core
 ```
+
+## Deployment
+
+See [DEPLOY.md](DEPLOY.md) (Render Free + Neon + Cloudflare R2). Env vars: `.env.example`.

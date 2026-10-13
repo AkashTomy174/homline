@@ -4,10 +4,12 @@ services:
     runtime: python
     plan: free
     buildCommand: "./build.sh"
-    startCommand: "gunicorn homline_project.wsgi:application"
+    # One worker: the in-memory rate limiter is per-process (see DEPLOY.md).
+    startCommand: "gunicorn homline_project.wsgi:application --workers 1 --threads 4 --timeout 90 --access-logfile -"
+    healthCheckPath: /healthz/
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.9
+        value: 3.12.3
       - key: SECRET_KEY
         generateValue: true
       - key: DEBUG
@@ -15,6 +17,15 @@ services:
       - key: ALLOWED_HOSTS
         value: "hom-line.onrender.com"
       - key: CSRF_TRUSTED_ORIGINS
-        value: "https://hom-line.onrender.com,https://*.onrender.com"
+        value: "https://hom-line.onrender.com"
+      # Set these in the Render dashboard (never in Git):
       - key: DATABASE_URL
+        sync: false
+      - key: R2_BUCKET_NAME
+        sync: false
+      - key: R2_ENDPOINT_URL
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
         sync: false
