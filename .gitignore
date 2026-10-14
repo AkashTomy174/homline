@@ -17,3 +17,11 @@ live-home.png
 .playwright-mcp/
 *.pdf
 *.jpeg
+
+# frontend build output / deps
+static/app/
+frontend/node_modules/
+
+# design exploration previews
+design-explorations/
+.impeccable/

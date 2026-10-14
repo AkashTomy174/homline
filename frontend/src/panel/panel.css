@@ -1,0 +1,18 @@
+.panel-root { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: #f4f6f9; color: #1e293b; min-height: 100vh; }
+.panel-side { width: 250px; flex-shrink: 0; background: #0f2a43; min-height: 100vh; position: sticky; top: 0; align-self: flex-start; }
+.panel-side a, .panel-side button.link { color: #cbd5e1; text-decoration: none; display: flex; gap: 10px; align-items: center; padding: 9px 18px; font-size: .9rem; border-radius: 8px; margin: 1px 10px; background: none; border: 0; }
+.panel-side a:hover, .panel-side a.on { background: rgba(255,255,255,.1); color: #fff; }
+.panel-side h6 { color: #64748b; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; margin: 18px 18px 6px; }
+.panel-root .card { border: 1px solid #e2e8f0; border-radius: 12px; }
+.panel-root .table th { font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; color: #64748b; white-space: nowrap; }
+.panel-stat { text-decoration: none; color: inherit; }
+.panel-stat:hover { border-color: #2563eb; }
+@media (max-width: 991px) { .panel-side { width: 100%; min-height: 0; position: static; } .panel-shell { flex-direction: column; } }
+.panel-badge { display: inline-block; padding: 2px 9px; border-radius: 12px; font-size: .72rem; font-weight: 700; white-space: nowrap; }
+.tone-warning { background: #fef3c7; color: #b45309; } .tone-purple { background: #f3e8ff; color: #7e22ce; }
+.tone-info { background: #e0f2fe; color: #0284c7; } .tone-orange { background: #ffedd5; color: #c2410c; }
+.tone-success { background: #dcfce7; color: #15803d; } .tone-secondary { background: #f1f5f9; color: #64748b; }
+.tone-primary { background: #e0e7ff; color: #4f46e5; } .tone-danger { background: #fee2e2; color: #b91c1c; }
+.panel-qa { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 8px; color: #fff; text-decoration: none; font-size: .85rem; }
+.panel-qa.wa { background: #22c55e; } .panel-qa.tel { background: #1e293b; } .panel-qa.rc { background: #2563eb; } .panel-qa.tr { background: #0d9488; }
+.panel-bulk { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px 12px; }

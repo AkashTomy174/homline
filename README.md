@@ -11,13 +11,19 @@ python manage.py seed_data
 python manage.py runserver
 ```
 
-Open `http://127.0.0.1:8000/`. Create an administrator account once with:
+The site is a React app (`frontend/`, Vite + TypeScript) on a Django REST API (`/api/`). Build it once so Django can serve it:
+
+```powershell
+cd frontend; npm ci; npm run build; cd ..
+```
+
+Open `http://127.0.0.1:8000/`. For live frontend editing run `npm run dev` in `frontend/` and open `http://localhost:5173/` (it proxies `/api` to Django on port 8000). Staff and admins use the panel at `/panel` after signing in. Create an administrator account once with:
 
 ```powershell
 python manage.py createsuperuser
 ```
 
-Then sign in at `http://127.0.0.1:8000/admin/login/`.
+Then sign in at `http://127.0.0.1:8000/login` (staff and admins land in `/panel`).
 
 ## Production setup
 

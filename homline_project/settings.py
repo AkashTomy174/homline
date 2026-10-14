@@ -61,12 +61,12 @@ SECURE_HSTS_PRELOAD = not DEBUG
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'core',
 ]
 
@@ -94,7 +94,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
-                'core.context_processors.global_site_context',
             ],
         },
     },
@@ -222,3 +221,12 @@ LOGGING = {
 
 # Reject uploads above Django's in-memory limit early (documents are capped at 10 MB in the form).
 DATA_UPLOAD_MAX_MEMORY_SIZE = 12 * 1024 * 1024
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ['core.drf_auth.CsrfSessionAuthentication'],
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny'],
+    'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer'],
+    'DEFAULT_PARSER_CLASSES': ['rest_framework.parsers.JSONParser', 'rest_framework.parsers.MultiPartParser', 'rest_framework.parsers.FormParser'],
+    'DEFAULT_THROTTLE_CLASSES': [],
+}

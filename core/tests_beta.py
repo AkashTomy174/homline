@@ -7,6 +7,7 @@ from unittest import mock
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.core.files.uploadedfile import SimpleUploadedFile
+from rest_framework.test import APIClient
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
@@ -104,7 +105,7 @@ class UploadAndDownloadTests(TestCase):
         self.assertEqual(self.client.get(url).status_code, 302)
         get_user_model().objects.create_user('u', password=PW)
         self.client.login(username='u', password=PW)
-        self.assertEqual(self.client.get(url).status_code, 302)  # not staff -> admin login
+        self.assertEqual(self.client.get(url).status_code, 302)  # not staff -> site login
 
     def test_staff_permission_required_then_allowed(self):
         r, url = self._request_with_doc()
@@ -130,9 +131,6 @@ class UploadAndDownloadTests(TestCase):
         self.assertEqual(res.status_code, 503)
         self.assertNotIn('bucket-secret', res.content.decode())
 
-    def test_duplicate_guard_script_present(self):
-        self.assertContains(self.client.get(reverse('home')), 'dataset.submitting')
-
 
 class S3StorageAdapterTests(TestCase):
     """Offline check of signed, short-lived URLs. A real R2 round trip needs credentials and is not covered here."""
@@ -153,11 +151,11 @@ class ComplaintDocumentTests(TestCase):
                 'consent': 'on', 'acknowledge': 'on', **extra}
         if upload:
             data['supporting_document'] = upload
-        return self.client.post(reverse('complaint_suggestion'), data)
+        return APIClient().post('/api/complaints/', data, format='multipart')
 
     def test_upload_stored_privately_and_staff_only(self):
         from core.models import ComplaintSuggestion
-        self.assertEqual(self.post(SimpleUploadedFile('shot.png', bytes([0x89]) + b'PNG....')).status_code, 302)
+        self.assertEqual(self.post(SimpleUploadedFile('shot.png', bytes([0x89]) + b'PNG....')).status_code, 201)
         c = ComplaintSuggestion.objects.get()
         self.assertEqual(c.document_original_name, 'shot.png')
         self.assertRegex(c.supporting_document.name, r'^complaint_docs/\d{4}/\d{2}/[0-9a-f]{32}\.png$')
@@ -174,9 +172,9 @@ class ComplaintDocumentTests(TestCase):
 
     def test_bad_uploads_rejected(self):
         from core.models import ComplaintSuggestion
-        self.assertEqual(self.post(SimpleUploadedFile('x.exe', b'MZ')).status_code, 200)
-        self.assertEqual(self.post(SimpleUploadedFile('x.doc', b'abcdefgh')).status_code, 200)  # doc not allowed here
-        self.assertEqual(self.post(SimpleUploadedFile('x.pdf', b'not a pdf')).status_code, 200)
+        self.assertEqual(self.post(SimpleUploadedFile('x.exe', b'MZ')).status_code, 400)
+        self.assertEqual(self.post(SimpleUploadedFile('x.doc', b'abcdefgh')).status_code, 400)  # doc not allowed here
+        self.assertEqual(self.post(SimpleUploadedFile('x.pdf', b'not a pdf')).status_code, 400)
         self.assertFalse(ComplaintSuggestion.objects.exists())
 
     def test_reference_numbers_increment_per_day(self):
@@ -184,11 +182,3 @@ class ComplaintDocumentTests(TestCase):
         self.post(); self.post()
         refs = list(ComplaintSuggestion.objects.order_by('id').values_list('reference_no', flat=True))
         self.assertEqual([r[-3:] for r in refs], ['001', '002'])
-
-    def test_admin_changelist_loads(self):
-        self.post()
-        self.client.force_login(get_user_model().objects.create_superuser('root', 'r@x.com', PW))
-        r = self.client.get(reverse('admin:core_complaintsuggestion_changelist'))
-        self.assertContains(r, 'HOM-CMP-')
-        pk = __import__('core.models', fromlist=['x']).ComplaintSuggestion.objects.get().pk
-        self.assertEqual(self.client.get(reverse('admin:core_complaintsuggestion_change', args=[pk])).status_code, 200)

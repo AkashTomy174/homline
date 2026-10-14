@@ -1,6 +1,6 @@
 # HOMLine free-tier beta deployment
 
-Stack: Render Free web service (Django + Gunicorn + WhiteNoise) · Neon Postgres (Free) · Cloudflare R2 (private bucket). No separate frontend: Django serves the templates.
+Stack: Render Free web service (Django + Gunicorn + WhiteNoise) · Neon Postgres (Free) · Cloudflare R2 (private bucket). The site is a React (Vite + TypeScript) app talking to a Django REST Framework API under `/api/`. There is no separate frontend host: `build.sh` builds the React app into `static/app/`, and Django serves its `index.html` for every page route (WhiteNoise serves the assets).
 
 ## 1. Create resources (manual — nothing is provisioned automatically)
 
@@ -28,7 +28,7 @@ The app **fails at startup** if `DEBUG=False` and `SECRET_KEY`, `DATABASE_URL` o
 
 ## 3. Deploy
 
-`build.sh` installs dependencies, runs `collectstatic`, `migrate`, `seed_data`. Render free has no pre-deploy command, so migrations run during the build (single build at a time; the seed is idempotent). Migrations here only add fields/indexes. Never drop or recreate the database to fix a failed migration; fix forward.
+`build.sh` builds the React app (`cd frontend && npm ci && npm run build`, so the build host needs Node 20+), installs Python dependencies, runs `collectstatic`, `migrate`, `seed_data`. Render free has no pre-deploy command, so migrations run during the build (single build at a time; the seed is idempotent). Migrations here only add fields/indexes. Never drop or recreate the database to fix a failed migration; fix forward.
 
 Create the first admin either with the `DJANGO_SUPERUSER_*` variables (then delete the password variable) or from the Render Shell (not available on free: use the variables).
 
@@ -41,7 +41,7 @@ Render Free spins down after 15 minutes without traffic; the next request takes 
 1. `GET /healthz/` → 200 `{"status":"ok"}` (503 if DB is down).
 2. Public pages and `/static/css/style.css` load.
 3. Submit a valid request with a PDF → redirected to tracker with a request ID; invalid submission (bad file / empty file) rejected.
-4. Log in at `/admin/` as staff → open the request → document download works; attachment name equals the original.
+4. Sign in at `/login` as staff (you land in `/panel`) → open the request → document download works; attachment name equals the original.
 5. Anonymous / non-staff `GET /staff/requests/<id>/document/` → redirect to login or 403.
 6. Trigger a restart/redeploy in Render, repeat step 4: document and record still present.
 7. Confirm `https://<bucket-endpoint>/…` is not publicly readable (bucket public access off); `/media/…` → 404.

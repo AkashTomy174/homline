@@ -5,6 +5,13 @@ set -o errexit
 # Install python dependencies
 pip install -r requirements.txt
 
+# Build the React app into static/app (served by Django/WhiteNoise)
+if ! command -v npm >/dev/null 2>&1; then
+  echo "npm is required to build the frontend (set a Node version on the host)" >&2
+  exit 1
+fi
+(cd frontend && npm ci && npm run build)
+
 # Collect static files into STATIC_ROOT
 python manage.py collectstatic --no-input
 
